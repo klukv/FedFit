@@ -1,0 +1,26 @@
+.banner {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.banner__header {
+  max-width: 730px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  margin-top: 47px;
+}
+
+.banner_title {
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 59px;
+}
+
+.banner__description {
+  max-width: 600px;
+  font-size: 24px;
+  line-height: 29px;
+}

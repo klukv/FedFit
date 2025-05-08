@@ -1,0 +1,30 @@
+.header {
+  height: 90px;
+  background-color: #000000;
+}
+
+.header_inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.header__logo img {
+  object-fit: cover;
+}
+
+.header__profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.header__profile-username {
+  font-size: 24px;
+}
+
+.header__profile-avatar {
+  border-radius: 50px;
+}
