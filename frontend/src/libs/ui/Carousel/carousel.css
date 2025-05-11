@@ -1,0 +1,7 @@
+.container__carousel {
+  gap: 20px;
+}
+
+.carousel__item {
+  max-width: fit-content;
+}

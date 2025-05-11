@@ -1,0 +1,9 @@
+.container-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.container-section__title {
+  font-weight: 400;
+}

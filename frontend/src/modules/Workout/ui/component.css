@@ -1,0 +1,38 @@
+.workout-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: filter 150ms linear;
+}
+
+.workout-item:hover {
+  background: brightness(30%);
+}
+
+.workout-item-large {
+  width: 456px;
+  height: 640px;
+}
+
+.workout-item-small {
+  width: 303px;
+  height: 169px;
+}
+
+.workout-item-large > h3 {
+  font-size: 32px;
+}
+
+.workout-item-small > h3 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.workout-item__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
