@@ -7,6 +7,14 @@
   transition: filter 150ms linear;
 }
 
+.workout-item__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
 .workout-item:hover {
   background: brightness(30%);
 }
@@ -21,18 +29,11 @@
   height: 169px;
 }
 
-.workout-item-large > h3 {
+.workout-item-large h3 {
   font-size: 32px;
 }
 
-.workout-item-small > h3 {
+.workout-item-small h3 {
   font-size: 20px;
   font-weight: 500;
-}
-
-.workout-item__inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 24px;
 }

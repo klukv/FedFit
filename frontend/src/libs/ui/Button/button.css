@@ -2,12 +2,24 @@
   border-radius: 50px;
   font-size: 24px;
   padding: 15px 83px;
+  color: #ffffff;
 }
 
 .button-default {
-  background: linear-gradient(#c6964d, #604925);
+  background-image: linear-gradient(to right, #c6964d, #604925);
+  background-size: 125% auto;
+  background-position: 0 0;
+  transition: all 250ms ease;
+
+  &:hover {
+    background-position: 100% 0;
+  }
 }
 
 .button-secondary {
   background-color: #59bd56;
+
+  &:hover {
+    background-color: #4ea54b;
+  }
 }

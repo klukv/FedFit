@@ -14,6 +14,7 @@ const Workout = (props: WorkoutItemProps) => {
       })}
       style={{
         background: `url('${props.backgroundImage.image}')`,
+        backgroundSize: "cover"
       }}
     >
       <div className="workout-item__inner">
