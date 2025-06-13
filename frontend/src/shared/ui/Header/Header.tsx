@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
-import { StaticImageProps } from "@/types/global";
+import { StaticImageProps } from "../../types/global";
 import "./header.css";
 import clsx from "clsx";
 

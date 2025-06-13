@@ -1,4 +1,4 @@
-import { StaticImageProps } from "@/types/global";
+import { StaticImageProps } from "../../shared/types/global";
 
 export enum WorkoutItemVariants {
   SMALL = "SMALL",

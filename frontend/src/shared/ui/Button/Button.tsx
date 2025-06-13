@@ -11,6 +11,7 @@ interface IProps {
 const Button = ({ variant = "default", title, onClickHandler }: IProps) => {
   return (
     <button
+      type="button"
       className={clsx("button", {
         "button-default": variant === "default",
         "button-secondary": variant === "secondary",

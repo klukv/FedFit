@@ -1,8 +1,9 @@
 import React from "react";
 import { WorkoutItemProps, WorkoutItemVariants } from "../types";
-import { Button } from "@/libs/ui";
+import { Button } from "@/shared/ui";
+
 import clsx from "clsx";
-import "./component.css";
+import "./Workout.css";
 
 const Workout = (props: WorkoutItemProps) => {
   return (
@@ -14,7 +15,7 @@ const Workout = (props: WorkoutItemProps) => {
       })}
       style={{
         background: `url('${props.backgroundImage.image}')`,
-        backgroundSize: "cover"
+        backgroundSize: "cover",
       }}
     >
       <div className="workout-item__inner">

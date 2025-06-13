@@ -1,4 +1,4 @@
-import { Header } from "@/libs/ui";
+import { Header } from "@/shared/ui";
 import { Roboto } from "next/font/google";
 import logo from "@/assets/logo.png";
 import avatar from "@/assets/mock_avatar.png";

@@ -1,6 +1,6 @@
 import React from "react";
 import { Montserrat } from "next/font/google";
-import { StaticImageProps } from "@/types/global";
+import { StaticImageProps } from "../../types/global";
 import "./banner.css";
 import clsx from "clsx";
 
