@@ -1,10 +1,13 @@
-import React from "react";
-import "./button.css";
+"use client";
+
+import React, { MouseEventHandler } from "react";
 import { clsx } from "clsx";
+
+import "./button.css";
 
 interface IProps {
   title: string;
-  onClickHandler: () => void;
+  onClickHandler: MouseEventHandler<HTMLButtonElement>;
   variant?: "default" | "secondary";
 }
 

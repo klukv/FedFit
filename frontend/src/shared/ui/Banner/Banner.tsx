@@ -1,8 +1,8 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Montserrat } from "next/font/google";
-import { StaticImageProps } from "../../types/global";
-import "./banner.css";
+import { StaticImageProps } from "@/shared/types";
 import clsx from "clsx";
+import "./banner.css";
 
 interface IProps {
   banner: StaticImageProps;
@@ -22,7 +22,7 @@ const Banner = ({ banner, title, description }: IProps) => {
         backgroundSize: "cover",
         backgroundImage: `url('${banner.image}')`,
         width: banner.width ?? "100%",
-        height: banner.height ?? "100%",
+        height: banner.height ?? "100%"
       }}
     >
       <div className={clsx("banner__header", montserrat.className)}>

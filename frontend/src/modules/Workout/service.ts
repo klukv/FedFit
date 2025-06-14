@@ -1,10 +1,13 @@
 import { $authReq } from "@/shared/api";
+import { Workout } from "./types";
 
 export class WorkoutService {
   constructor() {}
 
-  async getWorkouts(name: string) {
-    const { data } = await $authReq().get(`/workouts/${name}`);
+  async getWorkoutsById(id: string) {
+    const { data } = await $authReq().get<Workout[]>(
+      `/workouts_plans/${id}/workouts`,
+    );
     return data;
   }
 }

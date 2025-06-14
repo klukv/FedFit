@@ -7,3 +7,12 @@
 .container-section__title {
   font-weight: 400;
 }
+
+.container-section__center {
+  justify-content: center;
+  align-items: center;
+}
+
+.container-section__end {
+  align-items: end;
+}

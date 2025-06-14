@@ -1,9 +1,12 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import { StaticImageProps } from "../../types/global";
 import "./header.css";
 import clsx from "clsx";
+import Link from "next/link";
 
 interface IProps {
   logo: StaticImageProps;
@@ -19,13 +22,16 @@ const Header = ({ avatar, logo, username }: IProps) => {
   return (
     <header className="header">
       <div className="header_inner container__app">
-        <Image
-          className="header__logo"
-          width={logo.width ?? 230}
-          height={logo.height ?? 70}
-          src={logo.image}
-          alt="Логотип"
-        />
+        <Link href={"/"}>
+          <Image
+            className="header__logo"
+            width={logo.width ?? 230}
+            height={logo.height ?? 70}
+            src={logo.image}
+            alt="Логотип"
+          />
+        </Link>
+
         <div className="header__profile">
           <div
             className={clsx("header__profile-username", montserrat.className)}

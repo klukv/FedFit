@@ -4,19 +4,19 @@ import STRENGTH_TRAINING from "@/assets/workout/strength_training.png";
 
 export const TRAINING_PLANS = [
   {
-    id: 0,
+    id: 1,
     label: "Силовые тренировки",
     image: STRENGTH_TRAINING,
     value: "strength",
   },
   {
-    id: 1,
+    id: 2,
     label: "Кардио тренировки",
     image: CARDIO_TRAINING,
     value: "cardio",
   },
   {
-    id: 2,
+    id: 3,
     label: "Растяжка",
     image: STRETCHING_TRAINING,
     value: "stretching",

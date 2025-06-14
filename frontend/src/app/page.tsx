@@ -1,23 +1,23 @@
 "use client";
 
-import { Banner, Carousel, ContainerSection } from "../shared/ui";
+import { Banner, Carousel, ContainerSection } from "@/shared/ui";
+import { TRAINING_PLANS } from "@/shared/constants";
 import { mockItemsForCarousel } from "../data/mock";
 import { WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
-import home_banner from "@/assets/home_banner.png";
-import { TRAINING_PLANS } from "../shared/constants";
 import { useRouter } from "next/navigation";
+import home_banner from "@/assets/home_banner.png";
 
 export default function Home() {
   const router = useRouter();
 
-  const routeToWorkouts = (name: string) => {
-    router.push(`workouts/${name}`);
+  const routeToWorkoutsById = (id: number) => {
+    router.push(`workouts_plans/${id}`);
   };
 
   return (
     <div
       style={{
-        marginBottom: 64,
+        margin: "-10px -15px 54px -15px",
       }}
     >
       <Banner
@@ -57,7 +57,7 @@ export default function Home() {
               image: trainingPlan.image.src,
             }}
             button={{
-              onClickButtonLink: () => routeToWorkouts(trainingPlan.value),
+              onClickButtonLink: () => routeToWorkoutsById(trainingPlan.id),
               title: "Перейти",
             }}
           />

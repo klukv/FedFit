@@ -1,3 +1,5 @@
+"use client";
+
 import React, { CSSProperties, PropsWithChildren } from "react";
 import { Montserrat } from "next/font/google";
 import { clsx } from "clsx";
@@ -7,6 +9,7 @@ interface IProps {
   title?: string;
   styles?: CSSProperties;
   contentStyles?: CSSProperties;
+  placement?: "start" | "center" | "end";
 }
 
 const montserrat = Montserrat({
@@ -18,9 +21,16 @@ const SectionWithTitle = ({
   children,
   styles,
   contentStyles,
+  placement = "start",
 }: PropsWithChildren<IProps>) => {
   return (
-    <section className="container-section container__app" style={styles}>
+    <section
+      className={clsx("container-section container__app", {
+        "container-section__center": placement === "center",
+        "container-section__end": placement === "end",
+      })}
+      style={styles}
+    >
       {title && (
         <h2 className={clsx("container-section__title", montserrat.className)}>
           {title}

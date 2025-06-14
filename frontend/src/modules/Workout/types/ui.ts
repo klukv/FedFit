@@ -1,4 +1,5 @@
-import { StaticImageProps } from "../../shared/types/global";
+import { StaticImageProps } from "@/shared/types";
+import { MouseEventHandler } from "react";
 
 export enum WorkoutItemVariants {
   SMALL = "SMALL",
@@ -18,7 +19,7 @@ interface WorkoutItemSmall extends WorkoutItemBase {
 interface WorkoutItemLarge extends WorkoutItemBase {
   type: WorkoutItemVariants.LARGE_WITH_BUTTON;
   button: {
-    onClickButtonLink: () => void;
+    onClickButtonLink: MouseEventHandler<HTMLButtonElement>;
     title: string;
   };
 }

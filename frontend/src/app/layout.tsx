@@ -21,7 +21,7 @@ export default function RootLayout({
           logo={{ image: logo }}
           avatar={{ image: avatar }}
         />
-        {children}
+        <main className="content">{children}</main>
       </body>
     </html>
   );
