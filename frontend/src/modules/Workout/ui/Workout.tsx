@@ -2,7 +2,8 @@
 
 import React from "react";
 import { WorkoutItemProps, WorkoutItemVariants } from "../types";
-import { Button } from "@/shared/ui";
+import { ButtonLink } from "@/shared/ui";
+import { ButtonLinkTypes } from "@/shared/types";
 
 import clsx from "clsx";
 import "./Workout.css";
@@ -18,14 +19,16 @@ const Workout = (props: WorkoutItemProps) => {
       style={{
         background: `url('${props.backgroundImage.image}')`,
         backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div className="workout-item__inner">
         <h3 className="workout-item__title">{props.title}</h3>
         {props.type === WorkoutItemVariants.LARGE_WITH_BUTTON && (
-          <Button
-            title={props.button.title}
-            onClickHandler={props.button.onClickButtonLink}
+          <ButtonLink
+            type={ButtonLinkTypes.Link}
+            title={props.buttonLink.title}
+            href={props.buttonLink.href}
           />
         )}
       </div>

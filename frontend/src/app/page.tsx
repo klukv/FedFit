@@ -1,19 +1,11 @@
-"use client";
-
 import { Banner, Carousel, ContainerSection } from "@/shared/ui";
-import { TRAINING_PLANS } from "@/shared/constants";
+import { TRAINING_PLANS, WORKOUTS_PLANS_URL } from "@/shared/constants";
 import { mockItemsForCarousel } from "../data/mock";
 import { WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
-import { useRouter } from "next/navigation";
 import home_banner from "@/assets/home_banner.png";
+import CarouselWorkoutsWrapper from "./CarouselWorkoutsWrapper";
 
-export default function Home() {
-  const router = useRouter();
-
-  const routeToWorkoutsById = (id: number) => {
-    router.push(`workouts_plans/${id}`);
-  };
-
+const Home = async () => {
   return (
     <div
       style={{
@@ -29,19 +21,7 @@ export default function Home() {
         description="Преодолей свои границы, укрепи тело и дух вместе с нами. Начни путь к здоровью и энергии прямо сейчас!"
       />
       <ContainerSection title="Рекомендуем Вам" styles={{ marginTop: 64 }}>
-        <Carousel
-          items={mockItemsForCarousel}
-          renderItem={(item) => (
-            <WorkoutItem
-              key={item.id}
-              type={WorkoutItemVariants.SMALL}
-              title={item.label}
-              backgroundImage={{
-                image: item.image.src,
-              }}
-            />
-          )}
-        />
+        <CarouselWorkoutsWrapper />
       </ContainerSection>
       <ContainerSection
         title="Планы тренировок"
@@ -56,8 +36,8 @@ export default function Home() {
             backgroundImage={{
               image: trainingPlan.image.src,
             }}
-            button={{
-              onClickButtonLink: () => routeToWorkoutsById(trainingPlan.id),
+            buttonLink={{
+              href: `${WORKOUTS_PLANS_URL}/${trainingPlan.id}`,
               title: "Перейти",
             }}
           />
@@ -65,4 +45,6 @@ export default function Home() {
       </ContainerSection>
     </div>
   );
-}
+};
+
+export default Home;

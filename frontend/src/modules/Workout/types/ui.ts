@@ -18,8 +18,8 @@ interface WorkoutItemSmall extends WorkoutItemBase {
 
 interface WorkoutItemLarge extends WorkoutItemBase {
   type: WorkoutItemVariants.LARGE_WITH_BUTTON;
-  button: {
-    onClickButtonLink: MouseEventHandler<HTMLButtonElement>;
+  buttonLink: {
+    href: string;
     title: string;
   };
 }

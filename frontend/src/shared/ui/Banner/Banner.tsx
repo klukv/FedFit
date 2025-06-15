@@ -22,7 +22,7 @@ const Banner = ({ banner, title, description }: IProps) => {
         backgroundSize: "cover",
         backgroundImage: `url('${banner.image}')`,
         width: banner.width ?? "100%",
-        height: banner.height ?? "100%"
+        height: banner.height ?? "100%",
       }}
     >
       <div className={clsx("banner__header", montserrat.className)}>
