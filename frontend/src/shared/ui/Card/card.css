@@ -1,0 +1,12 @@
+.card {
+  border-radius: 12px;
+  padding: 24px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card__title {
+  font-size: 26px;
+  font-weight: 400;
+}

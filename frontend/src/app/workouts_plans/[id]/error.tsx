@@ -2,8 +2,9 @@
 
 import { ButtonLink, ContainerSection } from "@/shared/ui";
 import { useEffect } from "react";
+import { ButtonLinkTypes } from "@/shared/types";
 
-import "./error.css";
+import "./_styles/error.css";
 
 export default function Error({
   error,
@@ -22,7 +23,11 @@ export default function Error({
       placement="center"
       styles={{ height: "100%" }}
     >
-      <ButtonLink onClickHandler={() => reset()} title="Попробуйте снова" />
+      <ButtonLink
+        type={ButtonLinkTypes.Button}
+        onClickHandler={() => reset()}
+        title="Попробуйте снова"
+      />
     </ContainerSection>
   );
 }
