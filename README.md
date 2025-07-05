@@ -11,7 +11,7 @@
 
 ⚙️ Технологии
 
-Frontend: React.js + Typescript + Redux
+Frontend: Next.js + Typescript + Redux
 
 Backend: GO
 
