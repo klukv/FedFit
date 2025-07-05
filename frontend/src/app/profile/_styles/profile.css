@@ -3,3 +3,8 @@
   flex-direction: column;
   gap: 64px;
 }
+
+.achievements {
+  display: flex;
+  gap: 60px;
+}

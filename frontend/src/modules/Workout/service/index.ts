@@ -1,0 +1,1 @@
+export { WorkoutService } from "./workoutService";

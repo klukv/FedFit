@@ -1,5 +1,5 @@
-export interface Workout {
-  id: string;
+export interface WorkoutModel {
+  id: number;
   name: string;
   value: string;
 }

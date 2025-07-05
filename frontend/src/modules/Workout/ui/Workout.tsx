@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { WorkoutItemProps, WorkoutItemVariants } from "../types";
 import { ButtonLink } from "@/shared/ui";
 import { ButtonLinkTypes } from "@/shared/types";

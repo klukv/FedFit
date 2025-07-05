@@ -1,4 +1,3 @@
-import React, { CSSProperties } from "react";
 import { Montserrat } from "next/font/google";
 import { StaticImageProps } from "@/shared/types";
 import clsx from "clsx";

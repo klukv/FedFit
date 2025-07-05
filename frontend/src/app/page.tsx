@@ -1,9 +1,9 @@
-import { Banner, Carousel, ContainerSection } from "@/shared/ui";
+import { Banner, ContainerSection } from "@/shared/ui";
 import { TRAINING_PLANS, WORKOUTS_PLANS_URL } from "@/shared/constants";
-import { mockItemsForCarousel } from "../data/mock";
 import { WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
+import { mockItemsForCarousel } from "../data/mock";
 import home_banner from "@/assets/home_banner.png";
-import CarouselWorkoutsWrapper from "./CarouselWorkoutsWrapper";
+import CarouselWorkoutsClientWrapper from "./CarouselWorkoutsWrapper";
 
 const Home = async () => {
   return (
@@ -21,7 +21,7 @@ const Home = async () => {
         description="Преодолей свои границы, укрепи тело и дух вместе с нами. Начни путь к здоровью и энергии прямо сейчас!"
       />
       <ContainerSection title="Рекомендуем Вам" styles={{ marginTop: 64 }}>
-        <CarouselWorkoutsWrapper />
+        <CarouselWorkoutsClientWrapper items={mockItemsForCarousel} />
       </ContainerSection>
       <ContainerSection
         title="Планы тренировок"

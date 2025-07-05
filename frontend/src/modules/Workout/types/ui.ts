@@ -1,5 +1,4 @@
 import { StaticImageProps } from "@/shared/types";
-import { MouseEventHandler } from "react";
 
 export enum WorkoutItemVariants {
   SMALL = "SMALL",

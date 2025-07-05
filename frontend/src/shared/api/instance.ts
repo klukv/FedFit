@@ -1,5 +1,6 @@
 import axios from "axios";
-import { BASE_API_HOST, HOST_VARIANTS } from "../constants";
+import { BASE_API_HOST } from "../constants";
+import { HOST_VARIANTS } from "../types";
 
 const $baseReq = (types: HOST_VARIANTS = HOST_VARIANTS.Default) => {
   const config = axios.create({

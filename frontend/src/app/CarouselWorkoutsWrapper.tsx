@@ -1,19 +1,23 @@
 "use client";
 
-import React from "react";
 import { Carousel } from "@/shared/ui";
 import { mockItemsForCarousel } from "../data/mock";
-import { WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
+import { Workout, WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
+import { StaticImageData } from "next/image";
 
-const CarouselWorkoutsWrapper = () => {
+interface IProps {
+  items: (Omit<Workout, "value"> & { image: StaticImageData })[];
+}
+
+const CarouselWorkoutsClientWrapper = (props: IProps) => {
   return (
     <Carousel
-      items={mockItemsForCarousel}
+      items={props.items}
       renderItem={(item) => (
         <WorkoutItem
           key={item.id}
           type={WorkoutItemVariants.SMALL}
-          title={item.label}
+          title={item.name}
           backgroundImage={{
             image: item.image.src,
           }}
@@ -23,4 +27,4 @@ const CarouselWorkoutsWrapper = () => {
   );
 };
 
-export default CarouselWorkoutsWrapper;
+export default CarouselWorkoutsClientWrapper;

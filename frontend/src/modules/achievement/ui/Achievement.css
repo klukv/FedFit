@@ -1,0 +1,33 @@
+.achievement {
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 254px;
+    height: 254px;
+    background: linear-gradient(to bottom, #c6964d, #604925);
+}
+
+.achievement__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.achievement__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+}
+
+.achievement__info-number-value {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.achievement__info-text-value {
+    font-size: 22px;
+    font-weight: 400;
+}
+

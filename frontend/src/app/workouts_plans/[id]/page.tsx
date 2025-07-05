@@ -1,4 +1,3 @@
-import React from "react";
 import {
   WorkoutItem,
   WorkoutItemVariants,
@@ -7,14 +6,14 @@ import {
 import { ContainerSection } from "@/shared/ui";
 import ArmsPng from "@/assets/workout/cardio_training.png";
 
-type Props = {
+type IProps = {
   params: Promise<{ id: string }>;
 };
 
-const Page = async ({ params }: Props) => {
+const Page = async ({ params }: IProps) => {
   const { id } = await params;
   const workoutService = new WorkoutService();
-  const workoutsData = await workoutService.getWorkoutsById(id);
+  const workoutsData = await workoutService.getWorkoutsById(Number(id));
 
   return (
     <ContainerSection
