@@ -13,6 +13,10 @@ type WorkoutRepository struct {
 	pool *pgxpool.Pool
 }
 
+func NewWorkoutRepository(pool *pgxpool.Pool) *WorkoutRepository {
+	return &WorkoutRepository{pool: pool}
+}
+
 func (r *WorkoutRepository) CreateWorkoutTable(ctx context.Context) error {
 	if _, err := r.pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS workout (
 		id SERIAL PRIMARY KEY,
