@@ -4,26 +4,51 @@ import (
 	"FedFit/internal/database"
 	"FedFit/internal/database/repositories"
 	"context"
+	"flag"
 	"log"
+	"os"
 )
 
-func InitApp() {
+type config struct {
+	Port int
+	Env  string
+}
+
+type Application struct {
+	Cfg          config
+	Logger       *log.Logger
+	Repositories *repositories.Repositories
+}
+
+func InitApp() *Application {
+	var cfg config
+
+	flag.IntVar(&cfg.Port, "port", 8000, "API server port")
+	flag.StringVar(&cfg.Env, "env", "development", "Environment (development|staging|production)")
+	flag.Parse()
+
 	ctx := context.Background()
 
+	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+
+	// Подключение к БД
 	pool, err := database.ConnectToDB(ctx)
 	if err != nil {
 		log.Fatal("Ошибка подключения к БД: ", err)
 	}
-	defer pool.Close()
 
-	trainingPlanRepository := repositories.NewTrainingPlanRepository(pool)
-	workoutRepository := repositories.NewWorkoutRepository(pool)
-
-	if err := trainingPlanRepository.CreateTrainingPlanTable(ctx); err != nil {
-		log.Fatal("Ошибка создания таблицы планов тренировок: ", err)
+	// Инициализация репозиториев
+	repositories, err := repositories.InitRepositories(pool, ctx)
+	if err != nil {
+		log.Fatal("Ошибка инициализации БД: ", err)
 	}
 
-	if err := workoutRepository.CreateWorkoutTable(ctx); err != nil {
-		log.Fatal("Ошибка создания таблицы тренировок: ", err)
+	// Инициализация приложения
+	app := &Application{
+		Cfg:          cfg,
+		Logger:       logger,
+		Repositories: repositories,
 	}
+
+	return app
 }

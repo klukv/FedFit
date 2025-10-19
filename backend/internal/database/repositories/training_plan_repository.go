@@ -49,3 +49,28 @@ func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, plan *m
 
 	return nil
 }
+
+func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]models.TrainingPlan, error) {
+	query := `SELECT id, name, description, created_at, updated_at FROM training_plan ORDER BY created_at DESC`
+
+	rows, err := r.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var plans []models.TrainingPlan
+	for rows.Next() {
+		var plan models.TrainingPlan
+		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
+			return nil, err
+		}
+		plans = append(plans, plan)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return plans, nil
+}
