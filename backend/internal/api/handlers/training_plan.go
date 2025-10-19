@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
 func (handler *Handler) GetTrainingPlansHandler(w http.ResponseWriter, r *http.Request) {
 	trainingPlans, err := handler.Repositories.TrainingPlan.GetAllTrainingPlans(r.Context())
+
 	if err != nil {
+		log.Fatal(err)
 		http.Error(w, "Ошибка получения планов тренировок", http.StatusInternalServerError)
 		return
 	}

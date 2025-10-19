@@ -14,5 +14,10 @@ func Routes(repos *repositories.Repositories) *http.ServeMux {
 	mux.HandleFunc("GET /v1/training-plans", handler.GetTrainingPlansHandler)
 	mux.HandleFunc("POST /v1/training-plan", handler.CreateTrainingPlanHandler)
 
+	mux.HandleFunc("GET /v1/workouts", handler.GetWorkoutsHandler)
+	mux.HandleFunc("POST /v1/workout", handler.CreateWorkoutsHandler)
+
+	mux.HandleFunc("POST /v1/add-workout-to-tp/{training_plan_id}/{workout_id}", handler.AddWorkoutToTrainingPlan)
+
 	return mux
 }

@@ -9,11 +9,13 @@ import (
 type Repositories struct {
 	TrainingPlan *TrainingPlanRepository
 	Workout      *WorkoutRepository
+	TpWorkout    *TrainingPlanWorkoutRepository
 }
 
 func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, error) {
 	trainingPlanRepository := NewTrainingPlanRepository(pool)
 	workoutRepository := NewWorkoutRepository(pool)
+	tpWorkoutRepository := NewTrainingPlanWorkoutsRepository(pool)
 
 	if err := trainingPlanRepository.CreateTrainingPlanTable(ctx); err != nil {
 		return nil, err
@@ -23,8 +25,13 @@ func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, e
 		return nil, err
 	}
 
+	if err := tpWorkoutRepository.CreateTrainingPlanWorkoutTable(ctx); err != nil {
+		return nil, err
+	}
+
 	return &Repositories{
 		TrainingPlan: trainingPlanRepository,
 		Workout:      workoutRepository,
+		TpWorkout:    tpWorkoutRepository,
 	}, nil
 }

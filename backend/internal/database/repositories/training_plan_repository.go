@@ -3,6 +3,7 @@ package repositories
 import (
 	"FedFit/internal/models"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -51,7 +52,29 @@ func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, plan *m
 }
 
 func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]models.TrainingPlan, error) {
-	query := `SELECT id, name, description, created_at, updated_at FROM training_plan ORDER BY created_at DESC`
+	query := `SELECT
+		tp.id,
+		tp.name,
+		tp.description,
+		tp.created_at,
+		tp.updated_at,
+		COALESCE(
+			(
+				SELECT json_agg(
+					json_build_object(
+						'id', w.id,
+                        'name', w.name,
+                        'value', w.value
+					)
+				)
+				FROM workout w
+				JOIN training_plan_workout tpw ON w.id = tpw.workout_id
+				WHERE tpw.training_plan_id = tp.id
+			),
+			'[]'::json
+		) AS workouts
+	FROM training_plan tp
+	ORDER BY tp.created_at DESC`
 
 	rows, err := r.pool.Query(ctx, query)
 	if err != nil {
@@ -62,8 +85,14 @@ func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]mod
 	var plans []models.TrainingPlan
 	for rows.Next() {
 		var plan models.TrainingPlan
-		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
+		var workoutsJSON []byte
+		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.CreatedAt, &plan.UpdatedAt, &workoutsJSON); err != nil {
 			return nil, err
+		}
+		if len(workoutsJSON) > 0 {
+			if err := json.Unmarshal(workoutsJSON, &plan.Workouts); err != nil {
+				return nil, err
+			}
 		}
 		plans = append(plans, plan)
 	}
