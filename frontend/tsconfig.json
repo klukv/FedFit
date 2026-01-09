@@ -26,6 +26,9 @@
       "@/app/*": [
         "./src/app/*"
       ],
+      "@/data/*": [
+        "./src/data/*"
+      ],
       "@/modules/*": [
         "./src/modules/*"
       ],
