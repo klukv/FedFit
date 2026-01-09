@@ -11,7 +11,7 @@ interface IProps {
 const CardWrapper = (props: PropsWithChildren<IProps>) => {
   return props.type === CardTypes.Section ? (
     <section
-      className={clsx("card", props.className)}
+      className={clsx("card container__app", props.className)}
       style={{
         backgroundColor: props.background ?? "var(--background-secondary)",
       }}

@@ -1,0 +1,30 @@
+.activity-section {
+  display: flex;
+  gap: 71px;
+  flex-wrap: wrap;
+}
+
+/* Стили для третьего элемента (минуты) с прозрачностью */
+.activity-section .achievement:nth-child(3) .achievement__info-number-value {
+  opacity: 0.6;
+}
+
+@media (max-width: 1024px) {
+  .activity-section {
+    justify-content: center;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .activity-section .achievement {
+    width: 200px;
+    height: 200px;
+  }
+
+  .activity-section .achievement__info-number-value,
+  .activity-section .achievement__info-text-value {
+    font-size: 18px;
+  }
+}
+

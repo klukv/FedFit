@@ -5,13 +5,16 @@
     align-items: center;
     width: 254px;
     height: 254px;
-    background: linear-gradient(to bottom, #c6964d, #604925);
+    background: linear-gradient(180deg, #c6964d 0%, #4a381e 100%);
+    position: relative;
 }
 
 .achievement__inner {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
 }
 
 .achievement__info {
@@ -21,13 +24,25 @@
     gap: 7px;
 }
 
+.achievement__icon {
+    position: absolute;
+    top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .achievement__info-number-value {
-    font-size: 22px;
-    font-weight: 800;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.219;
+    margin-top: 60px;
 }
 
 .achievement__info-text-value {
-    font-size: 22px;
+    font-size: 32px;
     font-weight: 400;
+    line-height: 1.219;
+    text-align: center;
 }
 

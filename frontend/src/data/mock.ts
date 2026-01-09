@@ -12,37 +12,36 @@ export const mockItemsForCarousel = [
   },
   {
     id: 1,
-    name: "Тренировка на руки",
-    image: arms,
+    name: "Бег",
+    image: run,
   },
   {
     id: 2,
-    name: "Тренировка на руки",
-    image: arms,
-  },
-  {
-    id: 3,
-    name: "Тренировка на руки",
-    image: arms,
-  },
-  {
-    id: 4,
-    name: "Тренировка на пресс",
+    name: "Велотренировка",
     image: bike,
   },
   {
-    id: 5,
-    name: "Тренировка на ноги",
-    image: foots,
-  },
-  {
-    id: 6,
-    name: "Бег",
+    id: 3,
+    name: "Тренировка на пресс",
     image: press,
   },
   {
-    id: 7,
-    name: "Велотренировка",
-    image: run,
+    id: 4,
+    name: "Тренировка на ноги",
+    image: foots,
   },
 ];
+
+export const mockUserData = {
+  name: "Юлия",
+  gender: "Женский",
+  height: 165,
+  weight: 100,
+  desiredWeight: 70,
+};
+
+export const mockActivityData = {
+  calories: 589,
+  workouts: 2,
+  minutes: 116,
+};

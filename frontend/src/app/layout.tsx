@@ -1,4 +1,4 @@
-import { Header } from "@/shared/ui";
+import { Header, Footer } from "@/shared/ui";
 import { Roboto } from "next/font/google";
 import logo from "@/assets/logo.png";
 import avatar from "@/assets/mock_avatar.png";
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={roboto.className}>
+    <html lang="ru" className={roboto.className}>
       <body>
         <Header
           username="Юлия"
@@ -22,6 +22,7 @@ export default function RootLayout({
           avatar={{ image: avatar }}
         />
         <main className="content">{children}</main>
+        <Footer />
       </body>
     </html>
   );

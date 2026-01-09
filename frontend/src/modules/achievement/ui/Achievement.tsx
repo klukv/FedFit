@@ -17,7 +17,7 @@ const Achievement = (props: IProps) => {
   return (
     <div className="achievement">
       <div className="achievement__inner">
-          <div id="achievement__icon" dangerouslySetInnerHTML={{ __html: props.achievement.icon }}></div>
+          <div className="achievement__icon" dangerouslySetInnerHTML={{ __html: props.achievement.icon }}></div>
           <div className={clsx("achievement__info", montserrat.className)}>
             <div className="achievement__info-number-value">{props.achievement.value}</div>
             <div className="achievement__info-text-value">{props.achievement.text}</div>
