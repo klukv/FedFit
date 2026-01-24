@@ -1,0 +1,202 @@
+/* ==============================================
+   Workout Complete Modal
+   ============================================== */
+
+.workout-complete-modal {
+  width: 100%;
+  max-width: 1000px;
+  padding: 40px 50px;
+}
+
+.workout-complete-modal__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* ==============================================
+   Title
+   ============================================== */
+
+.workout-complete-modal__title {
+  font-family: "Roboto", sans-serif;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.172;
+  color: #c6964d;
+  text-align: center;
+  margin: 0;
+}
+
+/* ==============================================
+   Stats Section
+   ============================================== */
+
+.workout-complete-modal__stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.workout-complete-modal__stat-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 25px;
+  background-color: #1e1e1e;
+  border-radius: 25px;
+  min-width: 300px;
+}
+
+.workout-complete-modal__stat-card--wide {
+  flex: 1;
+  min-width: 400px;
+}
+
+.workout-complete-modal__stat-label {
+  font-family: "Roboto", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.172;
+  color: #c6964d;
+  max-width: 350px;
+}
+
+.workout-complete-modal__stat-value {
+  font-family: "Roboto", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.172;
+  color: #c6964d;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.workout-complete-modal__stat-value--multiline {
+  white-space: pre-line;
+}
+
+/* ==============================================
+   Actions Section
+   ============================================== */
+
+.workout-complete-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Button styling override for modal */
+.workout-complete-modal__actions .button {
+  padding: 25px 40px;
+  font-size: 24px;
+  min-width: 300px;
+}
+
+/* ==============================================
+   Responsive
+   ============================================== */
+
+@media (max-width: 1024px) {
+  .workout-complete-modal {
+    max-width: 800px;
+    padding: 35px 40px;
+  }
+
+  .workout-complete-modal__title {
+    font-size: 40px;
+  }
+
+  .workout-complete-modal__stat-card--wide {
+    min-width: 350px;
+  }
+
+  .workout-complete-modal__stat-label {
+    font-size: 20px;
+  }
+
+  .workout-complete-modal__stat-value {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .workout-complete-modal {
+    max-width: 100%;
+    padding: 30px 25px;
+  }
+
+  .workout-complete-modal__content {
+    gap: 30px;
+  }
+
+  .workout-complete-modal__title {
+    font-size: 32px;
+  }
+
+  .workout-complete-modal__stats {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .workout-complete-modal__stat-card {
+    min-width: unset;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .workout-complete-modal__stat-card--wide {
+    min-width: unset;
+  }
+
+  .workout-complete-modal__stat-label {
+    font-size: 18px;
+    max-width: unset;
+  }
+
+  .workout-complete-modal__stat-value {
+    font-size: 22px;
+  }
+
+  .workout-complete-modal__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .workout-complete-modal__actions .button {
+    min-width: unset;
+    padding: 20px 30px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .workout-complete-modal {
+    padding: 25px 20px;
+  }
+
+  .workout-complete-modal__title {
+    font-size: 26px;
+  }
+
+  .workout-complete-modal__stat-label {
+    font-size: 16px;
+  }
+
+  .workout-complete-modal__stat-value {
+    font-size: 20px;
+  }
+
+  .workout-complete-modal__actions .button {
+    padding: 18px 25px;
+    font-size: 18px;
+  }
+}

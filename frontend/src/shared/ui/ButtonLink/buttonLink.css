@@ -37,3 +37,17 @@
     opacity: 0.8;
   }
 }
+
+.button-tertiary {
+  background-color: #504e4e;
+  color: #000000;
+  border: 1px solid #000000;
+
+  &:hover {
+    background-color: #5e5c5c;
+  }
+
+  &:active {
+    background-color: #454343;
+  }
+}

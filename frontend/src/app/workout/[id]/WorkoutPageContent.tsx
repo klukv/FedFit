@@ -4,12 +4,14 @@ import { useState, useEffect, useRef, ReactNode } from "react";
 import { ButtonLink, IconButton } from "@/shared/ui";
 import { ButtonLinkTypes } from "@/shared/types";
 import { PauseIcon, PlayIcon } from "@/shared/icons";
+import { WorkoutCompleteModal } from "@/modules/workout";
 import "./_styles/workout-controls.css";
 
 interface WorkoutPageContentProps {
   workoutId: number;
   exerciseList: ReactNode;
   infoBlock: ReactNode;
+  estimatedCaloriesPerMinute?: number;
 }
 
 const formatTime = (totalSeconds: number): string => {
@@ -22,10 +24,13 @@ const WorkoutPageContent = ({
   workoutId,
   exerciseList,
   infoBlock,
+  estimatedCaloriesPerMinute = 13,
 }: WorkoutPageContentProps) => {
   const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [finalElapsedTime, setFinalElapsedTime] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Управление таймером
@@ -58,10 +63,32 @@ const WorkoutPageContent = ({
   };
 
   const handleFinishWorkout = () => {
+    // Сохраняем время для отображения в модальном окне
+    setFinalElapsedTime(elapsedSeconds);
+    // Открываем модальное окно
+    setIsCompleteModalOpen(true);
+    // Останавливаем таймер
+    setIsPaused(true);
+  };
+
+  const handleCompleteAndClose = () => {
+    setIsCompleteModalOpen(false);
+    // Сбрасываем состояние тренировки
     setIsWorkoutStarted(false);
     setIsPaused(false);
     setElapsedSeconds(0);
   };
+
+  const handleContinueWorkout = () => {
+    setIsCompleteModalOpen(false);
+    // Продолжаем тренировку
+    setIsPaused(false);
+  };
+
+  // Расчёт калорий на основе времени тренировки
+  const estimatedCalories = Math.round(
+    (finalElapsedTime / 60) * estimatedCaloriesPerMinute
+  );
 
   // Убираем предупреждение о неиспользуемой переменной
   void workoutId;
@@ -135,6 +162,15 @@ const WorkoutPageContent = ({
           />
         </div>
       </div>
+
+      {/* Модальное окно завершения тренировки */}
+      <WorkoutCompleteModal
+        isOpen={isCompleteModalOpen}
+        onClose={handleCompleteAndClose}
+        onContinue={handleContinueWorkout}
+        elapsedTime={finalElapsedTime}
+        estimatedCalories={estimatedCalories}
+      />
     </>
   );
 };
