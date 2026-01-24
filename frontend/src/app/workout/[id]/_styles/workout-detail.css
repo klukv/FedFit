@@ -1,10 +1,15 @@
 .workout-detail-page {
-  width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
-  padding: 0 158px;
-  box-sizing: border-box;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.workout-detail-page__info {
+  display: flex;
+  gap: 40px;
+  margin-top: 48px;
+}
+
+.workout-detail-page__header-info-container {
   display: flex;
   flex-direction: column;
 }
@@ -12,12 +17,16 @@
 .workout-detail-page__image-container {
   width: 630px;
   height: 428px;
-  margin: 48px 0 0 0;
   border-radius: 12px;
   overflow: hidden;
-  position: relative;
   flex-shrink: 0;
   align-self: flex-start;
+}
+
+.workout-detail-page__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .workout-detail-page__image-placeholder {
@@ -30,19 +39,15 @@
   color: #ffffff;
   font-size: 24px;
   font-weight: 400;
-  /* TODO: Заменить на реальное изображение */
 }
 
 .workout-detail-page__header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: -290px 0 0 0;
   padding: 10px;
   width: 100%;
   max-width: 100%;
-  position: relative;
-  z-index: 1;
 }
 
 .workout-detail-page__title {
@@ -67,41 +72,6 @@
   padding: 0 13px;
   display: flex;
   justify-content: center;
-}
-
-.workout-detail-page__start-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 200px 0 100px 0;
-}
-
-.workout-detail-page__start-button .button {
-  width: 483px;
-  height: 88px;
-  border-radius: 50px;
-  font-size: 36px;
-  line-height: 1.2189999686347113em;
-  font-weight: 400;
-  padding: 21px 10px;
-  background: linear-gradient(90deg, rgba(246, 187, 96, 1) 0%, rgba(74, 56, 30, 1) 100%);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: all 250ms ease;
-  box-sizing: border-box;
-}
-
-.workout-detail-page__start-button .button:hover {
-  opacity: 0.9;
-  transform: scale(1.02);
-}
-
-.workout-detail-page__start-button .button:active {
-  opacity: 0.8;
-  transform: scale(0.98);
 }
 
 /* Responsive */
@@ -152,10 +122,6 @@
   .workout-detail-page__exercises {
     margin: 60px 0 0 0;
   }
-
-  .workout-detail-page__start-button {
-    margin: 120px 0 60px 0;
-  }
 }
 
 @media (max-width: 480px) {
@@ -184,25 +150,4 @@
     margin: 40px 0 0 0;
     padding: 0 8px;
   }
-
-  .workout-detail-page__start-button {
-    margin: 80px 0 40px 0;
-  }
-
-  .workout-detail-page__start-button .button {
-    width: 100%;
-    max-width: 483px;
-    height: 70px;
-    font-size: 28px;
-  }
 }
-
-@media (max-width: 768px) {
-  .workout-detail-page__start-button .button {
-    width: 100%;
-    max-width: 483px;
-    height: 75px;
-    font-size: 32px;
-  }
-}
-

@@ -3,7 +3,7 @@ import { CardTypes } from "@/shared/types";
 import { UserDataSection, ActivitySection } from "@/modules/Profile";
 // TODO: раскомментировать, когда появится бекенд
 // import { AchievementService } from "@/modules/achievement";
-// import { WorkoutService } from "@/modules/Workout";
+// import { WorkoutService } from "@/modules/workout";
 import {
   mockItemsForCarousel,
   mockUserData,

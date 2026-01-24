@@ -1,0 +1,264 @@
+/* ==============================================
+   Animations for workout state transitions
+   ============================================== */
+
+/* Info block animation wrapper */
+.workout-info-animated {
+  overflow: hidden;
+  transition: 
+    opacity 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    max-height 500ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.workout-info-animated--visible {
+  opacity: 1;
+  max-height: 600px;
+  transform: translateY(0);
+}
+
+.workout-info-animated--hidden {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-20px);
+  margin: 0;
+  pointer-events: none;
+}
+
+/* ==============================================
+   Workout Start Button
+   ============================================== */
+
+.workout-detail-page__start-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 68px 0;
+  transition: 
+    opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    max-height 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.workout-detail-page__start-button--visible {
+  opacity: 1;
+  max-height: 150px;
+  transform: translateY(0);
+}
+
+.workout-detail-page__start-button--hidden {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(20px);
+  margin: 0;
+  pointer-events: none;
+}
+
+.workout-detail-page__start-button .button {
+  width: 483px;
+  height: 88px;
+  border-radius: 50px;
+  font-size: 36px;
+  line-height: 1.2189999686347113em;
+  font-weight: 400;
+  padding: 21px 10px;
+  background: linear-gradient(90deg, rgba(246, 187, 96, 1) 0%, rgba(74, 56, 30, 1) 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 250ms ease;
+  box-sizing: border-box;
+}
+
+.workout-detail-page__start-button .button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.workout-detail-page__start-button .button:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+/* ==============================================
+   Workout Timer (Top of page during workout)
+   ============================================== */
+
+.workout-timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 70px 0 0 0;
+  padding: 0 20px;
+  overflow: hidden;
+  transition: 
+    opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) 150ms,
+    max-height 450ms cubic-bezier(0.4, 0, 0.2, 1) 100ms,
+    transform 400ms cubic-bezier(0.4, 0, 0.2, 1) 150ms,
+    margin 400ms cubic-bezier(0.4, 0, 0.2, 1) 100ms;
+}
+
+.workout-timer--visible {
+  opacity: 1;
+  max-height: 200px;
+  transform: translateY(0) scale(1);
+}
+
+.workout-timer--hidden {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-30px) scale(0.9);
+  margin: 0;
+  pointer-events: none;
+}
+
+.workout-timer__time {
+  font-family: "Montserrat", sans-serif;
+  font-size: 128px;
+  font-weight: 400;
+  line-height: 1.219;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* ==============================================
+   Workout Active Controls (Buttons only)
+   ============================================== */
+
+.workout-active-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  margin: 68px 0;
+  padding: 0 20px;
+  overflow: hidden;
+  transition: 
+    opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) 200ms,
+    max-height 450ms cubic-bezier(0.4, 0, 0.2, 1) 150ms,
+    transform 400ms cubic-bezier(0.4, 0, 0.2, 1) 200ms,
+    margin 400ms cubic-bezier(0.4, 0, 0.2, 1) 150ms;
+}
+
+.workout-active-controls--visible {
+  opacity: 1;
+  max-height: 300px;
+  transform: translateY(0);
+}
+
+.workout-active-controls--hidden {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(30px);
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Controls container */
+.workout-controls {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 124px;
+}
+
+/* Finish button override */
+.workout-controls .button {
+  width: 518px;
+  height: 122px;
+  border-radius: 50px;
+  font-size: 40px;
+  line-height: 1.172;
+  padding: 21px 10px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .workout-timer__time {
+    font-size: 96px;
+  }
+
+  .workout-timer {
+    margin: 50px 0 0 0;
+  }
+
+  .workout-controls {
+    gap: 80px;
+  }
+
+  .workout-controls .button {
+    width: 450px;
+    height: 110px;
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .workout-detail-page__start-button {
+    margin: 120px 0 60px 0;
+  }
+
+  .workout-detail-page__start-button .button {
+    width: 100%;
+    max-width: 483px;
+    height: 75px;
+    font-size: 32px;
+  }
+
+  .workout-timer {
+    margin: 40px 0 0 0;
+  }
+
+  .workout-timer__time {
+    font-size: 64px;
+  }
+
+  .workout-active-controls {
+    gap: 40px;
+    margin: 48px 0;
+  }
+
+  .workout-controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .workout-controls .button {
+    width: 100%;
+    max-width: 450px;
+    height: 90px;
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .workout-detail-page__start-button {
+    margin: 80px 0 40px 0;
+  }
+
+  .workout-detail-page__start-button .button {
+    width: 100%;
+    max-width: 483px;
+    height: 70px;
+    font-size: 28px;
+  }
+
+  .workout-timer {
+    margin: 30px 0 0 0;
+  }
+
+  .workout-timer__time {
+    font-size: 48px;
+  }
+
+  .workout-controls .button {
+    height: 75px;
+    font-size: 28px;
+  }
+}

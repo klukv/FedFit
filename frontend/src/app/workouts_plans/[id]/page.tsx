@@ -2,7 +2,7 @@ import {
   WorkoutItem,
   WorkoutItemVariants,
   WorkoutService,
-} from "@/modules/Workout";
+} from "@/modules/workout";
 import { ContainerSection } from "@/shared/ui";
 import ArmsPng from "@/assets/workout/cardio_training.png";
 

@@ -1,6 +1,6 @@
 import { Banner, ContainerSection } from "@/shared/ui";
 import { TRAINING_PLANS, WORKOUTS_PLANS_URL } from "@/shared/constants";
-import { WorkoutItem, WorkoutItemVariants } from "@/modules/Workout";
+import { WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
 import { mockItemsForCarousel } from "../data/mock";
 import home_banner from "@/assets/home_banner.png";
 import CarouselWorkoutsClientWrapper from "./CarouselWorkoutsWrapper";
