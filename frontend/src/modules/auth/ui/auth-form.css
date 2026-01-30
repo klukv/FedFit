@@ -1,0 +1,40 @@
+/* Общие стили для форм входа и регистрации (макет: группа формы 521px) */
+.auth-form {
+  max-width: 521px;
+}
+
+.auth-form__error {
+  color: #e57373;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* Кнопка на всю ширину полей (521×81 по макету), отступ сверху 48px */
+.auth-form__actions {
+  margin-top: 48px;
+  margin-bottom: 24px;
+}
+
+.auth-form__actions .button {
+  width: 100%;
+  min-height: 81px;
+  padding: 0 24px;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.21;
+}
+
+.auth-form__footer {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-form__link {
+  color: #c6964d;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-form__link:hover {
+  opacity: 0.9;
+}

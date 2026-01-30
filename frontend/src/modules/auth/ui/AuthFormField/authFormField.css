@@ -1,0 +1,63 @@
+/* Поля по макету: 521×81px, скругление 50px, лейбл 20px */
+.auth-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.auth-form-field__label {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.21;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-form-field__input {
+  width: 100%;
+  min-height: 81px;
+  padding: 0 24px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-radius: 50px;
+  outline: none;
+  transition: background 0.2s ease;
+  box-sizing: border-box;
+}
+
+.auth-form-field__input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.auth-form-field__input:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.auth-form-field__input:focus {
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.auth-form-field__input--error {
+  background: rgba(220, 80, 80, 0.4);
+}
+
+.auth-form-field__error {
+  font-size: 14px;
+  color: #e57373;
+  margin-top: -4px;
+}
+
+@media (max-width: 600px) {
+  .auth-form-field__label {
+    font-size: 16px;
+  }
+
+  .auth-form-field__input {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}

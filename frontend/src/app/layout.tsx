@@ -1,7 +1,5 @@
-import { Header, Footer } from "@/shared/ui";
 import { Roboto } from "next/font/google";
-import logo from "@/assets/logo.png";
-import avatar from "@/assets/mock_avatar.png";
+import ConditionalLayout from "./ConditionalLayout";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -16,13 +14,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className={roboto.className}>
       <body>
-        <Header
-          username="Юлия"
-          logo={{ image: logo }}
-          avatar={{ image: avatar }}
-        />
-        <main className="content">{children}</main>
-        <Footer />
+        <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>
   );

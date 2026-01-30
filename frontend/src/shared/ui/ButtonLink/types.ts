@@ -10,6 +10,11 @@ interface ButtonLinkPropsBase {
 export interface ButtonProps extends ButtonLinkPropsBase {
   type: ButtonLinkTypes.Button;
   onClickHandler: MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
+  /** Тип кнопки для использования внутри формы (submit — отправка по Enter) */
+  buttonType?: "button" | "submit";
+  /** Состояние загрузки: показывается анимация спиннера, кнопка disabled */
+  loading?: boolean;
 }
 
 interface LinkProps extends ButtonLinkPropsBase {

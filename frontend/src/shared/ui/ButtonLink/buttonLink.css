@@ -51,3 +51,38 @@
     background-color: #454343;
   }
 }
+
+/* Состояние загрузки: спиннер по центру кнопки, текст скрыт */
+.button--loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.button--loading .button__title {
+  visibility: hidden;
+}
+
+.button__spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.button__spinner::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: button-spin 0.7s linear infinite;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
