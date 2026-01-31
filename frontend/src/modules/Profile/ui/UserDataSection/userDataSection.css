@@ -40,9 +40,19 @@
   color: var(--foreground);
 }
 
-.user-data-section__edit-button {
+.user-data-section__edit-button,
+.user-data-section__actions {
   display: flex;
   justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.user-data-section__form-error {
+  font-size: 14px;
+  color: #e57373;
+  margin-top: 8px;
+  margin-left: 0;
 }
 
 .user-data-section__fields {

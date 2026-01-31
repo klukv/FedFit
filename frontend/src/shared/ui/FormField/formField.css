@@ -1,0 +1,136 @@
+/* Базовые стили поля */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field__label {
+  font-weight: 500;
+  line-height: 1.21;
+}
+
+.form-field__input {
+  width: 100%;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-field__input--error {
+  box-shadow: 0 0 0 1px rgba(220, 80, 80, 0.5);
+}
+
+.form-field__error {
+  font-size: 14px;
+  color: #e57373;
+}
+
+/* Вариант: форма авторизации */
+.form-field--auth {
+  margin-bottom: 24px;
+}
+
+.form-field--auth .form-field__label {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-field--auth .form-field__input {
+  min-height: 81px;
+  padding: 0 24px;
+  font-size: 16px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50px;
+}
+
+.form-field--auth .form-field__input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.form-field--auth .form-field__input:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.form-field--auth .form-field__input:focus {
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.form-field--auth .form-field__input--error {
+  background: rgba(220, 80, 80, 0.4);
+}
+
+.form-field--auth .form-field__error {
+  margin-top: -4px;
+}
+
+@media (max-width: 600px) {
+  .form-field--auth .form-field__label {
+    font-size: 16px;
+  }
+
+  .form-field--auth .form-field__input {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}
+
+/* Вариант: форма профиля */
+.form-field--profile .form-field__label {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.172;
+  color: var(--foreground);
+  margin-left: 16px;
+}
+
+.form-field--profile .form-field__input {
+  min-height: 76px;
+  padding: 0 32px;
+  font-size: 24px;
+  color: var(--background);
+  background-color: var(--background-tertiary);
+  border-radius: 12px;
+}
+
+.form-field--profile .form-field__input::placeholder {
+  color: var(--foreground);
+  opacity: 0.5;
+}
+
+.form-field--profile .form-field__input:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.form-field--profile .form-field__input:focus {
+  box-shadow: 0 0 0 2px var(--foreground);
+}
+
+.form-field--profile .form-field__input--error {
+  background-color: rgba(220, 80, 80, 0.2);
+}
+
+.form-field--profile .form-field__input:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.form-field--profile .form-field__error {
+  margin-left: 16px;
+}
+
+@media (max-width: 768px) {
+  .form-field--profile .form-field__label,
+  .form-field--profile .form-field__input {
+    font-size: 18px;
+  }
+
+  .form-field--profile .form-field__input {
+    min-height: 60px;
+    padding: 16px 20px;
+  }
+}
