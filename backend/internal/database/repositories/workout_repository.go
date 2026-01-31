@@ -72,3 +72,21 @@ func (r *WorkoutRepository) GetAllWorkouts(ctx context.Context) ([]models.Workou
 
 	return workouts, nil
 }
+
+func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId int) (models.Workout, error) {
+	query := `SELECT * FROM workout w WHERE w.id = $1`
+
+	var workout models.Workout
+
+	if err := r.pool.QueryRow(ctx, query, workoutId).Scan(
+		&workout.ID,
+		&workout.Name,
+		&workout.Value,
+		&workout.CreatedAt,
+		&workout.UpdatedAt,
+	); err != nil {
+		return models.Workout{}, err
+	}
+
+	return workout, nil
+}

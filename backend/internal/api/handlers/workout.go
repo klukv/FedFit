@@ -3,9 +3,13 @@ package handlers
 import (
 	"FedFit/internal/models"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func (handler *Handler) GetWorkoutsHandler(w http.ResponseWriter, r *http.Request) {
@@ -56,6 +60,35 @@ func (handler *Handler) AddWorkoutToTrainingPlan(w http.ResponseWriter, r *http.
 
 	if err := handler.Repositories.TpWorkout.CreateNewLinkTrainingPlanWorkout(r.Context(), tpId, workoutId); err != nil {
 		http.Error(w, "Ошибка связывания плана тренировки и тренировки", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (handler *Handler) GetWorkout(w http.ResponseWriter, r *http.Request) {
+	workoutId := r.PathValue("workout_id")
+
+	if workoutId == "" {
+		http.Error(w, "id тренировки не указан в запросе", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(workoutId)
+
+	if err != nil {
+		http.Error(w, "id не корректен", http.StatusInternalServerError)
+		return
+	}
+
+	workout, err := handler.Repositories.Workout.GetWorkout(r.Context(), id)
+
+	if err != nil && errors.Is(err, pgx.ErrNoRows) {
+		http.Error(w, "Тренировка не найдена", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(workout); err != nil {
+		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
 		return
 	}
 }
