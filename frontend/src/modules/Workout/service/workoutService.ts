@@ -1,13 +1,13 @@
 import { $authReq } from "@/shared/api";
 import { WorkoutModel, WorkoutDetail } from "../types";
-import { USERS_URL, WORKOUTS_PLANS_URL } from "@/shared/constants";
+import { USERS_URL, TRAINING_PLANS_URL } from "@/shared/constants";
 
 export class WorkoutService {
   constructor() {}
 
   async getWorkoutsById(id: number) {
     const { data } = await $authReq().get<WorkoutModel[]>(
-      `${WORKOUTS_PLANS_URL}/${id}/workouts`,
+      `${TRAINING_PLANS_URL}/${id}/workouts`,
     );
     return data;
   }
@@ -21,7 +21,7 @@ export class WorkoutService {
 
   async getWorkoutDetailById(id: number): Promise<WorkoutDetail> {
     const { data } = await $authReq().get<WorkoutDetail>(
-      `${WORKOUTS_PLANS_URL}/workouts/${id}`,
+      `/workouts/${id}`,
     );
     return data;
   }

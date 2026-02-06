@@ -1,6 +1,6 @@
-import { WorkoutService } from "@/modules/workout";
-import InfoCard from "@/modules/workout/ui/InfoCard";
-import ExerciseList from "@/modules/workout/ui/ExerciseList";
+import { WorkoutService } from "@/modules/Workout";
+import InfoCard from "@/modules/Workout/ui/InfoCard";
+import ExerciseList from "@/modules/Workout/ui/ExerciseList";
 import { Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
 import WorkoutPageContent from "./WorkoutPageContent";
@@ -21,12 +21,7 @@ const WorkoutDetailPage = async ({ params }: IProps) => {
   const { id } = await params;
   const workoutService = new WorkoutService();
 
-  // TODO: Uncomment for production
-  // const workoutDetail = await workoutService.getWorkoutDetailById(Number(id));
-
-  // Mock data для разработки
-  const { mockWorkoutDetail } = await import("@/data/mock");
-  const workoutDetail = mockWorkoutDetail;
+  const workoutDetail = await workoutService.getWorkoutDetailById(Number(id));
 
   // Используем переменные для избежания ошибок линтера
   void id;

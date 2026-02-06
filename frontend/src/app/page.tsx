@@ -1,6 +1,6 @@
 import { Banner, ContainerSection } from "@/shared/ui";
-import { TRAINING_PLANS, WORKOUTS_PLANS_URL } from "@/shared/constants";
-import { WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
+import { TRAINING_PLANS, TRAINING_PLANS_URL } from "@/shared/constants";
+import { WorkoutItem, WorkoutItemVariants } from "@/modules/Workout";
 import { mockItemsForCarousel } from "../data/mock";
 import home_banner from "@/assets/home_banner.png";
 import CarouselWorkoutsClientWrapper from "./CarouselWorkoutsWrapper";
@@ -37,7 +37,7 @@ const Home = async () => {
               image: trainingPlan.image.src,
             }}
             buttonLink={{
-              href: `${WORKOUTS_PLANS_URL}/${trainingPlan.id}`,
+              href: `${TRAINING_PLANS_URL}/${trainingPlan.id}`,
               title: "Перейти",
             }}
           />

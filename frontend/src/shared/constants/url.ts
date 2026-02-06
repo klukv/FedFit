@@ -1,5 +1,5 @@
-export const BASE_API_HOST = "https://684d5ea265ed08713915e222.mockapi.io";
+export const BASE_API_HOST = "http://localhost:8000";
 
-export const WORKOUTS_PLANS_URL = "/workouts_plans";
+export const TRAINING_PLANS_URL = "/training-plans";
 export const USERS_URL = "/users";
 export const ACHIEVEMENTS_URL = "/achievements";

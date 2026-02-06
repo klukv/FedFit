@@ -65,7 +65,7 @@ func (handler *Handler) AddWorkoutToTrainingPlan(w http.ResponseWriter, r *http.
 }
 
 func (handler *Handler) GetWorkout(w http.ResponseWriter, r *http.Request) {
-	workoutId := r.PathValue("workout_id")
+	workoutId := r.PathValue("id")
 
 	if workoutId == "" {
 		http.Error(w, "id тренировки не указан в запросе", http.StatusBadRequest)

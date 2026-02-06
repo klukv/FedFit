@@ -5,7 +5,7 @@ import { HOST_VARIANTS } from "../types";
 const $baseReq = (types: HOST_VARIANTS = HOST_VARIANTS.Default) => {
   const config = axios.create({
     baseURL:
-      types === HOST_VARIANTS.Default ? BASE_API_HOST + "/api" : BASE_API_HOST,
+      types === HOST_VARIANTS.Default ? BASE_API_HOST + "/v1" : BASE_API_HOST,
   });
 
   return config;
@@ -14,7 +14,7 @@ const $baseReq = (types: HOST_VARIANTS = HOST_VARIANTS.Default) => {
 const $authReq = (types: HOST_VARIANTS = HOST_VARIANTS.Default) => {
   const config = axios.create({
     baseURL:
-      types === HOST_VARIANTS.Default ? BASE_API_HOST + "/api" : BASE_API_HOST,
+      types === HOST_VARIANTS.Default ? BASE_API_HOST + "/v1" : BASE_API_HOST,
   });
 
   config.interceptors.request.use((config) => {

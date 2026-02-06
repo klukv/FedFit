@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, ReactNode } from "react";
 import { ButtonLink, IconButton } from "@/shared/ui";
 import { ButtonLinkTypes } from "@/shared/types";
 import { PauseIcon, PlayIcon } from "@/shared/icons";
-import { WorkoutCompleteModal } from "@/modules/workout";
+import { WorkoutCompleteModal } from "@/modules/Workout";
 import "./_styles/workout-controls.css";
 
 interface WorkoutPageContentProps {
