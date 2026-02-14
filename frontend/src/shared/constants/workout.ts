@@ -21,4 +21,22 @@ export const TRAINING_PLANS = [
     image: STRETCHING_TRAINING,
     value: "stretching",
   },
+  {
+    id: 4,
+    label: "Силовые тренировки",
+    image: STRENGTH_TRAINING,
+    value: "strength",
+  },
+  {
+    id: 5,
+    label: "Кардио тренировки",
+    image: CARDIO_TRAINING,
+    value: "cardio",
+  },
+  {
+    id: 6,
+    label: "Растяжка",
+    image: STRETCHING_TRAINING,
+    value: "stretching",
+  },
 ];

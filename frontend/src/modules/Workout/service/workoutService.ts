@@ -5,6 +5,13 @@ import { USERS_URL, TRAINING_PLANS_URL, WORKOUTS_URL } from "@/shared/constants"
 export class WorkoutService {
   constructor() {}
 
+  async getTrainingPlans() {
+    const { data } = await $authReq().get<Omit<TrainingPlan, "workouts">[]>(
+      `${TRAINING_PLANS_URL}`,
+    );
+    return data;
+  }
+
   async getTrainingPlanById(id: number) {
     const { data } = await $authReq().get<TrainingPlan>(
       `${TRAINING_PLANS_URL}/${id}`,

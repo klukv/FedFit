@@ -1,11 +1,14 @@
 import { Banner, ContainerSection } from "@/shared/ui";
 import { TRAINING_PLANS, TRAINING_PLANS_URL } from "@/shared/constants";
-import { WorkoutItem, WorkoutItemVariants } from "@/modules/Workout";
+import { WorkoutItem, WorkoutItemVariants, WorkoutService } from "@/modules/Workout";
 import { mockItemsForCarousel } from "../data/mock";
 import home_banner from "@/assets/home_banner.png";
 import CarouselWorkoutsClientWrapper from "./CarouselWorkoutsWrapper";
 
 const Home = async () => {
+  const workoutService = new WorkoutService();
+  const trainingPlans = await workoutService.getTrainingPlans();
+
   return (
     <div
       style={{
@@ -28,13 +31,13 @@ const Home = async () => {
         styles={{ marginTop: 64 }}
         contentStyles={{ display: "flex", gap: 109 }}
       >
-        {TRAINING_PLANS.map((trainingPlan) => (
+        {trainingPlans.map((trainingPlan, idx) => (
           <WorkoutItem
             key={trainingPlan.id}
             type={WorkoutItemVariants.LARGE_WITH_BUTTON}
-            title={trainingPlan.label}
+            title={trainingPlan.name}
             backgroundImage={{
-              image: trainingPlan.image.src,
+              image: TRAINING_PLANS[idx].image.src,
             }}
             buttonLink={{
               href: `${TRAINING_PLANS_URL}/${trainingPlan.id}`,

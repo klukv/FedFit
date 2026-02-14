@@ -23,13 +23,7 @@ const WorkoutDetailPage = async ({ params }: IProps) => {
 
   const workoutDetail = await workoutService.getWorkoutDetailById(Number(id));
 
-  // Используем переменные для избежания ошибок линтера
-  void id;
-  void workoutService;
-
-  if (!workoutDetail) {
-    notFound();
-  }
+  if (!workoutDetail) notFound();
 
   return (
     <div className="workout-detail-page container__app">

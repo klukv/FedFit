@@ -34,7 +34,7 @@ const Page = async ({ params }: IProps) => {
           type={WorkoutItemVariants.LARGE_WITH_BUTTON}
           title={workout.name}
           buttonLink={{
-            href: "123",
+            href: `/workout/${workout.id}`,
             title: "Перейти",
           }}
           backgroundImage={{ image: ArmsPng.src }}
