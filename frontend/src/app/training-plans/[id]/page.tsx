@@ -13,11 +13,11 @@ type IProps = {
 const Page = async ({ params }: IProps) => {
   const { id } = await params;
   const workoutService = new WorkoutService();
-  const workoutsData = await workoutService.getWorkoutsById(Number(id));
+  const workoutsData = await workoutService.getTrainingPlanById(Number(id));
 
   return (
     <ContainerSection
-      title="Тренировки"
+      title={workoutsData.name}
       styles={{
         maxWidth: "1200px",
         margin: "0 auto",
@@ -28,7 +28,7 @@ const Page = async ({ params }: IProps) => {
         gap: "20px",
       }}
     >
-      {workoutsData.map((workout) => (
+      {workoutsData.workouts.map((workout) => (
         <WorkoutItem
           key={workout.id}
           type={WorkoutItemVariants.LARGE_WITH_BUTTON}

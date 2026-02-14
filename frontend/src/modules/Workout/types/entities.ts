@@ -1,3 +1,10 @@
+export interface TrainingPlan {
+  id: number;
+  name: string;
+  description: string;
+  workouts: WorkoutModel[];
+}
+
 export interface WorkoutModel {
   id: number;
   name: string;
@@ -12,7 +19,6 @@ export interface Exercise {
   sets?: number;
   reps?: number;
   duration?: number; // в секундах
-  restTime?: number; // в секундах
 }
 
 export interface WorkoutDetail {
@@ -20,10 +26,10 @@ export interface WorkoutDetail {
   name: string;
   description?: string;
   image?: string;
-  exercisesCount: number;
-  duration: number; // в минутах
   level: "Начинающий" | "Средний" | "Продвинутый";
   caloriesMin: number;
   caloriesMax: number;
+  duration?: number; // в секундах
+  exercisesCount: number;
   exercises: Exercise[];
 }

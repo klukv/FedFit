@@ -3,10 +3,14 @@ package handlers
 import (
 	"FedFit/internal/models"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func (handler *Handler) GetTrainingPlansHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,6 +24,35 @@ func (handler *Handler) GetTrainingPlansHandler(w http.ResponseWriter, r *http.R
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(trainingPlans); err != nil {
+		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (handler *Handler) GetTrainingPlanHandler(w http.ResponseWriter, r *http.Request) {
+	workoutId := r.PathValue("id")
+
+	if workoutId == "" {
+		http.Error(w, "id плана тренировки не указан в запросе", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(workoutId)
+
+	if err != nil {
+		http.Error(w, "id не корректен", http.StatusInternalServerError)
+		return
+	}
+
+	trainingPlan, err := handler.Repositories.TrainingPlan.GetTrainingPlan(r.Context(), id)
+
+	if err != nil && errors.Is(err, pgx.ErrNoRows) {
+		http.Error(w, "План тренировки не найден", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(trainingPlan); err != nil {
 		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
 		return
 	}

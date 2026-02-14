@@ -51,7 +51,43 @@ func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, plan *m
 	return nil
 }
 
-func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]models.TrainingPlan, error) {
+func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]models.TrainingPlans, error) {
+	query := `SELECT
+		tp.id,
+		tp.name,
+		tp.description,
+		tp.created_at,
+		tp.updated_at
+	FROM training_plan tp
+	ORDER BY tp.created_at DESC`
+
+	rows, err := r.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var plans []models.TrainingPlans
+	for rows.Next() {
+		var plan models.TrainingPlans
+		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
+			return nil, err
+		}
+		plans = append(plans, plan)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	if len(plans) != 0 {
+		return plans, nil
+	}
+
+	return []models.TrainingPlans{}, nil
+}
+
+func (r *TrainingPlanRepository) GetTrainingPlan(ctx context.Context, tpId int) (models.TrainingPlan, error) {
 	query := `SELECT
 		tp.id,
 		tp.name,
@@ -74,32 +110,18 @@ func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]mod
 			'[]'::json
 		) AS workouts
 	FROM training_plan tp
-	ORDER BY tp.created_at DESC`
+	WHERE tp.id = $1`
 
-	rows, err := r.pool.Query(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+	var plan models.TrainingPlan
+	var workoutsJSON []byte
 
-	var plans []models.TrainingPlan
-	for rows.Next() {
-		var plan models.TrainingPlan
-		var workoutsJSON []byte
-		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.CreatedAt, &plan.UpdatedAt, &workoutsJSON); err != nil {
-			return nil, err
-		}
-		if len(workoutsJSON) > 0 {
-			if err := json.Unmarshal(workoutsJSON, &plan.Workouts); err != nil {
-				return nil, err
-			}
-		}
-		plans = append(plans, plan)
+	if err := r.pool.QueryRow(ctx, query, tpId).Scan(&plan.ID, &plan.Name, &plan.Description, &plan.CreatedAt, &plan.UpdatedAt, &workoutsJSON); err != nil {
+		return models.TrainingPlan{}, err
 	}
 
-	if err := rows.Err(); err != nil {
-		return nil, err
+	if len(workoutsJSON) > 0 {
+		json.Unmarshal(workoutsJSON, &plan.Workouts)
 	}
 
-	return plans, nil
+	return plan, nil
 }

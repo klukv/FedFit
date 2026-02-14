@@ -21,6 +21,12 @@ func (r *WorkoutRepository) CreateWorkoutTable(ctx context.Context) error {
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(255) NOT NULL,
 		value VARCHAR(255) NOT NULL,
+		description TEXT,
+		image TEXT,
+		level VARCHAR(255) NOT NULL,
+		caloriesMin INT NOT NULL,
+		caloriesMax INT NOT NULL,
+		duration INT,
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	)`); err != nil {
