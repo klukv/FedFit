@@ -81,8 +81,12 @@ func (handler *Handler) GetWorkout(w http.ResponseWriter, r *http.Request) {
 
 	workout, err := handler.Repositories.Workout.GetWorkout(r.Context(), id)
 
-	if err != nil && errors.Is(err, pgx.ErrNoRows) {
-		http.Error(w, "Тренировка не найдена", http.StatusNotFound)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			http.Error(w, "Тренировка не найдена", http.StatusNotFound)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 

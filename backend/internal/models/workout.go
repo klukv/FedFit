@@ -18,8 +18,8 @@ type WorkoutDetail struct {
 	ExercisesCount int        `json:"exercisesCount"`
 	Duration       int        `json:"duration"`
 	Level          string     `json:"level"`
-	CaloriesMin    int        `json:"caloriesMin"`
-	CaloriesMax    int        `json:"caloriesMax"`
+	Calories_min   int        `json:"caloriesMin"`
+	Calories_max   int        `json:"caloriesMax"`
 	Exercises      []Exercise `json:"exercises"`
 }
 

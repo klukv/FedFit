@@ -3,6 +3,7 @@ package repositories
 import (
 	"FedFit/internal/models"
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -24,8 +25,8 @@ func (r *WorkoutRepository) CreateWorkoutTable(ctx context.Context) error {
 		description TEXT,
 		image TEXT,
 		level VARCHAR(255) NOT NULL,
-		caloriesMin INT NOT NULL,
-		caloriesMax INT NOT NULL,
+		calories_min INT NOT NULL,
+		calories_max INT NOT NULL,
 		duration INT,
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -79,19 +80,58 @@ func (r *WorkoutRepository) GetAllWorkouts(ctx context.Context) ([]models.Workou
 	return workouts, nil
 }
 
-func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId int) (models.Workout, error) {
-	query := `SELECT * FROM workout w WHERE w.id = $1`
+func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId int) (models.WorkoutDetail, error) {
+	query := `SELECT
+		w.id,
+		w.name,
+		w.description,
+		w.image,
+		w.level,
+		w.calories_min,
+		w.calories_max,
+		w.duration,
+		(SELECT COUNT(*) FROM workout_exercise we WHERE we.workout_id = w.id) AS "exercisesCount",
+		COALESCE(
+			(
+				SELECT json_agg(
+					json_build_object(
+						'id', e.id,
+						'name', e.name,
+						'description', e.description,
+						'icon', e.icon,
+						'sets', we.sets,
+						'reps', we.reps,
+						'duration', we.duration
+					) ORDER BY we.exercise_id
+				)
+			  FROM workout_exercise we
+			  JOIN exercise e ON e.id = we.exercise_id
+			  WHERE we.workout_id = w.id
+			),
+			'[]'::json
+		) AS exercises
+	FROM workout w WHERE w.id = $1`
 
-	var workout models.Workout
+	var workout models.WorkoutDetail
+	var exercisesJSON []byte
 
 	if err := r.pool.QueryRow(ctx, query, workoutId).Scan(
 		&workout.ID,
 		&workout.Name,
-		&workout.Value,
-		&workout.CreatedAt,
-		&workout.UpdatedAt,
+		&workout.Description,
+		&workout.Image,
+		&workout.Level,
+		&workout.Calories_min,
+		&workout.Calories_max,
+		&workout.Duration,
+		&workout.ExercisesCount,
+		&exercisesJSON,
 	); err != nil {
-		return models.Workout{}, err
+		return models.WorkoutDetail{}, err
+	}
+
+	if len(exercisesJSON) > 0 {
+		json.Unmarshal(exercisesJSON, &workout.Exercises)
 	}
 
 	return workout, nil
