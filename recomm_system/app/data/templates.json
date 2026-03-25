@@ -1,0 +1,101 @@
+{
+  "_comment": "Шаблоны планов тренировок для rule-based компонента. Определяют структуру плана в зависимости от цели и частоты. ML-компонент использует эти шаблоны как основу и оптимизирует подбор конкретных упражнений.",
+
+  "weight_loss": {
+    "plan_name_template": "План для похудения — {level}",
+    "plan_description": "Высокоинтенсивный план с упором на кардио и круговые тренировки для максимального сжигания калорий.",
+    "muscle_group_priority": ["cardio", "full_body", "legs", "core", "glutes"],
+    "sets_range": {"min": 3, "max": 4},
+    "reps_range": {"min": 15, "max": 20},
+    "rest_seconds": 45,
+    "cardio_ratio": 0.4,
+    "workout_structure": {
+      "1": ["cardio_core"],
+      "2": ["cardio_upper", "cardio_lower"],
+      "3": ["cardio_full", "lower_core", "upper_cardio"],
+      "4": ["cardio_full", "lower_core", "upper_cardio", "active_recovery"],
+      "5": ["cardio_full", "lower", "upper", "core_cardio", "active_recovery"],
+      "6": ["cardio_full", "lower", "upper", "core_cardio", "lower_upper", "active_recovery"],
+      "7": ["cardio_full", "lower", "upper", "core_cardio", "lower_upper", "full_body", "active_recovery"]
+    }
+  },
+
+  "muscle_gain": {
+    "plan_name_template": "План набора массы — {level}",
+    "plan_description": "Силовой план с прогрессивной нагрузкой для гипертрофии мышц. Упор на базовые многосуставные упражнения.",
+    "muscle_group_priority": ["chest", "back", "legs", "shoulders", "arms", "core"],
+    "sets_range": {"min": 4, "max": 5},
+    "reps_range": {"min": 6, "max": 12},
+    "rest_seconds": 90,
+    "cardio_ratio": 0.1,
+    "workout_structure": {
+      "1": ["full_body_strength"],
+      "2": ["upper_strength", "lower_strength"],
+      "3": ["push", "pull", "legs"],
+      "4": ["chest_shoulders", "back_arms", "legs_glutes", "core_cardio"],
+      "5": ["chest", "back", "legs", "shoulders_arms", "core"],
+      "6": ["chest_triceps", "back_biceps", "legs", "shoulders", "arms", "core"],
+      "7": ["chest_triceps", "back_biceps", "legs", "shoulders", "arms", "core", "active_recovery"]
+    }
+  },
+
+  "endurance": {
+    "plan_name_template": "План развития выносливости — {level}",
+    "plan_description": "Тренировки на выносливость с постепенным увеличением объёма нагрузки. Сочетает кардио и функциональные упражнения.",
+    "muscle_group_priority": ["cardio", "legs", "core", "full_body"],
+    "sets_range": {"min": 3, "max": 4},
+    "reps_range": {"min": 15, "max": 25},
+    "rest_seconds": 30,
+    "cardio_ratio": 0.5,
+    "workout_structure": {
+      "1": ["cardio_core"],
+      "2": ["cardio_lower", "cardio_full"],
+      "3": ["cardio_long", "functional_lower", "cardio_core"],
+      "4": ["cardio_long", "functional_lower", "cardio_core", "active_recovery"],
+      "5": ["cardio_long", "functional_lower", "cardio_core", "full_cardio", "active_recovery"],
+      "6": ["cardio_long", "functional_lower", "cardio_core", "full_cardio", "legs_endurance", "active_recovery"],
+      "7": ["cardio_long", "functional_lower", "cardio_core", "full_cardio", "legs_endurance", "upper_endurance", "active_recovery"]
+    }
+  },
+
+  "general_fitness": {
+    "plan_name_template": "Общефитнесовый план — {level}",
+    "plan_description": "Сбалансированный план для общего улучшения физической формы. Равномерно развивает силу, выносливость и гибкость.",
+    "muscle_group_priority": ["full_body", "cardio", "core", "legs", "chest", "back"],
+    "sets_range": {"min": 3, "max": 4},
+    "reps_range": {"min": 10, "max": 15},
+    "rest_seconds": 60,
+    "cardio_ratio": 0.3,
+    "workout_structure": {
+      "1": ["full_body"],
+      "2": ["upper_lower", "cardio_core"],
+      "3": ["upper", "lower", "cardio_core"],
+      "4": ["upper", "lower", "cardio_core", "active_recovery"],
+      "5": ["chest_back", "legs_glutes", "cardio_core", "shoulders_arms", "active_recovery"],
+      "6": ["chest_back", "legs_glutes", "cardio_core", "shoulders_arms", "full_body", "active_recovery"],
+      "7": ["chest_back", "legs_glutes", "cardio_core", "shoulders_arms", "full_body", "lower_cardio", "active_recovery"]
+    }
+  },
+
+  "level_modifiers": {
+    "_comment": "Множители параметров в зависимости от уровня подготовки",
+    "beginner": {
+      "sets_multiplier": 0.75,
+      "reps_multiplier": 0.85,
+      "max_exercises_per_workout": 5,
+      "min_exercises_per_workout": 4
+    },
+    "intermediate": {
+      "sets_multiplier": 1.0,
+      "reps_multiplier": 1.0,
+      "max_exercises_per_workout": 7,
+      "min_exercises_per_workout": 5
+    },
+    "advanced": {
+      "sets_multiplier": 1.25,
+      "reps_multiplier": 1.15,
+      "max_exercises_per_workout": 9,
+      "min_exercises_per_workout": 6
+    }
+  }
+}
