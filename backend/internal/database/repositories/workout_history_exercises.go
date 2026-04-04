@@ -62,9 +62,13 @@ func (r *WorkoutHistoryExercisesRepository) AddWorkoutHistoryExercises(
 			exercises.SetsDone,
 			exercises.RepsDone,
 			exercises.DurationDone,
+			exercises.CaloriesBurned,
 			exercises.IsCompleted,
 		); err != nil {
-			return fmt.Errorf("Добавление связи между тренировкой и упражнениями в связующую таблицу провалено")
+			return fmt.Errorf(
+				"Добавление связи между тренировкой и упражнениями в связующую таблицу провалено. Подробнее: %w",
+				err,
+			)
 		}
 	}
 

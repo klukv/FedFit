@@ -58,7 +58,7 @@ func (s *WorkoutHistoryService) AddWorkoutToHistory(
 	)
 
 	if addingWorkoutHistoryErr != nil {
-		return fmt.Errorf("Ошибка добавления тренировки в историю. Подробнее: %w", err)
+		return fmt.Errorf("%w", addingWorkoutHistoryErr)
 	}
 
 	if err := s.repos.WorkoutHistoryExercisesRepository.AddWorkoutHistoryExercises(
@@ -67,7 +67,11 @@ func (s *WorkoutHistoryService) AddWorkoutToHistory(
 		workoutHistoryId,
 		workoutHistory.Exercises,
 	); err != nil {
-		return fmt.Errorf("Ошибка добавления связи тренировки и упражнений (история). Подробнее: %w", err)
+		return fmt.Errorf("%w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("Ошибка коммита. Подробнее: %w", err)
 	}
 
 	return nil

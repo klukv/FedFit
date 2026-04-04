@@ -37,7 +37,13 @@ func (r *WorkoutHistoryRepository) CreateWorkoutHistoryTable(ctx context.Context
 	return nil
 }
 
-func (r *WorkoutHistoryRepository) AddWorkoutToHistory(ctx context.Context, tx pgx.Tx, workout_id int, user_id int, workoutHistory models.WorkoutHistory) (int, error) {
+func (r *WorkoutHistoryRepository) AddWorkoutToHistory(
+	ctx context.Context,
+	tx pgx.Tx,
+	workout_id int,
+	user_id int,
+	workoutHistory models.WorkoutHistory,
+) (int, error) {
 	query := `
 		INSERT INTO workout_history (user_id, workout_id, started_at, finished_at, total_calories, total_duration, is_completed)
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -59,7 +65,7 @@ func (r *WorkoutHistoryRepository) AddWorkoutToHistory(ctx context.Context, tx p
 	).Scan(&historyId)
 
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("Добавление тренировку в историю провалена. Подробнее: %w", err)
 	}
 
 	return historyId, nil

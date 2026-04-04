@@ -31,7 +31,12 @@ func (handler *Handler) AddWorkoutToHistory(w http.ResponseWriter, r *http.Reque
 		workoutId,
 		&workoutHistory,
 	); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"message": err.Error(),
+			"code":    500,
+		})
 		return
 	}
 
