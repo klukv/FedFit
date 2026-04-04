@@ -26,7 +26,7 @@ func (r *WorkoutExerciseRepository) CreateWorkoutExerciseTable(ctx context.Conte
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	)`); err != nil {
-		return fmt.Errorf("Создание таблицы связи тренировок и упражнений провалено", err)
+		return fmt.Errorf("Создание таблицы связи тренировок и упражнений провалено")
 	}
 	return nil
 }

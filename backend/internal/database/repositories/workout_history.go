@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -36,13 +37,16 @@ func (r *WorkoutHistoryRepository) CreateWorkoutHistoryTable(ctx context.Context
 	return nil
 }
 
-func (r *WorkoutHistoryRepository) AddWorkoutToHistory(ctx context.Context, workout_id string, user_id string, workoutHistory models.Workout_History) error {
+func (r *WorkoutHistoryRepository) AddWorkoutToHistory(ctx context.Context, tx pgx.Tx, workout_id int, user_id int, workoutHistory models.WorkoutHistory) (int, error) {
 	query := `
 		INSERT INTO workout_history (user_id, workout_id, started_at, finished_at, total_calories, total_duration, is_completed)
-		values ($1, $2, $3, $4, $5, $6, $7)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id
 	`
 
-	if _, err := r.pool.Exec(
+	var historyId int
+
+	err := tx.QueryRow(
 		ctx,
 		query,
 		user_id,
@@ -52,9 +56,11 @@ func (r *WorkoutHistoryRepository) AddWorkoutToHistory(ctx context.Context, work
 		workoutHistory.Total_calories,
 		workoutHistory.Total_duration,
 		workoutHistory.Is_completed,
-	); err != nil {
-		return err
+	).Scan(&historyId)
+
+	if err != nil {
+		return 0, err
 	}
 
-	return nil
+	return historyId, nil
 }

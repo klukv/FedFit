@@ -46,7 +46,7 @@ func (handler *Handler) CreateWorkoutsHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	message := map[string]string{"message": "Тренировка успешно добавлен"}
+	message := map[string]string{"message": "Тренировка успешно добавлена"}
 
 	if err := json.NewEncoder(w).Encode(message); err != nil {
 		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)

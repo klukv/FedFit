@@ -1,9 +1,11 @@
 package repositories
 
 import (
+	"FedFit/internal/models"
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -31,5 +33,40 @@ func (r *WorkoutHistoryExercisesRepository) CreateWorkoutHistoryExercisesTable(c
 	`); err != nil {
 		return fmt.Errorf("Создание связующей таблицы истории тренировок и упражнений провалено")
 	}
+	return nil
+}
+
+func (r *WorkoutHistoryExercisesRepository) AddWorkoutHistoryExercises(
+	ctx context.Context,
+	tx pgx.Tx,
+	workoutHistoryId int,
+	exercisesIds []models.WHExercisesDTO,
+) error {
+	query := `INSERT INTO workout_history_exercises (
+			workout_history_id,
+			exercise_id,
+			sets_done,
+			reps_done,
+			duration_done,
+			calories_burned,
+			is_completed
+		) VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`
+
+	for _, exercises := range exercisesIds {
+		if _, err := tx.Exec(
+			ctx,
+			query,
+			workoutHistoryId,
+			exercises.Id,
+			exercises.SetsDone,
+			exercises.RepsDone,
+			exercises.DurationDone,
+			exercises.IsCompleted,
+		); err != nil {
+			return fmt.Errorf("Добавление связи между тренировкой и упражнениями в связующую таблицу провалено")
+		}
+	}
+
 	return nil
 }

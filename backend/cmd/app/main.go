@@ -12,7 +12,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", app.Cfg.Port),
-		Handler: api.Routes(app.Repositories),
+		Handler: api.Routes(app.Repositories, app.Services),
 	}
 
 	app.Logger.Printf("starting %s server on %s", app.Cfg.Env, srv.Addr)

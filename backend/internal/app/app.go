@@ -3,6 +3,7 @@ package app
 import (
 	"FedFit/internal/database"
 	"FedFit/internal/database/repositories"
+	"FedFit/internal/services"
 	"context"
 	"flag"
 	"log"
@@ -18,6 +19,7 @@ type Application struct {
 	Cfg          config
 	Logger       *log.Logger
 	Repositories *repositories.Repositories
+	Services     *services.Services
 }
 
 func InitApp() *Application {
@@ -43,11 +45,14 @@ func InitApp() *Application {
 		log.Fatal("Ошибка инициализации БД: ", err)
 	}
 
+	services := services.InitServices(pool, repositories)
+
 	// Инициализация приложения
 	app := &Application{
 		Cfg:          cfg,
 		Logger:       logger,
 		Repositories: repositories,
+		Services:     services,
 	}
 
 	return app
