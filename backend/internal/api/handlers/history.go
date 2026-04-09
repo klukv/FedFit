@@ -48,3 +48,26 @@ func (handler *Handler) AddWorkoutToHistory(w http.ResponseWriter, r *http.Reque
 		return
 	}
 }
+
+func (handler *Handler) GetHistoryByUserId(w http.ResponseWriter, r *http.Request) {
+	userId := r.PathValue("user_id")
+
+	history, err := handler.Services.WorkoutHistoryService.GetHistoryByUserId(r.Context(), userId)
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"message": err.Error(),
+			"code":    500,
+		})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(history); err != nil {
+		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		return
+	}
+}

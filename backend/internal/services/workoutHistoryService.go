@@ -76,3 +76,46 @@ func (s *WorkoutHistoryService) AddWorkoutToHistory(
 
 	return nil
 }
+
+func (s *WorkoutHistoryService) GetHistoryByUserId(ctx context.Context, userId string) ([]models.WorkoutHistoryDTO, error) {
+	userIdConv, err := strconv.Atoi(userId)
+
+	if err != nil {
+		return nil, fmt.Errorf("Передан некорректный id")
+	}
+
+	tx, err := s.pool.Begin(ctx)
+
+	defer tx.Rollback(ctx)
+
+	if err != nil {
+		return nil, fmt.Errorf("begin tx: %w", err)
+	}
+
+	var workoutHistoryDTO []models.WorkoutHistoryDTO
+
+	workoutsHistory, err := s.repos.WorkoutHistoryRepository.GetHistoryByUserId(ctx, tx, userIdConv)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, history := range workoutsHistory {
+		exercisesHistory, err := s.repos.WorkoutHistoryExercisesRepository.GetExercisesWorkoutHistoryByUserId(ctx, tx, history.Id)
+
+		if err != nil {
+			return nil, err
+		}
+
+		workoutHistoryDTO = append(workoutHistoryDTO, models.WorkoutHistoryDTO{
+			WorkoutForHistory: history,
+			Exercises:         exercisesHistory,
+		})
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("Ошибка коммита. Подробнее: %w", err)
+	}
+
+	return workoutHistoryDTO, nil
+}

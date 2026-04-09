@@ -2,6 +2,7 @@ package models
 
 import (
 	"FedFit/internal/utils"
+	"time"
 )
 
 type WorkoutHistoryDTO struct {
@@ -10,11 +11,14 @@ type WorkoutHistoryDTO struct {
 }
 
 type WorkoutHistory struct {
+	Id             int              `json:"id"`
 	Started_at     utils.CustomDate `json:"started_at"`
 	Finished_at    utils.CustomDate `json:"finished_at"`
 	Total_calories int              `json:"total_calories"`
 	Total_duration int              `json:"total_duration"`
 	Is_completed   bool             `json:"is_completed"`
+	CreatedAt      time.Time        `json:"created_at"`
+	UpdatedAt      time.Time        `json:"updated_at"`
 }
 
 type WHExercisesDTO struct {

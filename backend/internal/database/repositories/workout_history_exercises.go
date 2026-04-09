@@ -19,9 +19,10 @@ func NewWorkoutHistoryExercisesRepository(pool *pgxpool.Pool) *WorkoutHistoryExe
 
 func (r *WorkoutHistoryExercisesRepository) CreateWorkoutHistoryExercisesTable(ctx context.Context) error {
 	if _, err := r.pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS workout_history_exercises (
+			id SERIAL PRIMARY KEY,
 			workout_history_id INTEGER REFERENCES workout_history(id) ON DELETE CASCADE,
 			exercise_id INTEGER REFERENCES exercise(id) ON DELETE CASCADE,
-			PRIMARY KEY (workout_history_id, exercise_id),
+			UNIQUE (workout_history_id, exercise_id),
 			sets_done INT NOT NULL,
 			reps_done INT NOT NULL,
 			duration_done INT NOT NULL,
@@ -73,4 +74,43 @@ func (r *WorkoutHistoryExercisesRepository) AddWorkoutHistoryExercises(
 	}
 
 	return nil
+}
+
+func (r *WorkoutHistoryExercisesRepository) GetExercisesWorkoutHistoryByUserId(ctx context.Context, tx pgx.Tx, workoutHistoryId int) ([]models.WHExercisesDTO, error) {
+	query := `SELECT
+		whe.id,
+		whe.sets_done,
+		whe.reps_done,
+		whe.duration_done,
+		whe.calories_burned,
+		whe.is_completed
+	FROM workout_history_exercises whe WHERE whe.workout_history_id = $1`
+
+	rows, err := tx.Query(ctx, query, workoutHistoryId)
+
+	if err != nil {
+		return nil, fmt.Errorf(
+			"Ошибка запроса упражнений в тренировке (история). Подробнее: %w",
+			err,
+		)
+	}
+
+	var workoutsExercises []models.WHExercisesDTO
+
+	for rows.Next() {
+		var workoutExercises models.WHExercisesDTO
+
+		if err := rows.Scan(
+			&workoutExercises.Id,
+			&workoutExercises.SetsDone,
+			&workoutExercises.RepsDone,
+			&workoutExercises.DurationDone,
+			&workoutExercises.CaloriesBurned,
+			&workoutExercises.IsCompleted,
+		); err != nil {
+			return nil, err
+		}
+		workoutsExercises = append(workoutsExercises, workoutExercises)
+	}
+	return workoutsExercises, nil
 }

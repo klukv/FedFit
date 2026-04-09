@@ -70,3 +70,47 @@ func (r *WorkoutHistoryRepository) AddWorkoutToHistory(
 
 	return historyId, nil
 }
+
+func (r *WorkoutHistoryRepository) GetHistoryByUserId(ctx context.Context, tx pgx.Tx, userId int) ([]models.WorkoutHistory, error) {
+	query := `SELECT
+		wh.id,
+		wh.started_at,
+		wh.finished_at,
+		wh.total_calories,
+		wh.total_duration,
+		wh.is_completed,
+		wh.created_at,
+		wh.updated_at
+	FROM workout_history wh WHERE wh.user_id = $1`
+
+	rows, err := tx.Query(ctx, query, userId)
+
+	if err != nil {
+		return nil, fmt.Errorf("Ошибка запроса истории для пользователя с id: %w.\nПодробнее: %w", userId, err)
+	}
+
+	defer rows.Close()
+
+	var history []models.WorkoutHistory
+
+	for rows.Next() {
+		var workoutFromHistory models.WorkoutHistory
+
+		if err := rows.Scan(
+			&workoutFromHistory.Id,
+			&workoutFromHistory.Started_at,
+			&workoutFromHistory.Finished_at,
+			&workoutFromHistory.Total_calories,
+			&workoutFromHistory.Total_duration,
+			&workoutFromHistory.Is_completed,
+			&workoutFromHistory.CreatedAt,
+			&workoutFromHistory.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		history = append(history, workoutFromHistory)
+	}
+
+	return history, nil
+}
