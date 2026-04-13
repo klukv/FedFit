@@ -10,6 +10,13 @@
   gap: 40px;
 }
 
+.user-data-section__form {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  align-items: flex-start;
+}
+
 .user-data-section__avatar-container {
   display: flex;
   align-items: flex-start;
@@ -98,6 +105,12 @@
 }
 
 @media (max-width: 768px) {
+  .user-data-section__content,
+  .user-data-section__form {
+    flex-direction: column;
+    gap: 20px;
+  }
+
   .user-data-section__avatar-wrapper {
     width: 100%;
     padding: 20px;

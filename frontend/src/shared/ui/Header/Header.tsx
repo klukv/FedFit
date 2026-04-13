@@ -21,8 +21,8 @@ const montserrat = Montserrat({
 const Header = ({ avatar, logo, username }: IProps) => {
   return (
     <header className="header">
-      <div className="header_inner container__app">
-        <Link href={"/"}>
+      <Link href={"/profile"}>
+        <div className="header_inner container__app">
           <Image
             className="header__logo"
             width={logo.width ?? 230}
@@ -30,23 +30,23 @@ const Header = ({ avatar, logo, username }: IProps) => {
             src={logo.image}
             alt="Логотип"
           />
-        </Link>
 
-        <div className="header__profile">
-          <div
-            className={clsx("header__profile-username", montserrat.className)}
-          >
-            {username}
+          <div className="header__profile">
+            <div
+              className={clsx("header__profile-username", montserrat.className)}
+            >
+              {username}
+            </div>
+            <Image
+              className="header__profile-avatar"
+              width={logo.width ?? 60}
+              height={logo.height ?? 60}
+              src={avatar.image}
+              alt="Аватар"
+            />
           </div>
-          <Image
-            className="header__profile-avatar"
-            width={logo.width ?? 60}
-            height={logo.height ?? 60}
-            src={avatar.image}
-            alt="Аватар"
-          />
         </div>
-      </div>
+      </Link>
     </header>
   );
 };

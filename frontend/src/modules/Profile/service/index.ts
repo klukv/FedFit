@@ -1,1 +1,1 @@
-export { getProfile, updateProfile } from "./profileService";
+export { ProfileService } from "./profileService";

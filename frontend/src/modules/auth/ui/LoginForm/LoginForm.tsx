@@ -9,7 +9,7 @@ import { ROUTES } from "@/shared/constants";
 import { ButtonLinkTypes } from "@/shared/types";
 import { AuthFormField } from "../AuthFormField";
 import { loginFormSchema, type LoginFormValues } from "../../types";
-import { login } from "../../service";
+import { AuthService } from "../../service";
 import { getErrorMessage } from "../../utils";
 import "../auth-form.css";
 import "./loginForm.css";
@@ -20,6 +20,7 @@ export interface LoginFormProps {
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const authService = React.useMemo(() => new AuthService(), []);
 
   const {
     register,
@@ -39,7 +40,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const onSubmit = async (data: LoginFormValues) => {
     setSubmitError(null);
     try {
-      await login(data);
+      await authService.login(data);
       onSuccess?.();
     } catch (err) {
       setSubmitError(getErrorMessage(err, "Ошибка входа"));

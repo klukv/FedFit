@@ -1,1 +1,1 @@
-export { login, register } from "./authService";
+export { AuthService } from "./authService";

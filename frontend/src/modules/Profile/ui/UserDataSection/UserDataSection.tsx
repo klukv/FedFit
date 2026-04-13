@@ -13,6 +13,8 @@ import { PROFILE_FIELDS_CONFIG } from "@/modules/Profile/constants";
 import { useProfileForm } from "@/modules/Profile/hooks";
 import type { UserProfileFormData } from "@/modules/Profile/types";
 import "./userDataSection.css";
+import { ProfileFormSchema } from "../../schemas";
+import { ProfileService } from "../../service";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const roboto = Roboto({ subsets: ["latin"] });
@@ -38,43 +40,52 @@ export interface UserDataSectionProps {
   initialValues: UserProfileFormData;
 }
 
-export default function UserDataSection(props: UserDataSectionProps) {
+export default function UserDataSection({ avatar, initialValues }: UserDataSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const firstFieldRef = useRef<HTMLInputElement | null>(null);
   const editButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  const handleSuccess = useCallback(() => setIsEditing(false), []);
+  const profileService = React.useMemo(() => new ProfileService(), []);
 
   const {
     register,
+    watch,
     handleSubmit,
     reset,
-    formState: { errors },
-    onSubmit,
-    isSubmitting,
-    saveError,
-    setSaveError,
-  } = useProfileForm(props.initialValues, handleSuccess);
+    formState: { errors, isSubmitting },
+  } = useProfileForm(initialValues);
 
-  const handleEdit = useCallback(() => {
+  const handleEdit = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setSaveError(null);
     setIsEditing(true);
-  }, [setSaveError]);
+  }, []);
 
-  const handleCancel = useCallback(() => {
-    reset(props.initialValues);
+  const handleCancel = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    reset(initialValues);
     setSaveError(null);
     setIsEditing(false);
     editButtonRef.current?.focus();
-  }, [props.initialValues, reset, setSaveError]);
+  }, [initialValues, reset]);
 
   useEffect(() => {
-    if (isEditing) {
-      firstFieldRef.current?.focus();
-    }
+    if (!isEditing) return;
+    firstFieldRef.current?.focus();
   }, [isEditing]);
 
-  const initialValues = props.initialValues;
+  const handleSubmitProfile = useCallback(
+    async (data: ProfileFormSchema) => {
+      setSaveError(null);
+      try {
+        await profileService.updateProfile(data);
+        setIsEditing(false);
+      } catch {
+        setSaveError("Не удалось сохранить данные. Попробуйте позже.");
+      }
+    },
+    [profileService],
+  );
 
   return (
     <div className="user-data-section" role="region" aria-label="Мои данные">
@@ -83,6 +94,7 @@ export default function UserDataSection(props: UserDataSectionProps) {
           <ButtonLink
             ref={editButtonRef}
             type={ButtonLinkTypes.Button}
+            buttonType="button"
             title="Изменить"
             variant="default"
             icon={<FiEdit2 />}
@@ -107,6 +119,7 @@ export default function UserDataSection(props: UserDataSectionProps) {
               title="Отменить"
               variant="tertiary"
               icon={<FiX />}
+              buttonType="button"
               onClickHandler={handleCancel}
               disabled={isSubmitting}
             />
@@ -119,14 +132,14 @@ export default function UserDataSection(props: UserDataSectionProps) {
           <form
             id="profile-edit-form"
             className="user-data-section__form"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(handleSubmitProfile)}
             noValidate
           >
             <div className="user-data-section__avatar-container">
               <div className="user-data-section__avatar-wrapper">
                 <Image
                   className="user-data-section__avatar"
-                  src={props.avatar.image}
+                  src={avatar.image}
                   alt={`Аватар пользователя ${initialValues.name}`}
                   width={225}
                   height={225}
@@ -135,8 +148,12 @@ export default function UserDataSection(props: UserDataSectionProps) {
                   type={ButtonLinkTypes.Button}
                   title="Загрузить"
                   variant="default"
+                  buttonType="button"
                   onClickHandler={() => {}}
                 />
+                <div className={clsx("user-data-section__name", montserrat.className)}>
+                  {watch("name") || initialValues.name}
+                </div>
               </div>
             </div>
             <div className="user-data-section__fields">
@@ -170,7 +187,7 @@ export default function UserDataSection(props: UserDataSectionProps) {
               <div className="user-data-section__avatar-wrapper">
                 <Image
                   className="user-data-section__avatar"
-                  src={props.avatar.image}
+                  src={avatar.image}
                   alt={`Аватар пользователя ${initialValues.name}`}
                   width={225}
                   height={225}
@@ -182,6 +199,7 @@ export default function UserDataSection(props: UserDataSectionProps) {
                   type={ButtonLinkTypes.Button}
                   title="Загрузить"
                   variant="default"
+                  buttonType="button"
                   onClickHandler={() => {}}
                 />
               </div>

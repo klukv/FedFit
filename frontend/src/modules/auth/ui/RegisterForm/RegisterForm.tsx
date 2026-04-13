@@ -9,7 +9,7 @@ import { ROUTES } from "@/shared/constants";
 import { ButtonLinkTypes } from "@/shared/types";
 import { AuthFormField } from "../AuthFormField";
 import { registerFormSchema, type RegisterFormValues } from "../../types";
-import { register as registerService } from "../../service";
+import { AuthService } from "../../service";
 import { getErrorMessage } from "../../utils";
 import "../auth-form.css";
 import "./registerForm.css";
@@ -20,6 +20,7 @@ export interface RegisterFormProps {
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const authService = React.useMemo(() => new AuthService(), []);
 
   const {
     register,
@@ -39,7 +40,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const onSubmit = async (data: RegisterFormValues) => {
     setSubmitError(null);
     try {
-      await registerService({ username: data.username, password: data.password });
+      await authService.register({ username: data.username, password: data.password });
       onSuccess?.();
     } catch (err) {
       setSubmitError(getErrorMessage(err, "Ошибка регистрации"));

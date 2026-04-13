@@ -1,6 +1,6 @@
 import { Card } from "@/shared/ui";
 import { CardTypes } from "@/shared/types";
-import { UserDataSection, ActivitySection, getProfile } from "@/modules/Profile";
+import { UserDataSection, ActivitySection, ProfileService } from "@/modules/Profile";
 import {
   mockItemsForCarousel,
   mockActivityData,
@@ -10,14 +10,16 @@ import avatar from "@/assets/mock_avatar.png";
 import "./_styles/profile.css";
 
 const Page = async () => {
-  const profileData = await getProfile();
+  const profileService = new ProfileService();
+
+  const data = await profileService.getProfile();
 
   return (
     <div className="profile">
       <Card type={CardTypes.Section} title="Мои данные">
         <UserDataSection
           avatar={{ image: avatar }}
-          initialValues={profileData}
+          initialValues={data}
         />
       </Card>
       <Card type={CardTypes.Section} title="Моя активность">
