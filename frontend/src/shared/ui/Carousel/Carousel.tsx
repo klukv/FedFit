@@ -27,7 +27,7 @@ const responsive = {
 
 interface IProps<Item> {
   items: Item[];
-  renderItem: (item: Item) => React.JSX.Element;
+  renderItem: (item: Item, idx: number) => React.JSX.Element;
 }
 
 const Carousel = <Item,>({ items, renderItem }: IProps<Item>) => {
@@ -37,7 +37,7 @@ const Carousel = <Item,>({ items, renderItem }: IProps<Item>) => {
       sliderClass="container__carousel"
       itemClass="carousel__item"
     >
-      {items.map((item) => renderItem(item))}
+      {items.map((item, idx) => renderItem(item, idx))}
     </CarouselLib>
   );
 };

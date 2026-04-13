@@ -1,9 +1,9 @@
 import { Banner, ContainerSection } from "@/shared/ui";
-import { TRAINING_PLANS, TRAINING_PLANS_URL } from "@/shared/constants";
-import { WorkoutItem, WorkoutItemVariants, WorkoutService } from "@/modules/workout";
+import {  WorkoutService } from "@/modules/workout";
 import { mockItemsForCarousel } from "../data/mock";
 import home_banner from "@/assets/home_banner.png";
 import CarouselWorkoutsClientWrapper from "./CarouselWorkoutsWrapper";
+import CarouselTrainingPlansWrapper from "./CarouselTrainingPlansWrapper";
 
 const Home = async () => {
   const workoutService = new WorkoutService();
@@ -29,22 +29,9 @@ const Home = async () => {
       <ContainerSection
         title="Планы тренировок"
         styles={{ marginTop: 64 }}
-        contentStyles={{ display: "flex", gap: 109 }}
+        contentStyles={{ gap: 20 }}
       >
-        {trainingPlans.map((trainingPlan, idx) => (
-          <WorkoutItem
-            key={trainingPlan.id}
-            type={WorkoutItemVariants.LARGE_WITH_BUTTON}
-            title={trainingPlan.name}
-            backgroundImage={{
-              image: TRAINING_PLANS[idx].image.src,
-            }}
-            buttonLink={{
-              href: `${TRAINING_PLANS_URL}/${trainingPlan.id}`,
-              title: "Перейти",
-            }}
-          />
-        ))}
+        <CarouselTrainingPlansWrapper items={trainingPlans} />
       </ContainerSection>
     </div>
   );
