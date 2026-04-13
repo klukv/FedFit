@@ -1,4 +1,4 @@
-import type { UserProfileFormData } from "@/modules/Profile/types";
+import type { UserProfileFormData } from "@/modules/profile/types";
 
 const MOCK_PROFILE: UserProfileFormData = {
   name: "Юлия",

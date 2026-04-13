@@ -1,7 +1,7 @@
 "use client";
 
 import { Carousel } from "@/shared/ui";
-import { Workout, WorkoutItem, WorkoutItemVariants } from "@/modules/Workout";
+import { Workout, WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
 import { StaticImageData } from "next/image";
 
 interface IProps {

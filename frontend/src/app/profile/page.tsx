@@ -1,13 +1,10 @@
 import { Card } from "@/shared/ui";
 import { CardTypes } from "@/shared/types";
-import { UserDataSection, ActivitySection, ProfileService } from "@/modules/Profile";
-import {
-  mockItemsForCarousel,
-  mockActivityData,
-} from "../../data/mock";
-import CarouselWorkoutsClientWrapper from "../CarouselWorkoutsWrapper";
+import { UserDataSection, ActivitySection, ProfileService } from "@/modules/profile";
+import { mockActivityData } from "../../data/mock";
 import avatar from "@/assets/mock_avatar.png";
 import "./_styles/profile.css";
+import { HistoryWorkoutsList } from "@/modules/history";
 
 const Page = async () => {
   const profileService = new ProfileService();
@@ -30,7 +27,7 @@ const Page = async () => {
         />
       </Card>
       <Card type={CardTypes.Section} title="История тренировок">
-        <CarouselWorkoutsClientWrapper items={mockItemsForCarousel} />
+        <HistoryWorkoutsList userId={1} />
       </Card>
     </div>
   );

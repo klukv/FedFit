@@ -1,9 +1,9 @@
 import { $authReq } from "@/shared/api";
-import { WorkoutModel, WorkoutDetail, TrainingPlan } from "../types";
-import { USERS_URL, TRAINING_PLANS_URL, WORKOUTS_URL } from "@/shared/constants";
+import { WorkoutDetail, TrainingPlan } from "../types";
+import { TRAINING_PLANS_URL, WORKOUTS_URL } from "@/shared/constants";
 
 export class WorkoutService {
-  constructor() {}
+  constructor() { }
 
   async getTrainingPlans() {
     const { data } = await $authReq().get<Omit<TrainingPlan, "workouts">[]>(
@@ -15,13 +15,6 @@ export class WorkoutService {
   async getTrainingPlanById(id: number) {
     const { data } = await $authReq().get<TrainingPlan>(
       `${TRAINING_PLANS_URL}/${id}`,
-    );
-    return data;
-  }
-
-  async getHistoryWorkouts(id: number) {
-    const { data } = await $authReq().get<WorkoutModel[]>(
-      `${USERS_URL}/${id}/history-workouts`,
     );
     return data;
   }

@@ -1,6 +1,6 @@
-import { WorkoutService } from "@/modules/Workout";
-import InfoCard from "@/modules/Workout/ui/InfoCard";
-import ExerciseList from "@/modules/Workout/ui/ExerciseList";
+import { WorkoutService } from "@/modules/workout";
+import InfoCard from "@/modules/workout/ui/InfoCard";
+import ExerciseList from "@/modules/workout/ui/ExerciseList";
 import { Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
 import WorkoutPageContent from "./WorkoutPageContent";

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PROFILE_VALIDATION } from "@/modules/Profile/constants";
+import { PROFILE_VALIDATION } from "@/modules/profile/constants";
 
 const V = PROFILE_VALIDATION;
 

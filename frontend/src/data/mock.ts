@@ -3,7 +3,7 @@ import bike from "@/assets/workout/bike.png";
 import foots from "@/assets/workout/foots.png";
 import press from "@/assets/workout/press.png";
 import run from "@/assets/workout/run.png";
-import { WorkoutDetail } from "@/modules/Workout";
+import { WorkoutDetail } from "@/modules/workout";
 
 export const mockItemsForCarousel = [
   {

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FormField } from "@/shared/ui";
-import type { UserProfileFormData } from "@/modules/Profile/types";
+import type { UserProfileFormData } from "@/modules/profile/types";
 
 export interface ProfileFormFieldProps {
   label: string;

@@ -1,4 +1,4 @@
-import type { UserProfileFormData } from "@/modules/Profile/types";
+import type { UserProfileFormData } from "@/modules/profile/types";
 
 /** Приводит данные профиля (props/API) к виду формы */
 export function toProfileFormValues(

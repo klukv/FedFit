@@ -1,4 +1,4 @@
-import type { UserProfileFormData } from "@/modules/Profile/types";
+import type { UserProfileFormData } from "@/modules/profile/types";
 import { PROFILE_VALIDATION } from "./validation";
 
 const V = PROFILE_VALIDATION;
