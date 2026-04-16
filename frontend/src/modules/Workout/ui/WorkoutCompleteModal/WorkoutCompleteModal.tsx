@@ -12,34 +12,29 @@ interface WorkoutCompleteModalProps {
   onContinue?: () => void;
   elapsedTime: number; // в секундах
   estimatedCalories: number;
+  isCompleteWorkout: boolean;
 }
 
-const WorkoutCompleteModal = ({
-  isOpen,
-  onClose,
-  onContinue,
-  elapsedTime,
-  estimatedCalories,
-}: WorkoutCompleteModalProps) => {
+const WorkoutCompleteModal = (props: WorkoutCompleteModalProps) => {
   const router = useRouter();
 
   const handleGoHome = () => {
-    onClose();
+    props.onClose();
     router.push("/");
   };
 
   const handleContinue = () => {
-    if (onContinue) {
-      onContinue();
+    if (props.onContinue) {
+      props.onContinue();
     } else {
-      onClose();
+      props.onClose();
     }
   };
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={props.isOpen}
+      onClose={props.onClose}
       className="workout-complete-modal"
       ariaLabel="Результаты тренировки"
     >
@@ -55,7 +50,7 @@ const WorkoutCompleteModal = ({
           <div className="workout-complete-modal__stat-card">
             <span className="workout-complete-modal__stat-label">Время</span>
             <span className="workout-complete-modal__stat-value">
-              {formatDuration(elapsedTime)}
+              {formatDuration(props.elapsedTime)}
             </span>
           </div>
 
@@ -65,19 +60,21 @@ const WorkoutCompleteModal = ({
               За время тренировки было потрачено примерно
             </span>
             <span className="workout-complete-modal__stat-value workout-complete-modal__stat-value--multiline">
-              {formatCalories(estimatedCalories)}
+              {formatCalories(props.estimatedCalories)}
             </span>
           </div>
         </div>
 
         {/* Кнопки */}
         <div className="workout-complete-modal__actions">
-          <ButtonLink
-            type={ButtonLinkTypes.Button}
-            title="Вернуться к тренировке"
-            variant="tertiary"
-            onClickHandler={handleContinue}
-          />
+          {!props.isCompleteWorkout && (
+            <ButtonLink
+              type={ButtonLinkTypes.Button}
+              title="Вернуться к тренировке"
+              variant="tertiary"
+              onClickHandler={handleContinue}
+            />
+          )}
           <ButtonLink
             type={ButtonLinkTypes.Button}
             title="Перейти на главную"

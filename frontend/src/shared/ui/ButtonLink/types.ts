@@ -3,7 +3,8 @@ import { ButtonLinkTypes, ButtonLinkVariants } from "@/shared/types";
 
 interface ButtonLinkPropsBase {
   type: ButtonLinkTypes;
-  title: string;
+  title?: string;
+  description?: string;
   variant?: ButtonLinkVariants;
   /** Иконка слева от текста (для кнопок и ссылок) */
   icon?: ReactNode;

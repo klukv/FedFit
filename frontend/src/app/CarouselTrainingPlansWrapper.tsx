@@ -2,7 +2,7 @@
 
 import { Carousel } from "@/shared/ui";
 import { WorkoutItem, WorkoutItemVariants } from "@/modules/workout";
-import { TrainingPlan } from "@/modules/Workout/types";
+import { TrainingPlan } from "@/modules/workout/types";
 import { TRAINING_PLANS, TRAINING_PLANS_URL } from "@/shared/constants";
 
 interface IProps {

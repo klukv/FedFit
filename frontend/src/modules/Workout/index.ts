@@ -1,4 +1,4 @@
-export { default as WorkoutItem, WorkoutCompleteModal } from "./ui";
+export { default as WorkoutItem, WorkoutCompleteModal, WorkoutPageContent } from "./ui";
 export {
   WorkoutItemVariants,
   type WorkoutModel as Workout,

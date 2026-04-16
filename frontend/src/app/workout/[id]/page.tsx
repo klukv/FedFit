@@ -1,9 +1,8 @@
-import { WorkoutService } from "@/modules/workout";
+import { WorkoutService, WorkoutPageContent } from "@/modules/workout";
 import InfoCard from "@/modules/workout/ui/InfoCard";
 import ExerciseList from "@/modules/workout/ui/ExerciseList";
 import { Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
-import WorkoutPageContent from "./WorkoutPageContent";
 import Image from "next/image";
 import arms_train_mock from "@/assets/workout/arms.png";
 import "./_styles/workout-detail.css";
@@ -30,8 +29,10 @@ const WorkoutDetailPage = async ({ params }: IProps) => {
       {/* Контент страницы с таймером и управлением тренировкой */}
       <WorkoutPageContent
         workoutId={workoutDetail.id}
+        exercisesCount={workoutDetail.exercises.length}
         exerciseList={<ExerciseList exercises={workoutDetail.exercises} />}
-        infoBlock={<div className="workout-detail-page__info">
+        infoBlock={
+        <div className="workout-detail-page__info">
           <div className="workout-detail-page__image-container">
             <Image
               className="workout-detail-page__image"

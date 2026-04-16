@@ -5,11 +5,16 @@ import { ButtonLink, IconButton } from "@/shared/ui";
 import { ButtonLinkTypes } from "@/shared/types";
 import { PauseIcon, PlayIcon } from "@/shared/icons";
 import { WorkoutCompleteModal } from "@/modules/workout";
-import "./_styles/workout-controls.css";
+import { IoIosTimer } from "react-icons/io";
+import { BsCardChecklist } from "react-icons/bs";
+import { FaHourglassStart } from "react-icons/fa";
+import "./workout-controls.css";
+import { drawWorkoutProgressBar } from "./utils";
 
 interface WorkoutPageContentProps {
   workoutId: number;
   exerciseList: ReactNode;
+  exercisesCount: number;
   infoBlock: ReactNode;
   estimatedCaloriesPerMinute?: number;
 }
@@ -21,9 +26,9 @@ const formatTime = (totalSeconds: number): string => {
 };
 
 const WorkoutPageContent = ({
-  workoutId,
   exerciseList,
   infoBlock,
+  exercisesCount,
   estimatedCaloriesPerMinute = 13,
 }: WorkoutPageContentProps) => {
   const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
@@ -32,6 +37,9 @@ const WorkoutPageContent = ({
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [finalElapsedTime, setFinalElapsedTime] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const [completedExercisesCount, setCompletedExercisesCount] = useState(0);
+  const [isStartedExercise, setIsStartedExercise] = useState(false);
 
   // Управление таймером
   useEffect(() => {
@@ -54,6 +62,7 @@ const WorkoutPageContent = ({
 
   const handleStartWorkout = () => {
     setIsWorkoutStarted(true);
+    setIsStartedExercise(true);
     setIsPaused(false);
     setElapsedSeconds(0);
   };
@@ -61,6 +70,15 @@ const WorkoutPageContent = ({
   const handlePauseResume = () => {
     setIsPaused((prev) => !prev);
   };
+
+  const handleFinishExercise = () => {
+    setCompletedExercisesCount((ps) => {
+      const newCount = ps + 1;
+      if (newCount === exercisesCount) handleFinishWorkout();
+      return newCount;
+    });
+    setIsStartedExercise(false);
+  }
 
   const handleFinishWorkout = () => {
     // Сохраняем время для отображения в модальном окне
@@ -90,25 +108,26 @@ const WorkoutPageContent = ({
     (finalElapsedTime / 60) * estimatedCaloriesPerMinute
   );
 
-  // Убираем предупреждение о неиспользуемой переменной
-  void workoutId;
-
   return (
     <>
+      {isWorkoutStarted && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "25px" }}>
+          <h1 style={{ fontSize: 35 }}>Прогресс выполнения</h1>
+          {drawWorkoutProgressBar(completedExercisesCount, exercisesCount)}
+        </div>
+      )}
       {/* Блок с информацией о тренировке (с анимацией) */}
       <div
-        className={`workout-info-animated ${
-          isWorkoutStarted ? "workout-info-animated--hidden" : "workout-info-animated--visible"
-        }`}
+        className={`workout-info-animated ${isWorkoutStarted ? "workout-info-animated--hidden" : "workout-info-animated--visible"
+          }`}
       >
         {infoBlock}
       </div>
 
       {/* Таймер (с анимацией появления) */}
       <div
-        className={`workout-timer ${
-          isWorkoutStarted ? "workout-timer--visible" : "workout-timer--hidden"
-        }`}
+        className={`workout-timer ${isWorkoutStarted ? "workout-timer--visible" : "workout-timer--hidden"
+          }`}
         role="timer"
         aria-live="off"
       >
@@ -122,11 +141,10 @@ const WorkoutPageContent = ({
 
       {/* Кнопка начала тренировки (с анимацией) */}
       <div
-        className={`workout-detail-page__start-button ${
-          isWorkoutStarted
-            ? "workout-detail-page__start-button--hidden"
-            : "workout-detail-page__start-button--visible"
-        }`}
+        className={`workout-detail-page__start-button ${isWorkoutStarted
+          ? "workout-detail-page__start-button--hidden"
+          : "workout-detail-page__start-button--visible"
+          }`}
       >
         <ButtonLink
           type={ButtonLinkTypes.Button}
@@ -138,11 +156,10 @@ const WorkoutPageContent = ({
 
       {/* Кнопки управления (с анимацией появления) */}
       <div
-        className={`workout-active-controls ${
-          isWorkoutStarted
-            ? "workout-active-controls--visible"
-            : "workout-active-controls--hidden"
-        }`}
+        className={`workout-active-controls ${isWorkoutStarted
+          ? "workout-active-controls--visible"
+          : "workout-active-controls--hidden"
+          }`}
       >
         <div className="workout-controls">
           {/* Кнопка паузы */}
@@ -152,11 +169,30 @@ const WorkoutPageContent = ({
             onClick={handlePauseResume}
             ariaLabel={isPaused ? "Продолжить тренировку" : "Поставить на паузу"}
           />
-
+          {
+            isStartedExercise ? (
+              <ButtonLink
+                type={ButtonLinkTypes.Button}
+                icon={<IoIosTimer />}
+                description="Завершить упражнение"
+                variant="default"
+                onClickHandler={handleFinishExercise}
+              />
+            ) : (
+              <ButtonLink
+                type={ButtonLinkTypes.Button}
+                icon={<FaHourglassStart />}
+                description="Начать упражнение"
+                variant="default"
+                onClickHandler={() => setIsStartedExercise(true)}
+              />
+            )
+          }
           {/* Кнопка завершения */}
           <ButtonLink
             type={ButtonLinkTypes.Button}
-            title="Завершить тренировку"
+            icon={<BsCardChecklist />}
+            description="Завершить тренировку"
             variant="default"
             onClickHandler={handleFinishWorkout}
           />
@@ -170,6 +206,7 @@ const WorkoutPageContent = ({
         onContinue={handleContinueWorkout}
         elapsedTime={finalElapsedTime}
         estimatedCalories={estimatedCalories}
+        isCompleteWorkout={exercisesCount === completedExercisesCount}
       />
     </>
   );

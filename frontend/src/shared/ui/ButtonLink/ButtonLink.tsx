@@ -23,6 +23,7 @@ const ButtonLink = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonLinkP
           className={clsx(classNames, { "button--loading": isLoading })}
           onClick={buttonProps.onClickHandler}
           disabled={buttonProps.disabled || isLoading}
+          title={props.description}
           aria-busy={isLoading}
           aria-label={props["aria-label"]}
         >
@@ -31,7 +32,7 @@ const ButtonLink = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonLinkP
               {props.icon}
             </span>
           )}
-          <span className="button__title">{props.title}</span>
+          {props.title && <span className="button__title">{props.title}</span>}
           {isLoading && <span className="button__spinner" aria-hidden />}
         </button>
       );
