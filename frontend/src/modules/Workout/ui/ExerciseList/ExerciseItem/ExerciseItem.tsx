@@ -45,7 +45,7 @@ const ExerciseItem = ({ exercise, index }: ExerciseItemProps) => {
           {exercise.description}
         </div>
       </div>
-      <hr style={{ width: "100%", border: "1px solid #000" }} />
+      <hr className="exercise-item__divider" />
     </>
   );
 };

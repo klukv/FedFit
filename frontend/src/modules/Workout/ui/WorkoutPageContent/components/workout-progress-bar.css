@@ -1,0 +1,25 @@
+.workout-progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.workout-progress-bar__segment {
+  width: 50px;
+  height: 4px;
+  border-radius: 2px;
+  border: none;
+  padding: 0;
+  transition: background-color 220ms ease, box-shadow 220ms ease;
+}
+
+.workout-progress-bar__segment--done {
+  background-color: #15ff00;
+  box-shadow: 0 0 8px rgba(21, 255, 0, 0.35);
+}
+
+.workout-progress-bar__segment--pending {
+  background-color: rgba(255, 255, 255, 0.35);
+}

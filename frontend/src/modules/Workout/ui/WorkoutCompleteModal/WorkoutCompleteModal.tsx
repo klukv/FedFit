@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Modal, ButtonLink } from "@/shared/ui";
 import { ButtonLinkTypes } from "@/shared/types";
+import { FiHome, FiRotateCcw } from "react-icons/fi";
 import { formatDuration, formatCalories } from "../../utils";
 import "./workoutCompleteModal.css";
 
@@ -76,6 +77,7 @@ const WorkoutCompleteModal = (props: WorkoutCompleteModalProps) => {
           {!props.isCompleteWorkout && (
             <ButtonLink
               type={ButtonLinkTypes.Button}
+              icon={<FiRotateCcw aria-hidden />}
               title="Вернуться к тренировке"
               variant="default"
               onClickHandler={handleContinue}
@@ -83,6 +85,7 @@ const WorkoutCompleteModal = (props: WorkoutCompleteModalProps) => {
           )}
           <ButtonLink
             type={ButtonLinkTypes.Button}
+            icon={<FiHome aria-hidden />}
             title="Перейти на главную"
             variant="tertiary"
             onClickHandler={handleGoHome}

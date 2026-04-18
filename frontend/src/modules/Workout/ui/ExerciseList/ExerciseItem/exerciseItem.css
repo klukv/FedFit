@@ -40,6 +40,13 @@
   font-weight: 400;
 }
 
+.exercise-item__divider {
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-top: 1px solid #000000;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .exercise-item {

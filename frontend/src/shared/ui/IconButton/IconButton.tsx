@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, MouseEventHandler } from "react";
+import clsx from "clsx";
 import "./iconButton.css";
 
 export interface IconButtonProps {
@@ -9,6 +10,10 @@ export interface IconButtonProps {
   onClick: MouseEventHandler<HTMLButtonElement>;
   ariaLabel?: string;
   className?: string;
+  /** `iconOnly` — компактная кнопка, текст только для скринридеров */
+  variant?: "default" | "iconOnly";
+  /** Подсказка при наведении */
+  title?: string;
 }
 
 const IconButton = ({
@@ -17,20 +22,32 @@ const IconButton = ({
   onClick,
   ariaLabel,
   className = "",
+  variant = "default",
+  title,
 }: IconButtonProps) => {
+  const iconOnly = variant === "iconOnly";
+
   return (
     <button
       type="button"
-      className={`icon-button ${className}`.trim()}
+      className={clsx("icon-button", iconOnly && "icon-button--icon-only", className)}
       onClick={onClick}
       aria-label={ariaLabel || label}
+      title={title ?? (iconOnly ? label : undefined)}
     >
-      <div className="icon-button__circle">
+      <span className="icon-button__circle">
         <span className="icon-button__icon" aria-hidden="true">
           {icon}
         </span>
-      </div>
-      <span className="icon-button__label">{label}</span>
+      </span>
+      <span
+        className={clsx(
+          "icon-button__label",
+          iconOnly && "icon-button__label--visually-hidden",
+        )}
+      >
+        {label}
+      </span>
     </button>
   );
 };

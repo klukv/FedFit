@@ -5,6 +5,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Modal, ButtonLink, Card, FormField } from "@/shared/ui";
 import { ButtonLinkTypes, CardTypes } from "@/shared/types";
+import { FiArrowLeft, FiCheck, FiCornerDownLeft } from "react-icons/fi";
 import "./WorkoutExercisesCountModal.css";
 import { formatCalories, formatDuration } from "../../utils";
 import { workoutCaloriesService } from "../../service";
@@ -148,6 +149,7 @@ const WorkoutExercisesCountModal = (props: WorkoutExercisesCountModalProps) => {
           <div className="workout-exercise-count-modal__actions">
             <ButtonLink
               type={ButtonLinkTypes.Button}
+              icon={<FiCheck aria-hidden />}
               title="Подтвердить"
               variant="default"
               buttonType="submit"
@@ -164,12 +166,14 @@ const WorkoutExercisesCountModal = (props: WorkoutExercisesCountModalProps) => {
           >
             <ButtonLink
               type={ButtonLinkTypes.Button}
+              icon={<FiArrowLeft aria-hidden />}
               title="Вернуться к упражнению"
               variant="default"
               onClickHandler={() => props.onClose()}
             />
             <ButtonLink
               type={ButtonLinkTypes.Button}
+              icon={<FiCornerDownLeft aria-hidden />}
               title="Завершить упражнение"
               variant="tertiary"
               onClickHandler={finishPartial}
