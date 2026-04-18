@@ -13,10 +13,16 @@ interface WorkoutCompleteModalProps {
   elapsedTime: number; // в секундах
   estimatedCalories: number;
   isCompleteWorkout: boolean;
+  /** Текст над блоком калорий (по умолчанию — суммарная оценка за сессию) */
+  caloriesSummaryLabel?: string;
 }
+
+const DEFAULT_CALORIES_LABEL =
+  "Суммарно за выполненные упражнения потрачено примерно";
 
 const WorkoutCompleteModal = (props: WorkoutCompleteModalProps) => {
   const router = useRouter();
+  const caloriesLabel = props.caloriesSummaryLabel ?? DEFAULT_CALORIES_LABEL;
 
   const handleGoHome = () => {
     props.onClose();
@@ -57,7 +63,7 @@ const WorkoutCompleteModal = (props: WorkoutCompleteModalProps) => {
           {/* Карточка калорий */}
           <div className="workout-complete-modal__stat-card workout-complete-modal__stat-card--wide">
             <span className="workout-complete-modal__stat-label">
-              За время тренировки было потрачено примерно
+              {caloriesLabel}
             </span>
             <span className="workout-complete-modal__stat-value workout-complete-modal__stat-value--multiline">
               {formatCalories(props.estimatedCalories)}
@@ -71,14 +77,14 @@ const WorkoutCompleteModal = (props: WorkoutCompleteModalProps) => {
             <ButtonLink
               type={ButtonLinkTypes.Button}
               title="Вернуться к тренировке"
-              variant="tertiary"
+              variant="default"
               onClickHandler={handleContinue}
             />
           )}
           <ButtonLink
             type={ButtonLinkTypes.Button}
             title="Перейти на главную"
-            variant="default"
+            variant="tertiary"
             onClickHandler={handleGoHome}
           />
         </div>

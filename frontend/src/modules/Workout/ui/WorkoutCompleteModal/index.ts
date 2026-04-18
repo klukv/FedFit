@@ -1,1 +1,1 @@
-export { default } from "./WorkoutCompleteModal";
+export { default as WorkoutCompleteModal } from "./WorkoutCompleteModal";

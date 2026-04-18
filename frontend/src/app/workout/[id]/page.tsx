@@ -1,6 +1,7 @@
-import { WorkoutService, WorkoutPageContent } from "@/modules/workout";
+import { WorkoutService, WorkoutPageContent, workoutCaloriesService } from "@/modules/workout";
 import InfoCard from "@/modules/workout/ui/InfoCard";
 import ExerciseList from "@/modules/workout/ui/ExerciseList";
+import { ProfileService } from "@/modules/profile";
 import { Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -24,12 +25,19 @@ const WorkoutDetailPage = async ({ params }: IProps) => {
 
   if (!workoutDetail) notFound();
 
+  const profileService = new ProfileService();
+  const profile = await profileService.getProfile();
+  const calorieUser = workoutCaloriesService.mapUserProfileToWorkoutCalorieUser(profile);
+
   return (
     <div className="workout-detail-page container__app">
       {/* Контент страницы с таймером и управлением тренировкой */}
       <WorkoutPageContent
         workoutId={workoutDetail.id}
         exercisesCount={workoutDetail.exercises.length}
+        exercises={workoutDetail.exercises}
+        workoutLevel={workoutDetail.level}
+        calorieUser={calorieUser ?? undefined}
         exerciseList={<ExerciseList exercises={workoutDetail.exercises} />}
         infoBlock={
         <div className="workout-detail-page__info">
