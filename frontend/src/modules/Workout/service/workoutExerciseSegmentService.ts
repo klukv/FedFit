@@ -1,6 +1,9 @@
 import { workoutCaloriesService } from "./workoutCaloriesService";
 import type { Exercise } from "../types";
-import type { WorkoutCalorieUser, WorkoutExerciseCalorieEntry } from "../types/calories";
+import type {
+  BuildWorkoutExerciseCalorieEntryInput,
+  WorkoutExerciseCalorieEntry,
+} from "../types/calories";
 
 /**
  * Логика «текущего упражнения»: длительность сегмента, план подходов, запись в журнал калорий.
@@ -21,15 +24,9 @@ export class WorkoutExerciseSegmentService {
     return Math.max(0, elapsedAtEnd - segmentStart);
   }
 
-  buildCalorieEntry(input: {
-    exerciseIndex: number;
-    durationSeconds: number;
-    setsCompleted: number;
-    calorieUser: WorkoutCalorieUser | null;
-    strengthMet: number;
-    plannedSets: number;
-    kcalPerMinuteFallback: number;
-  }): WorkoutExerciseCalorieEntry {
+  buildCalorieEntry(
+    input: BuildWorkoutExerciseCalorieEntryInput,
+  ): WorkoutExerciseCalorieEntry {
     const caloriesBurned = input.calorieUser
       ? workoutCaloriesService.roundCalories(
           workoutCaloriesService.estimateWorkoutCaloriesFromProfile(
@@ -50,6 +47,7 @@ export class WorkoutExerciseSegmentService {
         );
 
     return {
+      id: input.exerciseId,
       exerciseIndex: input.exerciseIndex,
       durationSeconds: input.durationSeconds,
       setsCompleted: input.setsCompleted,

@@ -8,7 +8,10 @@ interface WorkoutProgressSectionProps {
 const WorkoutProgressSection = ({
   completedExercisesCount,
   exercisesCount,
-}: WorkoutProgressSectionProps) => (
+}: WorkoutProgressSectionProps) => {
+  console.log(exercisesCount);
+  
+  return (
   <div className="workout-progress-section">
     <h1 className="workout-progress-section__title">Прогресс выполнения</h1>
     <WorkoutProgressBar
@@ -16,6 +19,7 @@ const WorkoutProgressSection = ({
       exercisesCount={exercisesCount}
     />
   </div>
-);
+)
+};
 
 export default WorkoutProgressSection;

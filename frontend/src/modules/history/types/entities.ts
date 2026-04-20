@@ -4,18 +4,16 @@ export interface WorkoutHistory {
 }
 
 export interface WorkoutHistoryModel {
-  id: number,
+  id?: number,
   startedAt: string,
   finishedAt: string,
   totalCalories: number
   totalDuration: number,
-  isCompleted: boolean,
-  createdAt: string,
-  updatedAt: string
+  isCompleted: boolean
 }
 
 export interface HistoryExercises {
-  id: number,
+  id?: number,
   setsDone: number,
   repsDone: number,
   durationDone: number,

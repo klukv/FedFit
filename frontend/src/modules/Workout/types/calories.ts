@@ -11,6 +11,7 @@ export interface WorkoutCalorieUser {
 
 /** Одна завершённая «серия» учёта по упражнению (удобно отправлять на бекенд). */
 export interface WorkoutExerciseCalorieEntry {
+  id: number,
   exerciseIndex: number;
   durationSeconds: number;
   setsCompleted: number;
@@ -23,4 +24,38 @@ export interface WorkoutCaloriesSessionResult {
   totalDurationSeconds: number;
   totalCaloriesBurned: number;
   exercises: WorkoutExerciseCalorieEntry[];
+}
+
+export interface EstimateExerciseCaloriesPreviewInput {
+  calorieUser: WorkoutCalorieUser | null;
+  exerciseDurationSeconds: number;
+  strengthMet: number;
+  plannedSetsSafe: number;
+  setsDone: number;
+  kcalPerMinuteFallback: number;
+}
+
+export interface BuildWorkoutExerciseCalorieEntryInput {
+  exerciseId: number;
+  exerciseIndex: number;
+  durationSeconds: number;
+  setsCompleted: number;
+  calorieUser: WorkoutCalorieUser | null;
+  strengthMet: number;
+  plannedSets: number;
+  kcalPerMinuteFallback: number;
+}
+
+export interface ResolveManualFinishTotalsInput {
+  exerciseLog: readonly WorkoutExerciseCalorieEntry[];
+  elapsedSeconds: number;
+  calorieUser: WorkoutCalorieUser | null;
+  strengthMet: number;
+  estimatedCaloriesPerMinute: number;
+}
+
+export interface ResolveManualFinishTotalsResult {
+  totalCaloriesBurned: number;
+  calorieSummaryFromExercises: boolean;
+  exercisesSnapshot: WorkoutExerciseCalorieEntry[];
 }

@@ -1,21 +1,16 @@
 import { workoutCaloriesService } from "./workoutCaloriesService";
-import type { WorkoutCalorieUser, WorkoutExerciseCalorieEntry } from "../types/calories";
+import type {
+  ResolveManualFinishTotalsInput,
+  ResolveManualFinishTotalsResult,
+} from "../types/calories";
 
 /**
  * Итоги сессии при ручном завершении тренировки (кнопка «Завершить»), без логики упражнений.
  */
 export class WorkoutSessionFinishService {
-  resolveManualFinishTotals(input: {
-    exerciseLog: readonly WorkoutExerciseCalorieEntry[];
-    elapsedSeconds: number;
-    calorieUser: WorkoutCalorieUser | null;
-    strengthMet: number;
-    estimatedCaloriesPerMinute: number;
-  }): {
-    totalCaloriesBurned: number;
-    calorieSummaryFromExercises: boolean;
-    exercisesSnapshot: WorkoutExerciseCalorieEntry[];
-  } {
+  resolveManualFinishTotals(
+    input: ResolveManualFinishTotalsInput,
+  ): ResolveManualFinishTotalsResult {
     const calorieSummaryFromExercises = input.exerciseLog.length > 0;
     const exercisesSnapshot = [...input.exerciseLog];
     const fromExercises =
@@ -34,8 +29,7 @@ export class WorkoutSessionFinishService {
           input.estimatedCaloriesPerMinute,
         );
 
-    const totalCaloriesBurned =
-      exercisesSnapshot.length > 0 ? fromExercises : fallbackTotal;
+    const totalCaloriesBurned = calorieSummaryFromExercises ? fromExercises : fallbackTotal;
 
     return {
       totalCaloriesBurned,

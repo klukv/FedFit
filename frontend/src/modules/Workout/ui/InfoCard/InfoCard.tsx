@@ -5,16 +5,16 @@ import { Roboto } from "next/font/google";
 import clsx from "clsx";
 import "./infoCard.css";
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
 interface InfoCardProps {
   title: string;
   subtitle?: string;
   gradient: "primary" | "secondary" | "tertiary";
 }
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
 const InfoCard = ({ title, subtitle, gradient }: InfoCardProps) => {
   return (

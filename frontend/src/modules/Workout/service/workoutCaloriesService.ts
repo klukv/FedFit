@@ -1,5 +1,9 @@
 import type { UserProfileFormData } from "@/modules/profile/types";
-import type { WorkoutCalorieUser, WorkoutExerciseCalorieEntry } from "../types/calories";
+import type {
+  EstimateExerciseCaloriesPreviewInput,
+  WorkoutCalorieUser,
+  WorkoutExerciseCalorieEntry,
+} from "../types/calories";
 import type { EstimateWorkoutCaloriesOptions } from "../types/workoutCaloriesEstimate";
 import type { WorkoutDetail } from "../types/entities";
 
@@ -113,14 +117,7 @@ export class WorkoutCaloriesService {
   /**
    * Превью калорий для модалки: один вызов вместо дублирования условий UI.
    */
-  estimateExerciseCaloriesPreview(input: {
-    calorieUser: WorkoutCalorieUser | null;
-    exerciseDurationSeconds: number;
-    strengthMet: number;
-    plannedSetsSafe: number;
-    setsDone: number;
-    kcalPerMinuteFallback: number;
-  }): number {
+  estimateExerciseCaloriesPreview(input: EstimateExerciseCaloriesPreviewInput): number {
     if (input.exerciseDurationSeconds <= 0) return 0;
     if (input.calorieUser) {
       return this.roundCalories(

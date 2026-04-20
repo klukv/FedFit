@@ -6,15 +6,15 @@ import clsx from "clsx";
 import { Exercise } from "../../../types";
 import "./exerciseItem.css";
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
 interface ExerciseItemProps {
   exercise: Exercise;
   index: number;
 }
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
 const ExerciseItem = ({ exercise, index }: ExerciseItemProps) => {
   return (

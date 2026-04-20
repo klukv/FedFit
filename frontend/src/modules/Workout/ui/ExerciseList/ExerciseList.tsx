@@ -7,14 +7,14 @@ import { Exercise } from "../../types";
 import ExerciseItem from "./ExerciseItem";
 import "./exerciseList.css";
 
+interface ExerciseListProps {
+  exercises: Exercise[];
+}
+
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400"],
 });
-
-interface ExerciseListProps {
-  exercises: Exercise[];
-}
 
 const ExerciseList = ({ exercises }: ExerciseListProps) => {
   return (

@@ -12,23 +12,14 @@ import {
   workoutExerciseSegmentService,
   workoutSessionFinishService,
 } from "../../../service";
-import type { Exercise, WorkoutDetail } from "../../../types";
 import type {
-  WorkoutCalorieUser,
-  WorkoutCaloriesSessionResult,
   WorkoutExerciseCalorieEntry,
 } from "../../../types/calories";
-
-export interface UseWorkoutExecutionControllerParams {
-  workoutId: number;
-  exercisesCount: number;
-  exercises?: Exercise[];
-  calorieUser?: WorkoutCalorieUser | null;
-  workoutLevel?: WorkoutDetail["level"];
-  plannedSetsFallback?: number;
-  estimatedCaloriesPerMinute?: number;
-  onWorkoutCaloriesComputed?: (payload: WorkoutCaloriesSessionResult) => void;
-}
+import type { UseWorkoutExecutionControllerParams } from "../../../types";
+import { formatDate } from "@/shared/utils";
+import { historyService } from "@/modules/history";
+import { mapToWorkoutHistoryDto } from "@/modules/history/utils/mapper";
+import { createExercisesByIdMap } from "@/modules/workout/utils";
 
 export function useWorkoutExecutionController(
   params: UseWorkoutExecutionControllerParams,
@@ -42,37 +33,62 @@ export function useWorkoutExecutionController(
     plannedSetsFallback: plannedSetsFallbackProp,
     estimatedCaloriesPerMinute: estimatedKcalProp,
     onWorkoutCaloriesComputed,
+    initialExecutionState,
   } = params;
 
   const plannedSetsFallback = plannedSetsFallbackProp ?? 5;
   const estimatedCaloriesPerMinute = estimatedKcalProp ?? 13;
   const calorieUser = calorieUserProp ?? null;
+  const restoredState = useMemo(
+    () => {
+      if (!initialExecutionState?.fromHistory) return null;
+      return {
+        ...initialExecutionState,
+        elapsedSeconds: Math.max(0, initialExecutionState.elapsedSeconds),
+        completedExercisesCount: Math.min(
+          Math.max(0, initialExecutionState.completedExercisesCount),
+          exercisesCount,
+        ),
+        totalCaloriesBurned: Math.max(0, initialExecutionState.totalCaloriesBurned),
+      };
+    },
+    [initialExecutionState, exercisesCount],
+  );
+  const isRestoredFromHistory = Boolean(restoredState);
 
   const strengthMet = useMemo(
     () => workoutCaloriesService.resolveStrengthMetByLevel(workoutLevel),
     [workoutLevel],
   );
 
-  /* ---------- Таймер и пауза (уровень тренировки) ---------- */
-  const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isWorkoutStarted, setIsWorkoutStarted] = useState(isRestoredFromHistory);
+  const [workoutStartTime, setWorkoutStartTime] = useState<Date | null>(
+    restoredState ? new Date(Date.now() - restoredState.elapsedSeconds * 1000) : null,
+  );
+  const [isPaused, setIsPaused] = useState(isRestoredFromHistory);
+  const [elapsedSeconds, setElapsedSeconds] = useState(
+    restoredState?.elapsedSeconds ?? 0,
+  );
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* ---------- Упражнения: прогресс и журнал сегментов ---------- */
-  const [completedExercisesCount, setCompletedExercisesCount] = useState(0);
+  const [completedExercisesCount, setCompletedExercisesCount] = useState(
+    restoredState?.completedExercisesCount ?? 0,
+  );
   const [isStartedExercise, setIsStartedExercise] = useState(false);
   const exerciseSegmentStartRef = useRef(0);
   const elapsedAtSegmentEndRef = useRef(0);
-  const exerciseCalorieLogRef = useRef<WorkoutExerciseCalorieEntry[]>([]);
+  const exerciseCalorieLogRef = useRef<WorkoutExerciseCalorieEntry[]>(
+    restoredState?.exerciseLog ?? [],
+  );
 
   const [isCompleteExerciseOpen, setIsCompleteExerciseOpen] = useState(false);
   const [exerciseModalDurationSec, setExerciseModalDurationSec] = useState(0);
 
-  /* ---------- Модалка завершения тренировки ---------- */
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [finalElapsedTime, setFinalElapsedTime] = useState(0);
-  const [finalTotalCalories, setFinalTotalCalories] = useState(0);
+  const [finalTotalCalories, setFinalTotalCalories] = useState(
+    restoredState?.totalCaloriesBurned ?? 0,
+  );
   const [calorieSummaryFromExercises, setCalorieSummaryFromExercises] =
     useState(false);
 
@@ -143,6 +159,7 @@ export function useWorkoutExecutionController(
     setIsStartedExercise(true);
     setIsPaused(false);
     setElapsedSeconds(0);
+    setWorkoutStartTime(new Date());
     exerciseSegmentStartRef.current = 0;
   }, [resetExerciseTracking]);
 
@@ -152,8 +169,17 @@ export function useWorkoutExecutionController(
     exerciseSegmentStartRef.current = elapsedSeconds;
   }, [elapsedSeconds]);
 
-  const handleFinishWorkout = useCallback(() => {
+  const handleFinishWorkout = useCallback(async () => {
+    let workoutEndTime: Date | null = null;
     setFinalElapsedTime(elapsedSeconds);
+
+    // TODO Попап ошибки (toast)
+    if (!workoutStartTime) {
+      console.error("Не передано начальное время");
+      return
+    }
+    workoutEndTime = new Date(workoutStartTime.getTime() + elapsedSeconds * 1000);
+
     const { totalCaloriesBurned, calorieSummaryFromExercises, exercisesSnapshot } =
       workoutSessionFinishService.resolveManualFinishTotals({
         exerciseLog: exerciseCalorieLogRef.current,
@@ -168,6 +194,37 @@ export function useWorkoutExecutionController(
       totalCaloriesBurned,
       exercises: exercisesSnapshot,
     });
+
+    // TODO Попап ошибки (toast)
+    if (!workoutEndTime) {
+      console.log("Не передано конечное время\n", workoutEndTime);
+      return;
+    };
+
+    const completedExercisesByIdMap = createExercisesByIdMap(exercisesSnapshot);
+    const mappedExercises = exercises.map((exercise) => {
+      const exerciseInMap = completedExercisesByIdMap.get(exercise.id);
+
+      return {
+        id: exercise.id,
+        exerciseIndex: exerciseInMap?.exerciseIndex ?? 0,
+        durationSeconds: exerciseInMap?.durationSeconds ?? 0,
+        setsCompleted: exerciseInMap?.setsCompleted ?? 0,
+        repsDone: exerciseInMap ? exercise.reps : 0,
+        caloriesBurned: exerciseInMap?.caloriesBurned ?? 0,
+        isCompleted: exerciseInMap?.setsCompleted === exercise.sets
+      }
+    })
+
+    await historyService.addWorkoutToHistory(workoutId, 1, mapToWorkoutHistoryDto({
+      startedAt: formatDate(workoutStartTime),
+      finishedAt: formatDate(workoutEndTime),
+      totalDuration: elapsedSeconds,
+      isCompleted: false,
+      totalCaloriesBurned,
+      exercisesSnapshot: mappedExercises
+    }));
+
     setIsCompleteModalOpen(true);
     setIsPaused(true);
   }, [
@@ -191,12 +248,16 @@ export function useWorkoutExecutionController(
 
   const finishExercise = useCallback(
     (completedSets: number) => {
+      const completedExercise = exercises?.[completedExercisesCount];
+      if (!completedExercise) return;
+
       const durationSec = workoutExerciseSegmentService.computeSegmentDuration(
         elapsedAtSegmentEndRef.current,
         exerciseSegmentStartRef.current,
       );
 
       const entry = workoutExerciseSegmentService.buildCalorieEntry({
+        exerciseId: completedExercise.id,
         exerciseIndex: completedExercisesCount,
         durationSeconds: durationSec,
         setsCompleted: completedSets,
@@ -229,6 +290,7 @@ export function useWorkoutExecutionController(
     [
       calorieUser,
       completedExercisesCount,
+      exercises,
       elapsedSeconds,
       emitSessionPayload,
       estimatedCaloriesPerMinute,

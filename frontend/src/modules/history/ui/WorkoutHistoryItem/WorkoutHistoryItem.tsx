@@ -5,7 +5,11 @@ import clsx from "clsx";
 import { ButtonLink } from "@/shared/ui";
 import { ButtonLinkTypes } from "@/shared/types";
 import type { WorkoutHistory } from "../../types";
-import { formatHistoryDate, formatHistoryTimeRange } from "../../utils";
+import {
+  buildResumeWorkoutHref,
+  formatHistoryDate,
+  formatHistoryTimeRange,
+} from "../../utils";
 import "./workoutHistoryItem.css";
 
 interface WorkoutHistoryItemProps {
@@ -16,6 +20,8 @@ export function WorkoutHistoryItem({ item }: WorkoutHistoryItemProps) {
   const completedExercises = item.exercises.filter((exercise) => exercise.isCompleted).length;
   const totalExercises = item.exercises.length;
   const progressPercent = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+  const isCompleted = item.workoutForHistory.isCompleted;
+  const resumeHref = buildResumeWorkoutHref(item.workoutForHistory.id);
 
   return (
     <article className="history-workout-item">
@@ -87,11 +93,15 @@ export function WorkoutHistoryItem({ item }: WorkoutHistoryItemProps) {
 
       <div className="history-workout-item__action">
         <ButtonLink
-          type={ButtonLinkTypes.Button}
-          buttonType="button"
-          variant={item.workoutForHistory.isCompleted ? "tertiary" : "default"}
-          title={item.workoutForHistory.isCompleted ? "Просмотр" : "Продолжить"}
-          onClickHandler={() => {}}
+          type={isCompleted ? ButtonLinkTypes.Button : ButtonLinkTypes.Link}
+          {...(isCompleted
+            ? {
+                buttonType: "button" as const,
+                onClickHandler: () => {},
+              }
+            : { href: resumeHref })}
+          variant={isCompleted ? "tertiary" : "default"}
+          title={isCompleted ? "Просмотр" : "Продолжить"}
         />
       </div>
     </article>

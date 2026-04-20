@@ -1,46 +1,41 @@
 "use client";
-
-import { ReactNode } from "react";
-import { WorkoutExercisesCountModal } from "../WorkoutExercisesCountModal";
-import { WorkoutCompleteModal } from "../WorkoutCompleteModal";
+import type { ReactNode } from "react";
 import type { Exercise, WorkoutDetail } from "../../types";
 import type {
   WorkoutCalorieUser,
   WorkoutCaloriesSessionResult,
 } from "../../types/calories";
+import type { WorkoutExecutionInitialState } from "../../types/ui";
 import { useWorkoutExecutionController } from "./hooks/useWorkoutExecutionController";
-import {
-  WorkoutActiveControlsBar,
-  WorkoutInfoAnimatedSlot,
-  WorkoutProgressSection,
-  WorkoutStartPanel,
-  WorkoutTimerDisplay,
-} from "./components";
 import "./workout-controls.css";
+import { WorkoutActiveControlsBar, WorkoutInfoAnimatedSlot, WorkoutProgressSection, WorkoutStartPanel, WorkoutTimerDisplay } from "./components";
+import { WorkoutCompleteModal } from "../WorkoutCompleteModal";
+import { WorkoutExercisesCountModal } from "../WorkoutExercisesCountModal";
 
 interface WorkoutPageContentProps {
   workoutId: number;
   exerciseList: ReactNode;
-  exercisesCount: number;
   infoBlock: ReactNode;
-  exercises?: Exercise[];
+  exercises: Exercise[];
   calorieUser?: WorkoutCalorieUser | null;
   workoutLevel?: WorkoutDetail["level"];
   plannedSetsFallback?: number;
   estimatedCaloriesPerMinute?: number;
   onWorkoutCaloriesComputed?: (payload: WorkoutCaloriesSessionResult) => void;
+  initialExecutionState?: WorkoutExecutionInitialState;
 }
 
 const WorkoutPageContent = (pageProps: WorkoutPageContentProps) => {
   const execution = useWorkoutExecutionController({
     workoutId: pageProps.workoutId,
-    exercisesCount: pageProps.exercisesCount,
+    exercisesCount: pageProps.exercises.length,
     exercises: pageProps.exercises,
     calorieUser: pageProps.calorieUser,
     workoutLevel: pageProps.workoutLevel,
     plannedSetsFallback: pageProps.plannedSetsFallback,
     estimatedCaloriesPerMinute: pageProps.estimatedCaloriesPerMinute,
     onWorkoutCaloriesComputed: pageProps.onWorkoutCaloriesComputed,
+    initialExecutionState: pageProps.initialExecutionState,
   });
 
   return (
@@ -48,7 +43,7 @@ const WorkoutPageContent = (pageProps: WorkoutPageContentProps) => {
       {execution.isWorkoutStarted && (
         <WorkoutProgressSection
           completedExercisesCount={execution.completedExercisesCount}
-          exercisesCount={pageProps.exercisesCount}
+          exercisesCount={pageProps.exercises.length}
         />
       )}
 
@@ -84,7 +79,7 @@ const WorkoutPageContent = (pageProps: WorkoutPageContentProps) => {
         onContinue={execution.handleContinueWorkout}
         elapsedTime={execution.finalElapsedTime}
         estimatedCalories={execution.finalTotalCalories}
-        isCompleteWorkout={pageProps.exercisesCount === execution.completedExercisesCount}
+        isCompleteWorkout={pageProps.exercises.length === execution.completedExercisesCount}
         caloriesSummaryLabel={
           execution.calorieSummaryFromExercises
             ? "Суммарно за выполненные упражнения потрачено примерно"

@@ -4,11 +4,11 @@ import { Carousel } from "@/shared/ui";
 import { WorkoutHistory } from "../../types";
 import { WorkoutHistoryItem } from "../WorkoutHistoryItem";
 
-interface IProps {
+interface CarouselWorkoutsHistoryWrapperProps {
   items: WorkoutHistory[];
 }
 
-const CarouselWorkoutsHistoryWrapper = (props: IProps) => {
+const CarouselWorkoutsHistoryWrapper = (props: CarouselWorkoutsHistoryWrapperProps) => {
   return (
     <Carousel
       items={props.items}

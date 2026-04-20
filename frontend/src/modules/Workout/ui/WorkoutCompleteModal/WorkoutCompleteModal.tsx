@@ -11,10 +11,9 @@ interface WorkoutCompleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onContinue?: () => void;
-  elapsedTime: number; // в секундах
+  elapsedTime: number;
   estimatedCalories: number;
   isCompleteWorkout: boolean;
-  /** Текст над блоком калорий (по умолчанию — суммарная оценка за сессию) */
   caloriesSummaryLabel?: string;
 }
 

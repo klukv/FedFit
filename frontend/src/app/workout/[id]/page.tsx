@@ -2,6 +2,9 @@ import { WorkoutService, WorkoutPageContent, workoutCaloriesService } from "@/mo
 import InfoCard from "@/modules/workout/ui/InfoCard";
 import ExerciseList from "@/modules/workout/ui/ExerciseList";
 import { ProfileService } from "@/modules/profile";
+import { historyService } from "@/modules/history";
+import { mapHistoryToWorkoutExecutionInitialState } from "@/modules/history/utils";
+import type { WorkoutExecutionInitialState } from "@/modules/workout/types";
 import { Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -15,15 +18,37 @@ const montserrat = Montserrat({
 
 type IProps = {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const WorkoutDetailPage = async ({ params }: IProps) => {
+const getQueryValue = (
+  value: string | string[] | undefined,
+): string | undefined => {
+  if (Array.isArray(value)) return value[0];
+  return value;
+};
+
+const WorkoutDetailPage = async ({ params, searchParams }: IProps) => {
   const { id } = await params;
+  const workoutId = Number(id);
+  const search = (await searchParams) ?? {};
+  const fromHistory = getQueryValue(search.fromHistory) === "1";
+
   const workoutService = new WorkoutService();
 
-  const workoutDetail = await workoutService.getWorkoutDetailById(Number(id));
+  const workoutDetail = await workoutService.getWorkoutDetailById(workoutId);
 
   if (!workoutDetail) notFound();
+
+  let initialExecutionState: WorkoutExecutionInitialState | undefined;
+  if (fromHistory) {
+    const historyItem =
+      await historyService.getLatestUnfinishedWorkoutHistoryByWorkoutId(1, workoutId);
+
+    if (historyItem) {
+      initialExecutionState = mapHistoryToWorkoutExecutionInitialState(historyItem);
+    }
+  }
 
   const profileService = new ProfileService();
   const profile = await profileService.getProfile();
@@ -34,10 +59,10 @@ const WorkoutDetailPage = async ({ params }: IProps) => {
       {/* Контент страницы с таймером и управлением тренировкой */}
       <WorkoutPageContent
         workoutId={workoutDetail.id}
-        exercisesCount={workoutDetail.exercises.length}
         exercises={workoutDetail.exercises}
         workoutLevel={workoutDetail.level}
         calorieUser={calorieUser ?? undefined}
+        initialExecutionState={initialExecutionState}
         exerciseList={<ExerciseList exercises={workoutDetail.exercises} />}
         infoBlock={
         <div className="workout-detail-page__info">
