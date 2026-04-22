@@ -40,13 +40,7 @@ func (handler *Handler) AddWorkoutToHistory(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	message := map[string]string{"message": "Тренировку успешно добавлена в историю"}
-
-	if err := json.NewEncoder(w).Encode(message); err != nil {
-		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
-		return
-	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (handler *Handler) GetHistoryByUserId(w http.ResponseWriter, r *http.Request) {
@@ -70,4 +64,36 @@ func (handler *Handler) GetHistoryByUserId(w http.ResponseWriter, r *http.Reques
 		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
 		return
 	}
+}
+
+func (handler *Handler) UpdateWorkoutHistory(w http.ResponseWriter, r *http.Request) {
+	workoutHistoryId := r.PathValue("workout_history_id")
+
+	body, err := io.ReadAll(r.Body)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer r.Body.Close()
+
+	var workoutHistory models.WorkoutHistoryDTO
+
+	if err := json.Unmarshal(body, &workoutHistory); err != nil {
+		http.Error(w, "Ошибка десериализации тела запроса", http.StatusInternalServerError)
+		return
+	}
+
+	if err := handler.Services.WorkoutHistoryService.UpdateWorkoutHistory(r.Context(), workoutHistoryId, &workoutHistory); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"message": err.Error(),
+			"code":    http.StatusInternalServerError,
+		})
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

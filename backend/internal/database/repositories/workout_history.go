@@ -40,8 +40,8 @@ func (r *WorkoutHistoryRepository) CreateWorkoutHistoryTable(ctx context.Context
 func (r *WorkoutHistoryRepository) AddWorkoutToHistory(
 	ctx context.Context,
 	tx pgx.Tx,
-	workout_id int,
-	user_id int,
+	workoutId int,
+	userId int,
 	workoutHistory models.WorkoutHistory,
 ) (int, error) {
 	query := `
@@ -55,8 +55,8 @@ func (r *WorkoutHistoryRepository) AddWorkoutToHistory(
 	err := tx.QueryRow(
 		ctx,
 		query,
-		user_id,
-		workout_id,
+		userId,
+		workoutId,
 		workoutHistory.Started_at,
 		workoutHistory.Finished_at,
 		workoutHistory.Total_calories,
@@ -74,6 +74,7 @@ func (r *WorkoutHistoryRepository) AddWorkoutToHistory(
 func (r *WorkoutHistoryRepository) GetHistoryByUserId(ctx context.Context, tx pgx.Tx, userId int) ([]models.WorkoutHistory, error) {
 	query := `SELECT
 		wh.id,
+		wh.workout_id,
 		wh.started_at,
 		wh.finished_at,
 		wh.total_calories,
@@ -98,6 +99,7 @@ func (r *WorkoutHistoryRepository) GetHistoryByUserId(ctx context.Context, tx pg
 
 		if err := rows.Scan(
 			&workoutFromHistory.Id,
+			&workoutFromHistory.WorkoutId,
 			&workoutFromHistory.Started_at,
 			&workoutFromHistory.Finished_at,
 			&workoutFromHistory.Total_calories,
@@ -113,4 +115,36 @@ func (r *WorkoutHistoryRepository) GetHistoryByUserId(ctx context.Context, tx pg
 	}
 
 	return history, nil
+}
+
+func (r *WorkoutHistoryRepository) UpdateWorkoutHistory(
+	ctx context.Context,
+	tx pgx.Tx,
+	workoutHistoryId int,
+	workoutHistory models.WorkoutHistory,
+) error {
+	query := `
+		UPDATE workout_history
+		SET started_at = $2,
+		finished_at = $3,
+		total_calories = $4,
+		total_duration = $5,
+		is_completed = $6
+		WHERE id = $1
+	`
+
+	if _, err := tx.Exec(
+		ctx,
+		query,
+		workoutHistoryId,
+		workoutHistory.Started_at,
+		workoutHistory.Finished_at,
+		workoutHistory.Total_calories,
+		workoutHistory.Total_duration,
+		workoutHistory.Is_completed,
+	); err != nil {
+		return fmt.Errorf("Обновление тренировки в истории провалена. Подробнее: %w", err)
+	}
+
+	return nil
 }

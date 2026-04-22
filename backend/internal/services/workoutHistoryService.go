@@ -119,3 +119,31 @@ func (s *WorkoutHistoryService) GetHistoryByUserId(ctx context.Context, userId s
 
 	return workoutHistoryDTO, nil
 }
+
+func (s *WorkoutHistoryService) UpdateWorkoutHistory(ctx context.Context, workoutHistoryId string, workoutHistory *models.WorkoutHistoryDTO) error {
+	workoutHistoryIdConvert, err := strconv.Atoi(workoutHistoryId)
+
+	if err != nil {
+		return fmt.Errorf("id тренировки из истории не корректен")
+	}
+
+	tx, err := s.pool.Begin(ctx)
+
+	if err != nil {
+		return fmt.Errorf("begin tx: %w", err)
+	}
+
+	if err := s.repos.WorkoutHistoryRepository.UpdateWorkoutHistory(ctx, tx, workoutHistoryIdConvert, workoutHistory.WorkoutForHistory); err != nil {
+		return err
+	}
+
+	if err := s.repos.WorkoutHistoryExercisesRepository.UpdateWorkoutHistoryExercises(ctx, tx, workoutHistoryIdConvert, workoutHistory.Exercises); err != nil {
+		return err
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("Ошибка коммита. Подробнее: %w", err)
+	}
+
+	return nil
+}

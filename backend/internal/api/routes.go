@@ -24,6 +24,7 @@ func Routes(repos *repositories.Repositories, services *services.Services) *http
 	mux.HandleFunc("GET /v1/workouts/history/{user_id}", handler.GetHistoryByUserId)
 
 	mux.HandleFunc("POST /v1/workouts/history/{id}/{user_id}", handler.AddWorkoutToHistory)
+	mux.HandleFunc("PUT /v1/workouts/history/{workout_history_id}", handler.UpdateWorkoutHistory)
 
 	return mux
 }

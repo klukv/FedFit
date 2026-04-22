@@ -5,6 +5,7 @@ export interface WorkoutHistory {
 
 export interface WorkoutHistoryModel {
   id?: number,
+  workoutId: number,
   startedAt: string,
   finishedAt: string,
   totalCalories: number

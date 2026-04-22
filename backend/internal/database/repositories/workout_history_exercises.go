@@ -114,3 +114,40 @@ func (r *WorkoutHistoryExercisesRepository) GetExercisesWorkoutHistoryByUserId(c
 	}
 	return workoutsExercises, nil
 }
+
+func (r *WorkoutHistoryExercisesRepository) UpdateWorkoutHistoryExercises(
+	ctx context.Context,
+	tx pgx.Tx,
+	workoutHistoryId int,
+	exercisesIds []models.WHExercisesDTO,
+) error {
+	query := `UPDATE workout_history_exercises
+			SET sets_done = $2,
+			reps_done = $3,
+			duration_done = $4,
+			calories_burned = $5,
+			is_completed = $6
+			WHERE workout_history_id = $1 AND exercise_id = $7
+	`
+
+	for _, exercise := range exercisesIds {
+		if _, err := tx.Exec(
+			ctx,
+			query,
+			workoutHistoryId,
+			exercise.SetsDone,
+			exercise.RepsDone,
+			exercise.DurationDone,
+			exercise.CaloriesBurned,
+			exercise.IsCompleted,
+			exercise.Id,
+		); err != nil {
+			return fmt.Errorf(
+				"Обновление информации между тренировкой и упражнениями в связующую таблицу провалено. Подробнее: %w",
+				err,
+			)
+		}
+	}
+
+	return nil
+}

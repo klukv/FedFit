@@ -12,6 +12,7 @@ type WorkoutHistoryDTO struct {
 
 type WorkoutHistory struct {
 	Id             int              `json:"id"`
+	WorkoutId      int              `json:"workoutId"`
 	Started_at     utils.CustomDate `json:"startedAt"`
 	Finished_at    utils.CustomDate `json:"finishedAt"`
 	Total_calories int              `json:"totalCalories"`
