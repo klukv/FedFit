@@ -78,7 +78,7 @@ func (r *WorkoutHistoryExercisesRepository) AddWorkoutHistoryExercises(
 
 func (r *WorkoutHistoryExercisesRepository) GetExercisesWorkoutHistoryByUserId(ctx context.Context, tx pgx.Tx, workoutHistoryId int) ([]models.WHExercisesDTO, error) {
 	query := `SELECT
-		whe.id,
+		whe.exercise_id,
 		whe.sets_done,
 		whe.reps_done,
 		whe.duration_done,
@@ -119,7 +119,7 @@ func (r *WorkoutHistoryExercisesRepository) UpdateWorkoutHistoryExercises(
 	ctx context.Context,
 	tx pgx.Tx,
 	workoutHistoryId int,
-	exercisesIds []models.WHExercisesDTO,
+	exercises []models.WHExercisesDTO,
 ) error {
 	query := `UPDATE workout_history_exercises
 			SET sets_done = $2,
@@ -130,7 +130,7 @@ func (r *WorkoutHistoryExercisesRepository) UpdateWorkoutHistoryExercises(
 			WHERE workout_history_id = $1 AND exercise_id = $7
 	`
 
-	for _, exercise := range exercisesIds {
+	for _, exercise := range exercises {
 		if _, err := tx.Exec(
 			ctx,
 			query,
