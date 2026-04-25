@@ -1,4 +1,4 @@
-export const buildResumeWorkoutHref = (workoutId?: number): string => {
+export const buildResumeWorkoutHref = (isCompleted: boolean, workoutId?: number): string => {
   if (!workoutId) return "/profile";
-  return `/workout/${workoutId}?fromHistory=1`;
+  return isCompleted ? `/workout/${workoutId}` : `/workout/${workoutId}?isCompleted=false`;
 };

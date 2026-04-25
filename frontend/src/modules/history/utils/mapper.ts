@@ -1,4 +1,5 @@
 import {
+    Exercise,
     ResolveManualFinishTotalsResult,
     WorkoutExecutionInitialState,
     WorkoutExerciseCalorieEntry
@@ -38,7 +39,7 @@ export const mapToWorkoutHistoryDto = (
 export const mapHistoryToWorkoutExecutionInitialState = (
     historyItem: WorkoutHistory,
 ): WorkoutExecutionInitialState => ({
-    fromHistory: true,
+    isCompleted: true,
     elapsedSeconds: Math.max(0, historyItem.workoutForHistory.totalDuration),
     completedExercisesCount: historyItem.exercises.filter((exercise) => exercise.isCompleted).length,
     totalCaloriesBurned: Math.max(0, historyItem.workoutForHistory.totalCalories),
@@ -62,4 +63,31 @@ const mapToWokoutHistoryExercises = (initWHEObj: ExercisesForMapping[]): History
         caloriesBurned: exercise.caloriesBurned,
         isCompleted: exercise.isCompleted
     }))
+}
+
+export const createExercisesByIdMap = (exercises: WorkoutExerciseCalorieEntry[]) => {
+    const exercisesByIdMap = new Map<number, WorkoutExerciseCalorieEntry>();
+
+    exercises.forEach((exercise) => exercisesByIdMap.set(exercise.id, exercise));
+    return exercisesByIdMap;
+}
+
+/**
+ *  Склеивание информации из объектов exercises и exercisesSnapshot для маппера добавления тренировки в историю
+ *  */ 
+export const mapExercisesToSnapshotForDto = (exercises: Exercise[], exercisesSnapshot: WorkoutExerciseCalorieEntry[]) => {
+    const completedExercisesByIdMap = createExercisesByIdMap(exercisesSnapshot);
+    return exercises.map((exercise) => {
+        const exerciseInMap = completedExercisesByIdMap.get(exercise.id);
+
+        return {
+            id: exercise.id,
+            exerciseIndex: exerciseInMap?.exerciseIndex ?? 0,
+            durationSeconds: exerciseInMap?.durationSeconds ?? 0,
+            setsCompleted: exerciseInMap?.setsCompleted ?? 0,
+            repsDone: exerciseInMap ? exercise.reps : 0,
+            caloriesBurned: exerciseInMap?.caloriesBurned ?? 0,
+            isCompleted: exerciseInMap?.setsCompleted === exercise.sets
+        }
+    })
 }

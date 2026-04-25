@@ -44,7 +44,7 @@ export interface UseWorkoutExecutionControllerParams {
 }
 
 export interface WorkoutExecutionInitialState {
-  fromHistory: boolean;
+  isCompleted: boolean;
   elapsedSeconds: number;
   completedExercisesCount: number;
   totalCaloriesBurned: number;

@@ -15,10 +15,11 @@ class HistoryService {
     workoutId: number,
   ): Promise<WorkoutHistory | null> {
     const historyList = await this.getHistoryWorkouts(userId);
+
     const filtered = historyList
       .filter(
         (item) =>
-          item.workoutForHistory.id === workoutId &&
+          item.workoutForHistory.workoutId === workoutId &&
           !item.workoutForHistory.isCompleted,
       )
       .sort(
@@ -26,7 +27,7 @@ class HistoryService {
           new Date(b.workoutForHistory.startedAt).getTime() -
           new Date(a.workoutForHistory.startedAt).getTime(),
       );
-
+      
     return filtered[0] ?? null;
   }
 

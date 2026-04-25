@@ -32,7 +32,8 @@ const WorkoutDetailPage = async ({ params, searchParams }: IProps) => {
   const { id } = await params;
   const workoutId = Number(id);
   const search = (await searchParams) ?? {};
-  const fromHistory = getQueryValue(search.fromHistory) === "1";
+
+  const isCompleted = getQueryValue(search.isCompleted) === "true";
 
   const workoutService = new WorkoutService();
 
@@ -41,13 +42,11 @@ const WorkoutDetailPage = async ({ params, searchParams }: IProps) => {
   if (!workoutDetail) notFound();
 
   let initialExecutionState: WorkoutExecutionInitialState | undefined;
-  if (fromHistory) {
-    const historyItem =
-      await historyService.getLatestUnfinishedWorkoutHistoryByWorkoutId(1, workoutId);
 
-    if (historyItem) {
-      initialExecutionState = mapHistoryToWorkoutExecutionInitialState(historyItem);
-    }
+  if (!isCompleted) {
+    const historyItem = await historyService.getLatestUnfinishedWorkoutHistoryByWorkoutId(1, workoutId);
+
+    if (historyItem) initialExecutionState = mapHistoryToWorkoutExecutionInitialState(historyItem);
   }
 
   const profileService = new ProfileService();

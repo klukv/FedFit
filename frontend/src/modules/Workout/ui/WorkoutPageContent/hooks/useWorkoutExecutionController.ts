@@ -18,8 +18,7 @@ import type {
 import type { UseWorkoutExecutionControllerParams } from "../../../types";
 import { formatDate } from "@/shared/utils";
 import { historyService } from "@/modules/history";
-import { mapToWorkoutHistoryDto } from "@/modules/history/utils/mapper";
-import { createExercisesByIdMap } from "@/modules/workout/utils";
+import { mapExercisesToSnapshotForDto, mapToWorkoutHistoryDto } from "@/modules/history/utils";
 
 export function useWorkoutExecutionController(
   params: UseWorkoutExecutionControllerParams,
@@ -35,13 +34,14 @@ export function useWorkoutExecutionController(
     onWorkoutCaloriesComputed,
     initialExecutionState,
   } = params;
-
+  console.log("INITIAL STATE");
+  console.log(initialExecutionState);
   const plannedSetsFallback = plannedSetsFallbackProp ?? 5;
   const estimatedCaloriesPerMinute = estimatedKcalProp ?? 13;
   const calorieUser = calorieUserProp ?? null;
   const restoredState = useMemo(
     () => {
-      if (!initialExecutionState?.fromHistory) return null;
+      if (!initialExecutionState?.isCompleted) return null;
       return {
         ...initialExecutionState,
         elapsedSeconds: Math.max(0, initialExecutionState.elapsedSeconds),
@@ -201,28 +201,13 @@ export function useWorkoutExecutionController(
       return;
     };
 
-    const completedExercisesByIdMap = createExercisesByIdMap(exercisesSnapshot);
-    const mappedExercises = exercises.map((exercise) => {
-      const exerciseInMap = completedExercisesByIdMap.get(exercise.id);
-
-      return {
-        id: exercise.id,
-        exerciseIndex: exerciseInMap?.exerciseIndex ?? 0,
-        durationSeconds: exerciseInMap?.durationSeconds ?? 0,
-        setsCompleted: exerciseInMap?.setsCompleted ?? 0,
-        repsDone: exerciseInMap ? exercise.reps : 0,
-        caloriesBurned: exerciseInMap?.caloriesBurned ?? 0,
-        isCompleted: exerciseInMap?.setsCompleted === exercise.sets
-      }
-    })
-
     await historyService.addWorkoutToHistory(workoutId, 1, mapToWorkoutHistoryDto({
       startedAt: formatDate(workoutStartTime),
       finishedAt: formatDate(workoutEndTime),
       totalDuration: elapsedSeconds,
       isCompleted: false,
       totalCaloriesBurned,
-      exercisesSnapshot: mappedExercises
+      exercisesSnapshot: mapExercisesToSnapshotForDto(exercises, exercisesSnapshot)
     }));
 
     setIsCompleteModalOpen(true);
@@ -291,28 +276,13 @@ export function useWorkoutExecutionController(
         setIsCompleteModalOpen(true);
         setIsPaused(true);
 
-        const completedExercisesByIdMap = createExercisesByIdMap(exerciseCalorieLogRef.current);
-        const mappedExercises = exercises.map((exercise) => {
-          const exerciseInMap = completedExercisesByIdMap.get(exercise.id);
-
-          return {
-            id: exercise.id,
-            exerciseIndex: exerciseInMap?.exerciseIndex ?? 0,
-            durationSeconds: exerciseInMap?.durationSeconds ?? 0,
-            setsCompleted: exerciseInMap?.setsCompleted ?? 0,
-            repsDone: exerciseInMap ? exercise.reps : 0,
-            caloriesBurned: exerciseInMap?.caloriesBurned ?? 0,
-            isCompleted: exerciseInMap?.setsCompleted === exercise.sets
-          }
-        })
-
         await historyService.addWorkoutToHistory(workoutId, 1, mapToWorkoutHistoryDto({
           startedAt: formatDate(workoutStartTime),
           finishedAt: formatDate(workoutEndTime),
           totalDuration: elapsedSeconds,
           isCompleted: true,
           totalCaloriesBurned: total,
-          exercisesSnapshot: mappedExercises
+          exercisesSnapshot: mapExercisesToSnapshotForDto(exercises, exerciseCalorieLogRef.current)
         }))
       } else {
         togglePause();

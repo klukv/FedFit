@@ -21,7 +21,7 @@ export function WorkoutHistoryItem({ item }: WorkoutHistoryItemProps) {
   const totalExercises = item.exercises.length;
   const progressPercent = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
   const isCompleted = item.workoutForHistory.isCompleted;
-  const resumeHref = buildResumeWorkoutHref(item.workoutForHistory.workoutId);
+  const resumeHref = buildResumeWorkoutHref(item.workoutForHistory.isCompleted, item.workoutForHistory.workoutId);
 
   return (
     <article className="history-workout-item">
@@ -90,18 +90,12 @@ export function WorkoutHistoryItem({ item }: WorkoutHistoryItemProps) {
           </div>
         ))}
       </div>
-
       <div className="history-workout-item__action">
         <ButtonLink
-          {...(isCompleted
-            ? {
-              type: ButtonLinkTypes.Button,
-              buttonType: "button" as const,
-              onClickHandler: () => { },
-            }
-            : { type: ButtonLinkTypes.Link, href: resumeHref })}
+          type={ButtonLinkTypes.Link}
+          href={resumeHref}
           variant={isCompleted ? "tertiary" : "default"}
-          title={isCompleted ? "Просмотр" : "Продолжить"}
+          title={isCompleted ? "Выполнить заново" : "Продолжить"}
         />
       </div>
     </article>
