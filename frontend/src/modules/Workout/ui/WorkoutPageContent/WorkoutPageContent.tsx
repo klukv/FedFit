@@ -23,6 +23,8 @@ interface WorkoutPageContentProps {
   estimatedCaloriesPerMinute?: number;
   onWorkoutCaloriesComputed?: (payload: WorkoutCaloriesSessionResult) => void;
   initialExecutionState?: WorkoutExecutionInitialState;
+  source?: "history" | "plan";
+  workoutHistoryId?: number;
 }
 
 const WorkoutPageContent = (pageProps: WorkoutPageContentProps) => {
@@ -36,6 +38,8 @@ const WorkoutPageContent = (pageProps: WorkoutPageContentProps) => {
     estimatedCaloriesPerMinute: pageProps.estimatedCaloriesPerMinute,
     onWorkoutCaloriesComputed: pageProps.onWorkoutCaloriesComputed,
     initialExecutionState: pageProps.initialExecutionState,
+    source: pageProps.source,
+    workoutHistoryId: pageProps.workoutHistoryId,
   });
 
   return (

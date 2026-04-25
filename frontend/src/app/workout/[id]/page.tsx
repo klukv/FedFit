@@ -34,9 +34,14 @@ const WorkoutDetailPage = async ({ params, searchParams }: IProps) => {
   const search = (await searchParams) ?? {};
 
   const isCompleted = getQueryValue(search.isCompleted) === "true";
+  const sourceParam = getQueryValue(search.source);
+  const source: "history" | "plan" = sourceParam === "history" ? "history" : "plan";
+  const historyIdParam = Number(getQueryValue(search.historyId));
+  const workoutHistoryId = Number.isNaN(historyIdParam) ? undefined : historyIdParam;
 
   const workoutService = new WorkoutService();
 
+  // TODO: Временный API-вызов на странице. После внедрения Redux получать тренировку из store.
   const workoutDetail = await workoutService.getWorkoutDetailById(workoutId);
 
   if (!workoutDetail) notFound();
@@ -44,12 +49,18 @@ const WorkoutDetailPage = async ({ params, searchParams }: IProps) => {
   let initialExecutionState: WorkoutExecutionInitialState | undefined;
 
   if (!isCompleted) {
-    const historyItem = await historyService.getLatestUnfinishedWorkoutHistoryByWorkoutId(1, workoutId);
+    // TODO: Временный API-вызов на странице. После внедрения Redux брать историю из store.
+    const historyItem = source === "history" && workoutHistoryId
+      ? (await historyService.getHistoryWorkouts(1)).find(
+        (item) => item.workoutForHistory.id === workoutHistoryId,
+      ) ?? null
+      : await historyService.getLatestUnfinishedWorkoutHistoryByWorkoutId(1, workoutId);
 
     if (historyItem) initialExecutionState = mapHistoryToWorkoutExecutionInitialState(historyItem);
   }
 
   const profileService = new ProfileService();
+  // TODO: Временный API-вызов на странице. После внедрения Redux получать профиль из store.
   const profile = await profileService.getProfile();
   const calorieUser = workoutCaloriesService.mapUserProfileToWorkoutCalorieUser(profile);
 
@@ -62,6 +73,8 @@ const WorkoutDetailPage = async ({ params, searchParams }: IProps) => {
         workoutLevel={workoutDetail.level}
         calorieUser={calorieUser ?? undefined}
         initialExecutionState={initialExecutionState}
+        source={source}
+        workoutHistoryId={workoutHistoryId}
         exerciseList={<ExerciseList exercises={workoutDetail.exercises} />}
         infoBlock={
         <div className="workout-detail-page__info">

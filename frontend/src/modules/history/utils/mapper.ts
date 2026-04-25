@@ -39,10 +39,11 @@ export const mapToWorkoutHistoryDto = (
 export const mapHistoryToWorkoutExecutionInitialState = (
     historyItem: WorkoutHistory,
 ): WorkoutExecutionInitialState => ({
-    isCompleted: true,
+    isCompleted: historyItem.workoutForHistory.isCompleted,
     elapsedSeconds: Math.max(0, historyItem.workoutForHistory.totalDuration),
     completedExercisesCount: historyItem.exercises.filter((exercise) => exercise.isCompleted).length,
     totalCaloriesBurned: Math.max(0, historyItem.workoutForHistory.totalCalories),
+    workoutHistoryId: historyItem.workoutForHistory.id,
     exerciseLog: historyItem.exercises
         .filter((exercise): exercise is typeof exercise & { id: number } => typeof exercise.id === "number")
         .map((exercise, index) => ({

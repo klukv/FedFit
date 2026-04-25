@@ -37,6 +37,13 @@ class HistoryService {
       workoutHistory,
     );
   }
+
+  async updateWorkoutInHistory(workoutHistoryId: number, workoutHistory: WorkoutHistory) {
+    await $authReq().put<void>(
+      `${WORKOUTS_URL}/history/${workoutHistoryId}`,
+      workoutHistory
+    )
+  }
 }
 
 export const historyService = new HistoryService();

@@ -33,15 +33,15 @@ export function useWorkoutExecutionController(
     estimatedCaloriesPerMinute: estimatedKcalProp,
     onWorkoutCaloriesComputed,
     initialExecutionState,
+    source = "plan",
+    workoutHistoryId,
   } = params;
-  console.log("INITIAL STATE");
-  console.log(initialExecutionState);
   const plannedSetsFallback = plannedSetsFallbackProp ?? 5;
   const estimatedCaloriesPerMinute = estimatedKcalProp ?? 13;
   const calorieUser = calorieUserProp ?? null;
   const restoredState = useMemo(
     () => {
-      if (!initialExecutionState?.isCompleted) return null;
+      if (!initialExecutionState || initialExecutionState.isCompleted) return null;
       return {
         ...initialExecutionState,
         elapsedSeconds: Math.max(0, initialExecutionState.elapsedSeconds),
@@ -55,6 +55,7 @@ export function useWorkoutExecutionController(
     [initialExecutionState, exercisesCount],
   );
   const isRestoredFromHistory = Boolean(restoredState);
+  const activeWorkoutHistoryId = workoutHistoryId ?? initialExecutionState?.workoutHistoryId;
 
   const strengthMet = useMemo(
     () => workoutCaloriesService.resolveStrengthMetByLevel(workoutLevel),
@@ -169,6 +170,29 @@ export function useWorkoutExecutionController(
     exerciseSegmentStartRef.current = elapsedSeconds;
   }, [elapsedSeconds]);
 
+  const persistWorkoutHistory = useCallback(
+    async (
+      payload: Parameters<typeof mapToWorkoutHistoryDto>[0],
+    ) => { 
+      const historyDto = mapToWorkoutHistoryDto(payload);
+
+      if (activeWorkoutHistoryId) {
+        await historyService.updateWorkoutInHistory(activeWorkoutHistoryId, historyDto);
+        return;
+      }
+
+      // TODO: Временное ветвление до внедрения Redux-контекста источника перехода.
+      // Для source=history ожидаем workoutHistoryId в query, иначе пока создаём новую запись.
+      if (source === "history" && !activeWorkoutHistoryId) {
+        await historyService.addWorkoutToHistory(workoutId, 1, historyDto);
+        return;
+      }
+
+      await historyService.addWorkoutToHistory(workoutId, 1, historyDto);
+    },
+    [activeWorkoutHistoryId, source, workoutId],
+  );
+
   const handleFinishWorkout = useCallback(async () => {
     let workoutEndTime: Date | null = null;
     setFinalElapsedTime(elapsedSeconds);
@@ -201,14 +225,14 @@ export function useWorkoutExecutionController(
       return;
     };
 
-    await historyService.addWorkoutToHistory(workoutId, 1, mapToWorkoutHistoryDto({
+    await persistWorkoutHistory({
       startedAt: formatDate(workoutStartTime),
       finishedAt: formatDate(workoutEndTime),
       totalDuration: elapsedSeconds,
       isCompleted: false,
       totalCaloriesBurned,
       exercisesSnapshot: mapExercisesToSnapshotForDto(exercises, exercisesSnapshot)
-    }));
+    });
 
     setIsCompleteModalOpen(true);
     setIsPaused(true);
@@ -217,6 +241,8 @@ export function useWorkoutExecutionController(
     elapsedSeconds,
     emitSessionPayload,
     estimatedCaloriesPerMinute,
+    exercises,
+    persistWorkoutHistory,
     strengthMet,
   ]);
 
@@ -276,14 +302,14 @@ export function useWorkoutExecutionController(
         setIsCompleteModalOpen(true);
         setIsPaused(true);
 
-        await historyService.addWorkoutToHistory(workoutId, 1, mapToWorkoutHistoryDto({
+        await persistWorkoutHistory({
           startedAt: formatDate(workoutStartTime),
           finishedAt: formatDate(workoutEndTime),
           totalDuration: elapsedSeconds,
           isCompleted: true,
           totalCaloriesBurned: total,
           exercisesSnapshot: mapExercisesToSnapshotForDto(exercises, exerciseCalorieLogRef.current)
-        }))
+        })
       } else {
         togglePause();
       }
@@ -299,6 +325,7 @@ export function useWorkoutExecutionController(
       estimatedCaloriesPerMinute,
       exercisesCount,
       plannedSetsForCurrentExercise,
+      persistWorkoutHistory,
       strengthMet,
       togglePause,
     ],

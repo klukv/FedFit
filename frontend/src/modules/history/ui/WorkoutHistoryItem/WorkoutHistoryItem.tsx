@@ -21,7 +21,11 @@ export function WorkoutHistoryItem({ item }: WorkoutHistoryItemProps) {
   const totalExercises = item.exercises.length;
   const progressPercent = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
   const isCompleted = item.workoutForHistory.isCompleted;
-  const resumeHref = buildResumeWorkoutHref(item.workoutForHistory.isCompleted, item.workoutForHistory.workoutId);
+  const resumeHref = buildResumeWorkoutHref(
+    item.workoutForHistory.isCompleted,
+    item.workoutForHistory.workoutId,
+    item.workoutForHistory.id,
+  );
 
   return (
     <article className="history-workout-item">

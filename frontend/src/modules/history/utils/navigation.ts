@@ -1,4 +1,14 @@
-export const buildResumeWorkoutHref = (isCompleted: boolean, workoutId?: number): string => {
+export const buildResumeWorkoutHref = (
+  isCompleted: boolean,
+  workoutId?: number,
+  workoutHistoryId?: number,
+): string => {
   if (!workoutId) return "/profile";
-  return isCompleted ? `/workout/${workoutId}` : `/workout/${workoutId}?isCompleted=false`;
+  const params = new URLSearchParams({
+    source: "history",
+    isCompleted: String(isCompleted),
+  });
+  if (workoutHistoryId) params.set("historyId", String(workoutHistoryId));
+
+  return `/workout/${workoutId}?${params.toString()}`;
 };

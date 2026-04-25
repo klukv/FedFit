@@ -41,6 +41,8 @@ export interface UseWorkoutExecutionControllerParams {
   estimatedCaloriesPerMinute?: number;
   onWorkoutCaloriesComputed?: (payload: WorkoutCaloriesSessionResult) => void;
   initialExecutionState?: WorkoutExecutionInitialState;
+  source?: "history" | "plan";
+  workoutHistoryId?: number;
 }
 
 export interface WorkoutExecutionInitialState {
@@ -49,4 +51,5 @@ export interface WorkoutExecutionInitialState {
   completedExercisesCount: number;
   totalCaloriesBurned: number;
   exerciseLog: WorkoutExerciseCalorieEntry[];
+  workoutHistoryId?: number;
 }
