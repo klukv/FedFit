@@ -247,7 +247,7 @@ export function useWorkoutExecutionController(
   }, [resetExerciseTracking]);
 
   const finishExercise = useCallback(
-    (completedSets: number) => {
+    async (completedSets: number) => {
       const completedExercise = exercises?.[completedExercisesCount];
       if (!completedExercise) return;
 
@@ -272,7 +272,16 @@ export function useWorkoutExecutionController(
       setCompletedExercisesCount(nextCompleted);
 
       if (nextCompleted === exercisesCount) {
+        let workoutEndTime: Date | null = null;
         setFinalElapsedTime(elapsedSeconds);
+
+        // TODO Попап ошибки (toast)
+        if (!workoutStartTime) {
+          console.error("Не передано начальное время");
+          return
+        }
+        workoutEndTime = new Date(workoutStartTime.getTime() + elapsedSeconds * 1000);
+
         setCalorieSummaryFromExercises(true);
         const total = workoutCaloriesService.sumExerciseCaloriesBurned(
           exerciseCalorieLogRef.current,
@@ -281,6 +290,30 @@ export function useWorkoutExecutionController(
         emitSessionPayload(elapsedSeconds);
         setIsCompleteModalOpen(true);
         setIsPaused(true);
+
+        const completedExercisesByIdMap = createExercisesByIdMap(exerciseCalorieLogRef.current);
+        const mappedExercises = exercises.map((exercise) => {
+          const exerciseInMap = completedExercisesByIdMap.get(exercise.id);
+
+          return {
+            id: exercise.id,
+            exerciseIndex: exerciseInMap?.exerciseIndex ?? 0,
+            durationSeconds: exerciseInMap?.durationSeconds ?? 0,
+            setsCompleted: exerciseInMap?.setsCompleted ?? 0,
+            repsDone: exerciseInMap ? exercise.reps : 0,
+            caloriesBurned: exerciseInMap?.caloriesBurned ?? 0,
+            isCompleted: exerciseInMap?.setsCompleted === exercise.sets
+          }
+        })
+
+        await historyService.addWorkoutToHistory(workoutId, 1, mapToWorkoutHistoryDto({
+          startedAt: formatDate(workoutStartTime),
+          finishedAt: formatDate(workoutEndTime),
+          totalDuration: elapsedSeconds,
+          isCompleted: true,
+          totalCaloriesBurned: total,
+          exercisesSnapshot: mappedExercises
+        }))
       } else {
         togglePause();
       }

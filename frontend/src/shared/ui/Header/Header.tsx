@@ -7,6 +7,7 @@ import { StaticImageProps } from "../../types/global";
 import "./header.css";
 import clsx from "clsx";
 import Link from "next/link";
+import { ROUTES } from "@/shared/constants";
 
 interface IProps {
   logo: StaticImageProps;
@@ -21,8 +22,8 @@ const montserrat = Montserrat({
 const Header = ({ avatar, logo, username }: IProps) => {
   return (
     <header className="header">
-      <Link href={"/profile"}>
-        <div className="header_inner container__app">
+      <div className="header_inner container__app">
+        <Link href={ROUTES.home}>
           <Image
             className="header__logo"
             width={logo.width ?? 230}
@@ -30,7 +31,8 @@ const Header = ({ avatar, logo, username }: IProps) => {
             src={logo.image}
             alt="Логотип"
           />
-
+        </Link>
+        <Link href={ROUTES.profile}>
           <div className="header__profile">
             <div
               className={clsx("header__profile-username", montserrat.className)}
@@ -45,8 +47,8 @@ const Header = ({ avatar, logo, username }: IProps) => {
               alt="Аватар"
             />
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
     </header>
   );
 };

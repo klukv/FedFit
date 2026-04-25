@@ -18,7 +18,7 @@ export interface Exercise {
   icon?: string;
   sets: number;
   reps: number;
-  duration: number; // в секундах
+  duration?: number; // в секундах
 }
 
 export interface WorkoutDetail {
