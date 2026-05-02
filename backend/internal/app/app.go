@@ -1,6 +1,7 @@
 package app
 
 import (
+	"FedFit/internal/clients"
 	"FedFit/internal/database"
 	"FedFit/internal/database/repositories"
 	"FedFit/internal/services"
@@ -45,7 +46,9 @@ func InitApp() *Application {
 		log.Fatal("Ошибка инициализации БД: ", err)
 	}
 
-	services := services.InitServices(pool, repositories)
+	clients := clients.InitClients("http://localhost:8000")
+
+	services := services.InitServices(pool, repositories, clients)
 
 	// Инициализация приложения
 	app := &Application{

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"FedFit/internal/clients"
 	"FedFit/internal/database/repositories"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -8,9 +9,10 @@ import (
 
 type Services struct {
 	WorkoutHistoryService WorkoutHistoryService
+	RecommendationService RecommendationService
 }
 
-func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories) *Services {
+func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories, clients *clients.Clients) *Services {
 	workoutHistoryService := NewWorkoutHistoryService(
 		pool,
 		&WorkoutHistoryServiceRepos{
@@ -18,7 +20,13 @@ func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories) *Service
 			WorkoutHistoryExercisesRepository: repos.WorkoutHistoryExercises,
 		})
 
+	recommendationService := NewRecommendationService(pool, clients.RecommendationClient, &RecommendationRepositories{
+		workoutRepos:   repos.Workout,
+		exercisesRepos: repos.Exercise,
+	})
+
 	return &Services{
 		WorkoutHistoryService: *workoutHistoryService,
+		RecommendationService: *recommendationService,
 	}
 }
