@@ -4,8 +4,8 @@ type Clients struct {
 	RecommendationClient *RecommendationClient
 }
 
-func InitClients(baseUrl string) *Clients {
-	recommClient := newRecommendationClient(baseUrl)
+func InitClients() *Clients {
+	recommClient := NewRecommendationClient("http://localhost:8001")
 
 	return &Clients{
 		RecommendationClient: recommClient,

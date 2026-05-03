@@ -46,7 +46,7 @@ func InitApp() *Application {
 		log.Fatal("Ошибка инициализации БД: ", err)
 	}
 
-	clients := clients.InitClients("http://localhost:8000")
+	clients := clients.InitClients()
 
 	services := services.InitServices(pool, repositories, clients)
 

@@ -20,7 +20,7 @@ func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories, clients 
 			WorkoutHistoryExercisesRepository: repos.WorkoutHistoryExercises,
 		})
 
-	recommendationService := NewRecommendationService(pool, clients.RecommendationClient, &RecommendationRepositories{
+	recommendationService := NewRecommendationService(pool, clients.RecommendationClient, &RecommendationServiceRepositories{
 		workoutRepos:   repos.Workout,
 		exercisesRepos: repos.Exercise,
 	})
