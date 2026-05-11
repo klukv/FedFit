@@ -1,168 +1,135 @@
 """
 Сборщик итогового плана тренировок.
 
-Принимает результаты rule engine и ML selector и формирует
-финальный JSON-объект, соответствующий бизнес-сущностям приложения.
-
-Ответственность plan_builder:
-  - Переопределить сеты/повторения согласно параметрам слота
-  - Рассчитать примерную калорийность плана
-  - Сформировать Pydantic-объект WorkoutPlanResponse
-  - Убедиться, что все exercise_id существуют в кэше
+Каждая тренировка в ответе: метаданные + массив exercises (JSON-объекты).
 """
+
+from __future__ import annotations
 
 import logging
 import math
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 from app.models.plan_structures import (
-    WorkoutExerciseResponse,
-    WorkoutPlanResponse,
-    WorkoutResponse,
+    TrainingPlanResponse,
+    WorkoutExerciseLink,
+    WorkoutInPlan,
 )
 from app.services.rule_engine import RuleEngineOutput, WorkoutSlot
 
 logger = logging.getLogger(__name__)
 
 
+def _calorie_bounds(total: float) -> Tuple[int, int]:
+    """Диапазон калорий для полей caloriesMin / caloriesMax (целые числа)."""
+    if total <= 0:
+        return 0, 0
+    low = max(0, int(math.floor(total * 0.9)))
+    high = max(low + 1, int(math.ceil(total * 1.1)))
+    return low, high
+
+
 class PlanBuilder:
-    """
-    Формирует финальный план тренировок из компонентов.
-    """
+    """Собирает TrainingPlanResponse из выхода rule engine и выбранных упражнений."""
 
     def build(
         self,
         rule_output: RuleEngineOutput,
         slot_exercises: List[Tuple[WorkoutSlot, List[Dict[str, Any]]]],
-        recommendation_source: str = "hybrid",
-    ) -> WorkoutPlanResponse:
-        """
-        Собирает WorkoutPlanResponse из слотов и упражнений.
-
-        Args:
-            rule_output: результат rule engine (метаданные плана, параметры)
-            slot_exercises: список пар (слот, выбранные упражнения) от ML selector
-            recommendation_source: строка-источник для мета-данных
-
-        Returns:
-            Готовый план в формате Pydantic-модели
-        """
-        workouts = []
-        total_calories = 0.0
+    ) -> TrainingPlanResponse:
+        workouts_out: List[WorkoutInPlan] = []
 
         for slot, exercises in slot_exercises:
             if not exercises:
-                logger.warning(f"Слот '{slot.name}' (день {slot.day_number}) не получил упражнений!")
+                logger.warning(
+                    "Слот '%s' (день %s) не получил упражнений",
+                    slot.name,
+                    slot.day_number,
+                )
                 continue
 
-            # Строим список упражнений для тренировки
-            exercise_responses = []
+            links: List[WorkoutExerciseLink] = []
             workout_calories = 0.0
 
-            for order_idx, ex in enumerate(exercises, start=1):
-                ex_response, cal = self._build_exercise(
-                    exercise=ex,
-                    order_index=order_idx,
-                    slot=slot,
-                )
-                exercise_responses.append(ex_response)
+            for ex in exercises:
+                link, cal = self._build_exercise_link(exercise=ex, slot=slot)
+                links.append(link)
                 workout_calories += cal
 
-            total_calories += workout_calories
+            cmin, cmax = _calorie_bounds(workout_calories)
 
-            workout = WorkoutResponse(
-                name=slot.name,
-                description=self._generate_workout_description(slot),
-                order_index=slot.day_number,
-                estimated_time=slot.estimated_time,
-                exercises=exercise_responses,
+            workouts_out.append(
+                WorkoutInPlan(
+                    id=0,
+                    name=slot.name,
+                    description=self._generate_workout_description(slot),
+                    image=None,
+                    level=rule_output.level,
+                    calories_min=cmin,
+                    calories_max=cmax,
+                    duration=slot.estimated_time,
+                    exercises_count=len(links),
+                    exercises=links,
+                )
             )
-            workouts.append(workout)
 
-        # Еженедельная калорийность = калории за все тренировки в неделю
-        # (мы предполагаем, что план выполняется один раз в неделю)
-        weekly_calories = round(total_calories, 1) if total_calories > 0 else None
-
-        plan = WorkoutPlanResponse(
+        plan = TrainingPlanResponse(
+            id=0,
             name=rule_output.plan_name,
             description=rule_output.plan_description,
-            level=rule_output.level,
-            workouts=workouts,
-            weekly_frequency=len(workouts),
-            estimated_weekly_calories=weekly_calories,
-            recommendation_source=recommendation_source,
+            workouts=workouts_out,
         )
 
-        logger.info(
-            f"План собран: '{plan.name}', {len(workouts)} тренировок, "
-            f"~{weekly_calories} кал/нед, источник: {recommendation_source}"
-        )
+        logger.info("План собран: '%s', %s тренировок", plan.name, len(workouts_out))
 
         return plan
 
-    def _build_exercise(
+    def _build_exercise_link(
         self,
         exercise: Dict[str, Any],
-        order_index: int,
         slot: WorkoutSlot,
-    ) -> Tuple[WorkoutExerciseResponse, float]:
-        """
-        Формирует WorkoutExerciseResponse с переопределёнными параметрами из слота.
-
-        Логика переопределения параметров:
-          - Если слот задаёт reps_range — используем середину диапазона
-          - Если у упражнения есть duration (кардио) — используем его
-          - Калорийность рассчитывается с учётом количества подходов
-
-        Returns:
-            (WorkoutExerciseResponse, estimated_calories)
-        """
-        # Определяем сеты из слота (переопределяем default из exercises.json)
+    ) -> Tuple[WorkoutExerciseLink, float]:
+        """Только FK + параметры серии; калории — для диапазона тренировки."""
         sets = slot.sets
 
-        # Определяем повторения или длительность
         if exercise.get("duration") is not None:
-            # Это упражнение по времени (кардио, планки и т.д.)
             reps = None
-            duration = exercise["duration"]
+            duration = int(exercise["duration"])
         elif slot.reps_range is not None:
-            # Используем середину диапазона повторений из слота
             reps_min, reps_max = slot.reps_range
-            reps = math.ceil((reps_min + reps_max) / 2)
+            reps = int(math.ceil((reps_min + reps_max) / 2))
             duration = None
         else:
-            # Fallback: используем defaults из упражнения
             reps = exercise.get("reps")
-            duration = exercise.get("duration")
+            if reps is not None:
+                reps = int(reps)
+            raw_dur = exercise.get("duration")
+            duration = int(raw_dur) if raw_dur is not None else None
 
-        # Рассчитываем калорийность
-        cal_per_set = exercise.get("calories_per_set", 0.0)
+        cal_per_set = float(exercise.get("calories_per_set") or 0.0)
         if duration is not None:
-            # Для кардио: cal_per_set трактуется как кал/минуту
             estimated_calories = cal_per_set * sets * (duration / 60.0)
         else:
             estimated_calories = cal_per_set * sets
 
-        ex_response = WorkoutExerciseResponse(
-            exercise_id=exercise["id"],
-            name=exercise["name"],
-            description=exercise.get("description"),
-            muscle_group=exercise.get("muscle_group", "full_body"),
-            order_index=order_index,
+        raw_icon = exercise.get("icon")
+        icon = str(raw_icon) if raw_icon is not None else None
+
+        link = WorkoutExerciseLink(
+            id=int(exercise["id"]),
+            name=str(exercise["name"]),
+            description=str(exercise.get("description") or ""),
+            icon=icon,
             sets=sets,
             reps=reps,
             duration=duration,
-            calories_per_set=cal_per_set,
         )
 
-        return ex_response, estimated_calories
+        return link, estimated_calories
 
     def _generate_workout_description(self, slot: WorkoutSlot) -> str:
-        """
-        Генерирует текстовое описание тренировки на основе целевых групп мышц.
-        Используется для отображения в UI приложения.
-        """
-        MUSCLE_NAMES_RU = {
+        """Краткое описание тренировки."""
+        muscle_names = {
             "cardio": "кардио",
             "core": "пресс и кор",
             "chest": "грудь",
@@ -174,16 +141,12 @@ class PlanBuilder:
             "full_body": "всё тело",
         }
 
-        group_names = [
-            MUSCLE_NAMES_RU.get(g, g)
-            for g in slot.target_muscle_groups
-        ]
+        group_names = [muscle_names.get(g, g) for g in slot.target_muscle_groups]
 
         if not group_names:
             return f"Тренировка длительностью {slot.estimated_time} минут."
 
         groups_str = ", ".join(group_names)
         return (
-            f"Тренировка на {groups_str}. "
-            f"Примерное время: {slot.estimated_time} мин."
+            f"Тренировка на {groups_str}. Примерное время: {slot.estimated_time} мин."
         )

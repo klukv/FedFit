@@ -23,7 +23,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.models.plan_structures import WorkoutPlanResponse
+from app.models.plan_structures import TrainingPlanResponse
 from app.models.schemas import UserQuestionnaire
 from app.services.ml_selector import MLSelector
 from app.services.plan_builder import PlanBuilder
@@ -138,7 +138,9 @@ async def health_check() -> Dict[str, Any]:
 
 @app.post(
     "/recommend",
-    response_model=WorkoutPlanResponse,
+    response_model=TrainingPlanResponse,
+    response_model_exclude_none=True,
+    response_model_by_alias=True,
     tags=["Recommendations"],
     summary="Сгенерировать персональный план тренировок",
     responses={
@@ -147,7 +149,7 @@ async def health_check() -> Dict[str, Any]:
         500: {"description": "Внутренняя ошибка сервиса"},
     },
 )
-async def recommend(questionnaire: UserQuestionnaire) -> WorkoutPlanResponse:
+async def recommend(questionnaire: UserQuestionnaire) -> TrainingPlanResponse:
     """
     Генерирует персонализированный план тренировок на основе анкеты пользователя.
 
@@ -184,11 +186,14 @@ async def recommend(questionnaire: UserQuestionnaire) -> WorkoutPlanResponse:
         # ── Шаг 2: ML-ранжирование и выбор упражнений ──
         slot_exercises = ml_selector.select(rule_output, questionnaire)
 
-        # ── Шаг 3: Сборка плана ──
+        # ── Шаг 3: Сборка плана (JSON как models.TrainingPlan на бэкенде) ──
         plan = plan_builder.build(
             rule_output=rule_output,
             slot_exercises=slot_exercises,
-            recommendation_source=ml_selector.recommendation_source,
+        )
+        logger.info(
+            "Рекомендация отдана, источник ранжирования: %s",
+            ml_selector.recommendation_source,
         )
 
         return plan

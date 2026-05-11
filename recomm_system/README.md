@@ -30,7 +30,7 @@ POST /recommend
 └────────┬────────┘
          │
          ▼
-  WorkoutPlanResponse (JSON)
+  TrainingPlanResponse (JSON, как models.TrainingPlan на бэкенде)
 ```
 
 **Rule Engine** задаёт жёсткие ограничения (безопасность, доступность инвентаря).
@@ -48,14 +48,14 @@ recommendation_service/
 │   ├── models/
 │   │   ├── enums.py             # Enum: Goal, Level, Equipment, Restriction
 │   │   ├── schemas.py           # Pydantic: UserQuestionnaire (входная модель)
-│   │   └── plan_structures.py   # Pydantic: WorkoutPlanResponse (выходная модель)
+│   │   └── plan_structures.py   # Pydantic: TrainingPlanResponse (выход = план из БД)
 │   ├── services/
 │   │   ├── rule_engine.py       # Фильтрация упражнений, построение слотов
 │   │   ├── ml_selector.py       # ML-ранжирование и выбор упражнений
 │   │   └── plan_builder.py      # Сборка итогового JSON-плана
 │   ├── data/
-│   │   ├── exercises.json       # База упражнений (38 упражнений)
-│   │   └── templates.json       # Шаблоны планов по целям
+│   │   ├── exercises.json       # 20 упражнений — строки exercise из backend/scripts/seed.sql + поля для rule/ML
+│   │   └── templates.json       # Шаблоны по целям анкеты; тексты в духе training_plan из seed.sql
 │   └── ml/
 │       ├── features.py          # Генерация признаков для ML
 │       └── pipeline.py          # Обучение/загрузка sklearn Pipeline
@@ -148,33 +148,36 @@ curl http://localhost:8001/health
 | `duration_preference` | int | `15`, `30`, `45`, `60` | Длительность в минутах |
 | `restrictions` | array | `knee`, `back`, `shoulder` | Ограничения здоровья (можно пустой `[]`) |
 
-#### Выходной JSON (WorkoutPlanResponse)
+#### Выходной JSON (план и тренировки с массивом `exercises`)
+
+Корень: `id`, `name`, `description`, `workouts` (и при необходимости `created_at` / `updated_at`).
+
+Каждый элемент `workouts` соответствует **`WorkoutDetail`** (кроме поля `id` тренировки до сохранения): `id`, `name`, `description`, `image`, `level`, `caloriesMin`, `caloriesMax`, `duration`, `exercisesCount`, **`exercises`**.
+
+Каждый элемент **`exercises`** — как **`models.Exercise`**: `id`, `name`, `description`, `icon`, `sets`, `reps`, `duration` (значения серии для `workout_exercise`; текст и `icon` — из каталога `exercise`).
 
 ```json
 {
+  "id": 0,
   "name": "План для похудения — Средний",
-  "description": "Высокоинтенсивный план с упором на кардио и круговые тренировки...",
-  "level": "intermediate",
-  "weekly_frequency": 3,
-  "estimated_weekly_calories": 1150.5,
-  "recommendation_source": "hybrid",
+  "description": "Высокоинтенсивный план с упором на кардио...",
   "workouts": [
     {
+      "id": 0,
       "name": "День 1: Кардио + Кор",
-      "description": "Тренировка на кардио, пресс и кор. Примерное время: 45 мин.",
-      "order_index": 1,
-      "estimated_time": 45,
+      "description": "...",
+      "level": "intermediate",
+      "caloriesMin": 100,
+      "caloriesMax": 120,
+      "duration": 45,
+      "exercisesCount": 1,
       "exercises": [
         {
-          "exercise_id": 1,
-          "name": "Прыжки на месте (Джампинг Джек)",
-          "description": "Встаньте прямо, ноги вместе...",
-          "muscle_group": "cardio",
-          "order_index": 1,
+          "id": 1,
+          "name": "Прыжки на месте",
+          "description": "Техника выполнения…",
           "sets": 3,
-          "reps": 30,
-          "duration": null,
-          "calories_per_set": 15.0
+          "reps": 30
         }
       ]
     }
@@ -211,11 +214,11 @@ response = httpx.post("http://localhost:8001/recommend", json=questionnaire)
 plan = response.json()
 
 print(f"План: {plan['name']}")
-for workout in plan['workouts']:
-    print(f"\n  {workout['name']} ({workout['estimated_time']} мин)")
-    for ex in workout['exercises']:
-        params = f"{ex['sets']}x{ex['reps']}" if ex['reps'] else f"{ex['sets']}x{ex['duration']}с"
-        print(f"    - {ex['name']}: {params}")
+for workout in plan["workouts"]:
+    print(f"\n  {workout['name']} (~{workout['duration']} мин)")
+    for ex in workout["exercises"]:
+        params = f"{ex.get('sets')}x{ex.get('reps')}" if ex.get("reps") else f"{ex.get('sets')}x{ex.get('duration')}с"
+        print(f"    - упражнение id={ex['id']}: {params}")
 ```
 
 ---
@@ -280,13 +283,14 @@ curl -X POST http://localhost:8001/retrain
 
 ## Расширение базы упражнений
 
-Отредактируйте `app/data/exercises.json`. Каждое упражнение:
+Файл `app/data/exercises.json` должен оставаться **согласован с таблицей `exercise` в БД**: совпадают `id`, `name`, `description`, `icon` (как в `seed.sql` или выгрузке из продакшена). Дополнительные поля ниже нужны rule engine и ML до появления этих признаков в БД (отдельная таблица / JSONB).
 
 ```json
 {
-  "id": 39,
-  "name": "Название упражнения",
-  "description": "Описание техники",
+  "id": 21,
+  "name": "Название",
+  "description": "Текст как в БД",
+  "icon": null,
   "muscle_group": "chest",
   "sets": 3,
   "reps": 12,
@@ -298,7 +302,7 @@ curl -X POST http://localhost:8001/retrain
 }
 ```
 
-После добавления упражнений рекомендуется переобучить модель (`POST /retrain`).
+После изменения каталога переобучите модель (`POST /retrain`).
 
 ---
 

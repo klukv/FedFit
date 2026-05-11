@@ -1,11 +1,6 @@
 package clients
 
 import (
-	"FedFit/internal/models"
-	"bytes"
-	"context"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -25,28 +20,28 @@ func NewRecommendationClient(baseUrl string) *RecommendationClient {
 	}}
 }
 
-func (c *RecommendationClient) GetRecommendationPlan(ctx context.Context, surveyResult models.SurveyResult) (string, error) {
-	url := fmt.Sprintf("%s/recommend", c.baseUrl)
+// func (c *RecommendationClient) GetRecommendationPlan(ctx context.Context, surveyResult models.SurveyResult) (string, error) {
+// 	url := fmt.Sprintf("%s/recommend", c.baseUrl)
 
-	dataBytes, err := json.Marshal(surveyResult)
+// 	dataBytes, err := json.Marshal(surveyResult)
 
-	if err != nil {
-		return "", fmt.Errorf("Ошибка сериализации тела запроса для получения рекомендаций")
-	}
+// 	if err != nil {
+// 		return "", fmt.Errorf("Ошибка сериализации тела запроса для получения рекомендаций")
+// 	}
 
-	dataBytesReader := bytes.NewReader(dataBytes)
+// 	dataBytesReader := bytes.NewReader(dataBytes)
 
-	req, err := http.NewRequestWithContext(ctx, "POST", url, dataBytesReader)
+// 	req, err := http.NewRequestWithContext(ctx, "POST", url, dataBytesReader)
 
-	if err != nil {
-		return "", fmt.Errorf("Ошибка запроса рекомендаций. Подробнее %s", err.Error())
-	}
+// 	if err != nil {
+// 		return "", fmt.Errorf("Ошибка запроса рекомендаций. Подробнее %s", err.Error())
+// 	}
 
-	res, err := c.httpClient.Do(req)
+// 	res, err := c.httpClient.Do(req)
 
-	if err != nil {
-		return "", fmt.Errorf("Ошибка получения ответа рекомендаций. Подробнее %s", err.Error())
-	}
+// 	if err != nil {
+// 		return "", fmt.Errorf("Ошибка получения ответа рекомендаций. Подробнее %s", err.Error())
+// 	}
 
-	return res
-}
+// 	return res
+// }

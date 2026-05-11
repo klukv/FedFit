@@ -1,109 +1,117 @@
 """
-Pydantic-модели, описывающие структуру выходного JSON с планом тренировок.
+Модели ответа POST /recommend.
 
-Структура зеркалит бизнес-сущности БД приложения:
-  WorkoutPlanResponse
-    └── WorkoutResponse (список тренировок)
-          └── WorkoutExerciseResponse (список упражнений с параметрами)
+Корень: как план приложения — id, name, description, workouts, даты.
 
-Такое соответствие упрощает сохранение плана на стороне основного бэкенда:
-каждый объект ответа соответствует одной строке в таблице БД.
+Каждый элемент workouts: тренировка с метаданными и массивом exercises
+как []models.Exercise (см. backend/internal/models/workout.go): id, name, description,
+icon, sets, reps, duration.
 """
 
+from __future__ import annotations
+
+from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class WorkoutExerciseResponse(BaseModel):
+class WorkoutExerciseLink(BaseModel):
     """
-    Упражнение внутри тренировки с переопределёнными параметрами.
-    Соответствует строке в таблице workout_exercises.
+    Элемент массива exercises — зеркало models.Exercise (workout.go).
+    Поля sets/reps/duration совпадают с колонками workout_exercise для этой серии.
     """
-    exercise_id: int = Field(..., description="ID упражнения из таблицы exercises")
-    name: str = Field(..., description="Название упражнения")
-    description: Optional[str] = Field(None, description="Описание техники выполнения")
-    muscle_group: str = Field(..., description="Целевая группа мышц")
-    order_index: int = Field(..., description="Порядковый номер упражнения в тренировке")
 
-    # Параметры выполнения — могут быть переопределены относительно defaults из exercises
-    sets: Optional[int] = Field(None, description="Количество подходов (null для кардио)")
-    reps: Optional[int] = Field(None, description="Количество повторений (null для упражнений по времени)")
-    duration: Optional[int] = Field(None, description="Длительность в секундах (null для упражнений по повторениям)")
+    model_config = ConfigDict(extra="ignore", serialization_exclude_none=True)
 
-    # Расчётная нагрузка (информационно, для отображения в UI)
-    calories_per_set: Optional[float] = Field(None, description="Калорий за 1 подход/минуту")
-
-
-class WorkoutResponse(BaseModel):
-    """
-    Одна тренировка в плане.
-    Соответствует строке в таблице workouts.
-    """
-    name: str = Field(..., description="Название тренировки, например 'День 1: Грудь и трицепс'")
-    description: Optional[str] = Field(None, description="Краткое описание тренировки")
-    order_index: int = Field(..., description="Порядковый номер тренировки в плане")
-    estimated_time: int = Field(..., description="Примерное время выполнения в минутах")
-    exercises: List[WorkoutExerciseResponse] = Field(
-        ...,
-        description="Список упражнений в тренировке"
-    )
-
-
-class WorkoutPlanResponse(BaseModel):
-    """
-    Полный план тренировок — финальный ответ эндпоинта POST /recommend.
-    Соответствует строке в таблице workout_plans + вложенные сущности.
-    """
-    name: str = Field(..., description="Название плана")
-    description: str = Field(..., description="Описание плана и его особенностей")
-    level: str = Field(..., description="Уровень сложности: beginner/intermediate/advanced")
-    workouts: List[WorkoutResponse] = Field(
-        ...,
-        description="Список тренировок в плане (по одной на каждый день)"
-    )
-
-    # Мета-информация о плане (не хранится в БД, используется для UI)
-    weekly_frequency: int = Field(..., description="Рекомендуемое количество тренировок в неделю")
-    estimated_weekly_calories: Optional[float] = Field(
+    id: int = Field(..., description="Как в exercise.id")
+    name: str = Field(..., description="Как в exercise.name")
+    description: str = Field("", description="Как в exercise.description")
+    icon: Optional[str] = Field(None, description="Как в exercise.icon, omitempty")
+    sets: Optional[int] = Field(None, description="Подходы для этой тренировки")
+    reps: Optional[int] = Field(None, description="Повторения, если не по времени")
+    duration: Optional[int] = Field(
         None,
-        description="Примерный расход калорий в неделю"
+        description="Секунды на подход, если упражнение по времени",
     )
 
-    # Флаг источника рекомендации — для мониторинга и A/B тестирования
-    recommendation_source: str = Field(
-        default="hybrid",
-        description="Источник рекомендации: 'hybrid' (rule+ml), 'rule_only', 'ml_only'"
+
+class WorkoutInPlan(BaseModel):
+    """
+    Тренировка внутри плана — по полям близко к models.WorkoutDetail
+    (без обязательного exercisesCount: его можно вычислить как len(exercises)).
+    """
+
+    model_config = ConfigDict(
+        extra="ignore",
+        serialization_exclude_none=True,
+        populate_by_name=True,
     )
 
-    class Config:
-        json_schema_extra = {
+    id: int = Field(0, description="0 до сохранения в БД")
+    name: str
+    description: Optional[str] = Field(None, description="Как WorkoutDetail.description")
+    image: Optional[str] = Field(None, description="Как WorkoutDetail.image")
+    level: str = Field(..., description="Как WorkoutDetail.level")
+    calories_min: int = Field(..., alias="caloriesMin")
+    calories_max: int = Field(..., alias="caloriesMax")
+    duration: int = Field(
+        ...,
+        description="Минуты, как WorkoutDetail.duration в API",
+    )
+    exercises_count: int = Field(
+        ...,
+        alias="exercisesCount",
+        description="Как WorkoutDetail.exercisesCount",
+    )
+    exercises: List[WorkoutExerciseLink]
+    created_at: Optional[datetime] = Field(
+        default=None,
+        description="После сохранения на бэкенде",
+    )
+    updated_at: Optional[datetime] = None
+
+
+class TrainingPlanResponse(BaseModel):
+    """Тело ответа POST /recommend — план тренировок."""
+
+    model_config = ConfigDict(
+        extra="ignore",
+        serialization_exclude_none=True,
+        populate_by_name=True,
+        json_schema_extra={
             "example": {
-                "name": "План для похудения — Intermediate",
-                "description": "3-дневный план с кардио и силовыми упражнениями",
-                "level": "intermediate",
-                "weekly_frequency": 3,
-                "estimated_weekly_calories": 1200.0,
-                "recommendation_source": "hybrid",
+                "id": 0,
+                "name": "План для похудения",
+                "description": "Три тренировки в неделю",
                 "workouts": [
                     {
-                        "name": "День 1: Кардио + Верх тела",
-                        "description": "Сжигание жира через интервальные упражнения",
-                        "order_index": 1,
-                        "estimated_time": 45,
+                        "id": 0,
+                        "name": "День 1: Кардио",
+                        "description": "Кардио и кор.",
+                        "level": "intermediate",
+                        "caloriesMin": 100,
+                        "caloriesMax": 120,
+                        "duration": 45,
+                        "exercisesCount": 1,
                         "exercises": [
                             {
-                                "exercise_id": 1,
-                                "name": "Прыжки на месте (Джампинг Джек)",
-                                "description": "Прыжки с разведением рук и ног",
-                                "muscle_group": "cardio",
-                                "order_index": 1,
+                                "id": 1,
+                                "name": "Прыжки",
+                                "description": "",
                                 "sets": 3,
                                 "reps": 30,
-                                "duration": None,
-                                "calories_per_set": 15.0
                             }
-                        ]
+                        ],
                     }
-                ]
+                ],
             }
-        }
+        },
+    )
+
+    id: int = Field(0, description="0 до записи плана в БД")
+    name: str
+    description: str
+    workouts: List[WorkoutInPlan]
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
