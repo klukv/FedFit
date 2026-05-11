@@ -23,44 +23,50 @@ const (
 	ADVANCED     Level = "advanced"
 )
 
-type Equipment string
+type EquipmentType string
+type Equipment []EquipmentType
 
 const (
-	NONE       Equipment = "none"
-	DUMBBELLS  Equipment = "dumbbells"
-	BARBELL    Equipment = "barbell"
-	PULLUP_BAR Equipment = "pullup_bar"
-	KETTLEBELL Equipment = "kettlebell"
+	NONE       EquipmentType = "none"
+	DUMBBELLS  EquipmentType = "dumbbells"
+	BARBELL    EquipmentType = "barbell"
+	PULLUP_BAR EquipmentType = "pullup_bar"
+	KETTLEBELL EquipmentType = "kettlebell"
 )
 
-type Restriction string
+type RestrictionsType string
+type Restrictions []RestrictionsType
 
 const (
-	KNEE     Restriction = "knee"
-	BACK     Restriction = "back"
-	SHOULDER Restriction = "shoulder"
+	KNEE     RestrictionsType = "knee"
+	BACK     RestrictionsType = "back"
+	SHOULDER RestrictionsType = "shoulder"
 )
 
-type MuscleGroup string
+type MuscleGroupType string
+type MuscleGroup []MuscleGroupType
 
 const (
-	CHEST       MuscleGroup = "chest"
-	MUSCLE_BACK MuscleGroup = "back"
-	LEGS        MuscleGroup = "legs"
-	SHOULDERS   MuscleGroup = "shoulders"
-	ARMS        MuscleGroup = "arms"
-	CORE        MuscleGroup = "core"
-	CARDIO      MuscleGroup = "cardio"
-	GLUTES      MuscleGroup = "glutes"
-	FULL_BODY   MuscleGroup = "full_body"
+	CHEST       MuscleGroupType = "chest"
+	MUSCLE_BACK MuscleGroupType = "back"
+	LEGS        MuscleGroupType = "legs"
+	SHOULDERS   MuscleGroupType = "shoulders"
+	ARMS        MuscleGroupType = "arms"
+	CORE        MuscleGroupType = "core"
+	CARDIO      MuscleGroupType = "cardio"
+	GLUTES      MuscleGroupType = "glutes"
+	FULL_BODY   MuscleGroupType = "full_body"
 )
 
 type SurveyResult struct {
-	Goal               Goal        `json:"goal"`
-	Level              Level       `json:"level"`
-	Equipment          Equipment   `json:"equipment"`
-	Restriction        Restriction `json:"restriction"`
-	MuscleGroup        MuscleGroup `json:"muscleGroup"`
-	Frequency          int         `json:"frequency"`
-	DurationPreference int         `json:"duration_preference"`
+	Goal               Goal         `json:"goal"`
+	Level              Level        `json:"level"`
+	Equipment          Equipment    `json:"equipment"`
+	Restrictions       Restrictions `json:"restrictions"`
+	MuscleGroup        MuscleGroup  `json:"muscleGroup"`
+	Frequency          int          `json:"frequency"`
+	DurationPreference int          `json:"duration_preference"`
+}
+
+type RecommendationPlan struct {
 }

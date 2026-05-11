@@ -3,6 +3,11 @@ package services
 import (
 	"FedFit/internal/clients"
 	"FedFit/internal/database/repositories"
+	"FedFit/internal/models"
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -22,4 +27,23 @@ func NewRecommendationService(pool *pgxpool.Pool, client *clients.Recommendation
 	return &RecommendationService{pool: pool, recommClient: client, repos: repos}
 }
 
-func (s *RecommendationService) GetRecommendationForUser(userId string) {}
+func (s *RecommendationService) GetRecommendationForUser(ctx context.Context, surveyResult models.SurveyResult) (*models.TrainingPlan, error) {
+	res, err := s.recommClient.GetRecommendationPlan(ctx, surveyResult)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+
+	var TrainingPlan models.TrainingPlan
+
+	err = json.NewDecoder(res.Body).Decode(&TrainingPlan)
+
+	if err != nil {
+		log.Printf("Ошибка десериализации данных из тела ответа рекомендательного сервиса: %s", err)
+		return nil, fmt.Errorf("Ошибка десериализации данных из тела ответа рекомендательного сервиса")
+	}
+
+	return &TrainingPlan, nil
+}
