@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -31,24 +32,24 @@ func (r *TrainingPlanRepository) CreateTrainingPlanTable(ctx context.Context) er
 	return nil
 }
 
-func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, plan *models.TrainingPlan) error {
+func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.Tx, plan *models.TrainingPlan) (int, error) {
 	query := `
 		INSERT INTO training_plan (name, description)
 		VALUES ($1, $2)
 		RETURNING id, created_at, updated_at
 	`
 
-	if err := r.pool.QueryRow(
+	if err := tx.QueryRow(
 		ctx,
 		query,
 		plan.Name,
 		plan.Description,
 	).Scan(&plan.ID, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
 		log.Fatal(err)
-		return err
+		return 0, err
 	}
 
-	return nil
+	return plan.ID, nil
 }
 
 func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]models.TrainingPlans, error) {
@@ -99,8 +100,34 @@ func (r *TrainingPlanRepository) GetTrainingPlan(ctx context.Context, tpId int) 
 				SELECT json_agg(
 					json_build_object(
 						'id', w.id,
-                        'name', w.name,
-                        'value', w.value
+						'name', w.name,
+						'value', w.value,
+						'description', w.description,
+						'image', w.image,
+						'level', w.level,
+						'caloriesMin', w.calories_min,
+						'caloriesMax', w.calories_max,
+						'duration', w.duration,
+						'exercisesCount', (SELECT COUNT(*)::int FROM workout_exercise we WHERE we.workout_id = w.id),
+						'exercises', COALESCE(
+							(
+								SELECT json_agg(
+									json_build_object(
+										'id', e.id,
+										'name', e.name,
+										'description', e.description,
+										'icon', e.icon,
+										'sets', we.sets,
+										'reps', we.reps,
+										'duration', we.duration
+									) ORDER BY we.exercise_id
+								)
+								FROM workout_exercise we
+								JOIN exercise e ON e.id = we.exercise_id
+								WHERE we.workout_id = w.id
+							),
+							'[]'::json
+						)
 					)
 				)
 				FROM workout w
@@ -120,7 +147,9 @@ func (r *TrainingPlanRepository) GetTrainingPlan(ctx context.Context, tpId int) 
 	}
 
 	if len(workoutsJSON) > 0 {
-		json.Unmarshal(workoutsJSON, &plan.Workouts)
+		if err := json.Unmarshal(workoutsJSON, &plan.Workouts); err != nil {
+			return models.TrainingPlan{}, fmt.Errorf("разбор workouts JSON: %w", err)
+		}
 	}
 
 	return plan, nil

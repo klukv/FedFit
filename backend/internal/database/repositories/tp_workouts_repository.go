@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -28,13 +29,13 @@ func (r *TrainingPlanWorkoutRepository) CreateTrainingPlanWorkoutTable(ctx conte
 	return nil
 }
 
-func (r *TrainingPlanWorkoutRepository) CreateNewLinkTrainingPlanWorkout(ctx context.Context, training_plan_id string, workout_id string) error {
+func (r *TrainingPlanWorkoutRepository) CreateNewLinkTrainingPlanWorkout(ctx context.Context, tx pgx.Tx, training_plan_id string, workout_id string) error {
 	query := `
 		INSERT INTO training_plan_workout (training_plan_id, workout_id)
 		VALUES ($1, $2)
 	`
 
-	if _, err := r.pool.Exec(ctx, query, training_plan_id, workout_id); err != nil {
+	if _, err := tx.Exec(ctx, query, training_plan_id, workout_id); err != nil {
 		return err
 	}
 

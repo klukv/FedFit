@@ -73,7 +73,7 @@ func (handler *Handler) CreateTrainingPlanHandler(w http.ResponseWriter, r *http
 		fmt.Println("Ошибка при разборе JSON: ", err)
 	}
 
-	if err := handler.Repositories.TrainingPlan.CreateTrainingPlan(r.Context(), &trainingPlan); err != nil {
+	if err := handler.Services.TrainingService.CreateTrainingPlan(r.Context(), &trainingPlan); err != nil {
 		http.Error(w, "Ошибка создания плана тренировки", http.StatusInternalServerError)
 		return
 	}

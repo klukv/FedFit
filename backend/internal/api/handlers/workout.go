@@ -41,7 +41,7 @@ func (handler *Handler) CreateWorkoutsHandler(w http.ResponseWriter, r *http.Req
 		utils.ResErrorJson(w, "Ошибка кодирования данных", http.StatusBadRequest)
 	}
 
-	if err := handler.Services.WorkoutService.CreateWorkout(r.Context(), &workout); err != nil {
+	if _, err := handler.Services.WorkoutService.CreateWorkout(r.Context(), &workout); err != nil {
 		utils.ResErrorJson(w, "Ошибка создания тренировки", http.StatusInternalServerError)
 		return
 	}
