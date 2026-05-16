@@ -3,16 +3,9 @@ package models
 import "time"
 
 type Workout struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Value     string    `json:"value"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
-type WorkoutDetail struct {
 	ID             int        `json:"id"`
 	Name           string     `json:"name"`
+	Value          string     `json:"value"`
 	Description    *string    `json:"description,omitempty"`
 	Image          *string    `json:"image,omitempty"`
 	ExercisesCount int        `json:"exercisesCount"`
@@ -21,6 +14,8 @@ type WorkoutDetail struct {
 	Calories_min   int        `json:"caloriesMin"`
 	Calories_max   int        `json:"caloriesMax"`
 	Exercises      []Exercise `json:"exercises"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
 }
 
 type Exercise struct {

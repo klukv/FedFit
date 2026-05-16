@@ -4,8 +4,10 @@ import (
 	"FedFit/internal/models"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -36,23 +38,29 @@ func (r *WorkoutRepository) CreateWorkoutTable(ctx context.Context) error {
 	return nil
 }
 
-func (r *WorkoutRepository) CreateWorkout(ctx context.Context, workout *models.Workout) error {
+func (r *WorkoutRepository) CreateWorkout(ctx context.Context, tx pgx.Tx, workout *models.Workout) (int, error) {
 	query := `
-		INSERT INTO workout (name, value)
-		VALUES ($1, $2)
+		INSERT INTO workout (name, value, description, image, level, calories_min, calories_max, duration)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id, created_at, updated_at
 	`
 
-	if err := r.pool.QueryRow(
+	if err := tx.QueryRow(
 		ctx,
 		query,
 		workout.Name,
 		workout.Value,
+		workout.Description,
+		workout.Image,
+		workout.Level,
+		workout.Calories_min,
+		workout.Calories_max,
+		workout.Duration,
 	).Scan(&workout.ID, &workout.CreatedAt, &workout.UpdatedAt); err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return workout.ID, nil
 }
 
 func (r *WorkoutRepository) GetAllWorkouts(ctx context.Context) ([]models.Workout, error) {
@@ -80,10 +88,11 @@ func (r *WorkoutRepository) GetAllWorkouts(ctx context.Context) ([]models.Workou
 	return workouts, nil
 }
 
-func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId int) (models.WorkoutDetail, error) {
+func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId string) (*models.Workout, error) {
 	query := `SELECT
 		w.id,
 		w.name,
+		w.value,
 		w.description,
 		w.image,
 		w.level,
@@ -112,12 +121,13 @@ func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId int) (mode
 		) AS exercises
 	FROM workout w WHERE w.id = $1`
 
-	var workout models.WorkoutDetail
+	var workout models.Workout
 	var exercisesJSON []byte
 
 	if err := r.pool.QueryRow(ctx, query, workoutId).Scan(
 		&workout.ID,
 		&workout.Name,
+		&workout.Value,
 		&workout.Description,
 		&workout.Image,
 		&workout.Level,
@@ -127,12 +137,15 @@ func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId int) (mode
 		&workout.ExercisesCount,
 		&exercisesJSON,
 	); err != nil {
-		return models.WorkoutDetail{}, err
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
 	}
 
 	if len(exercisesJSON) > 0 {
 		json.Unmarshal(exercisesJSON, &workout.Exercises)
 	}
 
-	return workout, nil
+	return &workout, nil
 }

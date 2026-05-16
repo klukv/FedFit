@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -28,5 +29,23 @@ func (r *WorkoutExerciseRepository) CreateWorkoutExerciseTable(ctx context.Conte
 	)`); err != nil {
 		return fmt.Errorf("Создание таблицы связи тренировок и упражнений провалено")
 	}
+	return nil
+}
+
+func (r *WorkoutExerciseRepository) AddLinkWorkoutWithExercise(ctx context.Context, tx pgx.Tx, workoutId int, exerciseId int, sets int, reps int, duration int) error {
+	query := `
+		INSERT INTO workout_exercise (
+			exercise_id,
+			workout_id,
+			sets,
+			reps,
+			duration
+		) VALUES ($1, $2, $3, $4, $5)
+	`
+
+	if _, err := tx.Exec(ctx, query, exerciseId, workoutId, sets, reps, duration); err != nil {
+		return err
+	}
+
 	return nil
 }

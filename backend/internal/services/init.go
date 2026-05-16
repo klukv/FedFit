@@ -8,8 +8,9 @@ import (
 )
 
 type Services struct {
-	WorkoutHistoryService WorkoutHistoryService
-	RecommendationService RecommendationService
+	WorkoutHistoryService *WorkoutHistoryService
+	RecommendationService *RecommendationService
+	WorkoutService        *WorkoutService
 }
 
 func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories, clients *clients.Clients) *Services {
@@ -25,8 +26,17 @@ func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories, clients 
 		exercisesRepos: repos.Exercise,
 	})
 
+	workoutService := NewWorkoutService(
+		pool,
+		&WorkoutServiceRepos{
+			WorkoutRepository:          repos.Workout,
+			WorkoutExercisesRepository: repos.WorkoutExercise,
+		},
+	)
+
 	return &Services{
-		WorkoutHistoryService: *workoutHistoryService,
-		RecommendationService: *recommendationService,
+		WorkoutHistoryService: workoutHistoryService,
+		RecommendationService: recommendationService,
+		WorkoutService:        workoutService,
 	}
 }

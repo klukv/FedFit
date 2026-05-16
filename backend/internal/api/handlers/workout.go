@@ -2,26 +2,25 @@ package handlers
 
 import (
 	"FedFit/internal/models"
+	"FedFit/internal/utils"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"io"
+	"log"
 	"net/http"
-	"strconv"
-
-	"github.com/jackc/pgx/v5"
 )
 
 func (handler *Handler) GetWorkoutsHandler(w http.ResponseWriter, r *http.Request) {
-	workouts, err := handler.Repositories.Workout.GetAllWorkouts(r.Context())
+	workouts, err := handler.Services.WorkoutService.GetWorkouts(r.Context())
+
 	if err != nil {
-		http.Error(w, "Ошибка получения списка тренировок", http.StatusInternalServerError)
+		utils.ResErrorJson(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(workouts); err != nil {
-		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		log.Printf("Ошибка кодирования данных: %s", err.Error())
+		utils.ResErrorJson(w, "Ошибка кодирования данных", http.StatusBadRequest)
 		return
 	}
 }
@@ -38,18 +37,19 @@ func (handler *Handler) CreateWorkoutsHandler(w http.ResponseWriter, r *http.Req
 	var workout models.Workout
 
 	if err := json.Unmarshal(body, &workout); err != nil {
-		fmt.Println("Ошибка при разборе JSON: ", err)
+		log.Printf("Ошибка при разборе JSON: %s", err)
+		utils.ResErrorJson(w, "Ошибка кодирования данных", http.StatusBadRequest)
 	}
 
-	if err := handler.Repositories.Workout.CreateWorkout(r.Context(), &workout); err != nil {
-		http.Error(w, "Ошибка создания тренировки", http.StatusInternalServerError)
+	if err := handler.Services.WorkoutService.CreateWorkout(r.Context(), &workout); err != nil {
+		utils.ResErrorJson(w, "Ошибка создания тренировки", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	message := map[string]string{"message": "Тренировка успешно добавлена"}
 
 	if err := json.NewEncoder(w).Encode(message); err != nil {
-		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		utils.ResErrorJson(w, "Ошибка кодирования данных", http.StatusBadRequest)
 		return
 	}
 }
@@ -58,8 +58,8 @@ func (handler *Handler) AddWorkoutToTrainingPlan(w http.ResponseWriter, r *http.
 	tpId := r.PathValue("training_plan_id")
 	workoutId := r.PathValue("workout_id")
 
-	if err := handler.Repositories.TpWorkout.CreateNewLinkTrainingPlanWorkout(r.Context(), tpId, workoutId); err != nil {
-		http.Error(w, "Ошибка связывания плана тренировки и тренировки", http.StatusInternalServerError)
+	if err := handler.Services.WorkoutService.AddWorkoutToTrainingPlan(r.Context(), tpId, workoutId); err != nil {
+		utils.ResErrorJson(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -72,27 +72,22 @@ func (handler *Handler) GetWorkout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := strconv.Atoi(workoutId)
+	workout, err := handler.Services.WorkoutService.GetWorkout(r.Context(), workoutId)
 
 	if err != nil {
-		http.Error(w, "id не корректен", http.StatusInternalServerError)
+		utils.ResErrorJson(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	workout, err := handler.Repositories.Workout.GetWorkout(r.Context(), id)
-
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			http.Error(w, "Тренировка не найдена", http.StatusNotFound)
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+	if workout == nil {
+		utils.ResErrorJson(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(workout); err != nil {
-		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		log.Printf("Ошибка кодирования данных: %s", err)
+		utils.ResErrorJson(w, "Ошибка кодирования данных", http.StatusBadRequest)
 		return
 	}
 }
