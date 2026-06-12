@@ -1,0 +1,23 @@
+{
+  "skill_name": "ml-developer-senior",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Добавь в recomm_system поддержку нового ограничения restrictions: 'wrist' (проблемы с запястьем). Обнови enums, rule_engine (фильтрация упражнений), exercises.json (поле restrictions_avoid) и README. Не ломай совместимость с Go-бэкендом.",
+      "expected_output": "Ответ по структуре skill: архитектура, дерево файлов, полный код изменённых файлов, пример JSON, curl-тест, две итерации улучшений, самооценка на русском",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Пользователи с goal=endurance и level=beginner жалуются, что планы слишком тяжёлые. Подкрути rule_engine: для этой комбинации уменьши сеты и добавь больше cardio-упражнений. ML не трогай.",
+      "expected_output": "Изменения только в rule_engine и при необходимости templates.json; объяснение rule-based логики; пример вход/выход; итерации улучшения",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Нужен эндпоинт POST /retrain в recomm_system для переобучения ML-модели на обновлённом exercises.json без перезапуска сервиса. Используй существующий pipeline.py.",
+      "expected_output": "main.py с новым эндпоинтом, безопасная перезагрузка ml_selector в памяти, документация в README, пример curl, fallback если обучение упало",
+      "files": []
+    }
+  ]
+}

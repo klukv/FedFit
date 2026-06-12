@@ -1,0 +1,23 @@
+{
+  "skill_name": "backend-developer-senior",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Добавь в backend эндпоинт GET /v1/exercises — список всех упражнений из БД. Следуй существующей архитектуре: handler, repository (ExerciseRepository уже есть), routes.go.",
+      "expected_output": "Режим B: проектирование, полный код handler + при необходимости метод репозитория, регистрация в routes, curl-пример, граничные случаи, две итерации улучшений, самооценка на русском",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Объясни, почему в TrainingPlanService.CreateTrainingPlan используется defer tx.Rollback(ctx) даже после Commit. Это баг или идиома? Что будет в Go 1.25 если Commit упадёт?",
+      "expected_output": "Режим A: перефразирование, концепция транзакций pgx, рекомендуемый паттерн, альтернативы, пример кода, подводные камни, следующие шаги",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "POST /v1/training-plans/recommendation иногда падает с таймаутом, когда recomm_system на 8001 не отвечает. Предложи улучшения: graceful error в handler, retry в client, понятный JSON-ответ для фронта.",
+      "expected_output": "Режим B или гибрид: изменения в recommendationClient, service, handler; utils.ResErrorJson; без ломания контракта SurveyResult; curl и ожидаемые статусы",
+      "files": []
+    }
+  ]
+}

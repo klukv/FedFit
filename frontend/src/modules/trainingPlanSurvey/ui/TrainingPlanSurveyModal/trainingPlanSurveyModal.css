@@ -1,0 +1,239 @@
+.survey-modal.modal-content {
+  width: min(780px, 100%);
+  max-height: min(90vh, 860px);
+  padding: 48px 50px;
+  overflow-y: auto;
+}
+
+.survey-modal__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.survey-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.survey-modal__title {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.survey-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #1e1e1e;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 24px;
+  line-height: 1;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.survey-modal__close:hover {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+.survey-progress__list {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.survey-progress__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.survey-progress__dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #3a3a3a;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition:
+    background 300ms ease,
+    border-color 300ms ease,
+    transform 300ms ease;
+}
+
+.survey-progress__item--reached .survey-progress__dot {
+  background: linear-gradient(90deg, #c6964d 0%, #604925 100%);
+}
+
+.survey-progress__item--active .survey-progress__dot {
+  border-color: #c6964d;
+  transform: scale(1.12);
+}
+
+.survey-progress__label {
+  transition: color 300ms ease;
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+}
+
+.survey-progress__item--reached .survey-progress__label {
+  color: #c6964d;
+}
+
+.survey-modal__glass {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 32px;
+  border-radius: 20px;
+  background-color: rgba(217, 217, 217, 0.12);
+  min-height: 280px;
+  max-height: min(52vh, 460px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.survey-modal__glass--tall {
+  min-height: 380px;
+}
+
+.survey-modal__error {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: rgba(198, 40, 40, 0.15);
+  border: 1px solid rgba(239, 83, 80, 0.45);
+  color: #ff8a80;
+  font-size: 14px;
+  line-height: 1.4;
+  animation: survey-fade-in 220ms ease forwards;
+}
+
+.survey-step-panel {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.survey-step-panel--forward {
+  animation-name: survey-step-forward;
+}
+
+.survey-step-panel--back {
+  animation-name: survey-step-back;
+}
+
+@keyframes survey-step-forward {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes survey-step-back {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes survey-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.survey-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.survey-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.survey-actions--single {
+  justify-content: flex-end;
+}
+
+.survey-actions .button {
+  min-width: 160px;
+}
+
+.survey-actions--single .button {
+  min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .survey-modal.modal-content {
+    padding: 32px 24px;
+  }
+
+  .survey-modal__glass {
+    padding: 24px 20px;
+  }
+
+  .survey-progress__label {
+    font-size: 11px;
+  }
+
+  .survey-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .survey-actions .button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .survey-progress__list {
+    gap: 6px;
+  }
+
+  .survey-progress__label {
+    white-space: normal;
+  }
+}

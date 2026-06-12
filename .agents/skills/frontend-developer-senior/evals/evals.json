@@ -1,0 +1,23 @@
+{
+  "skill_name": "frontend-developer-senior",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Нужно сделать страницу настроек уведомлений в FedFit. Пользователь может включать/выключать push и email-уведомления. Макет: https://www.figma.com/design/example/notifications. Используй существующие компоненты проекта.",
+      "expected_output": "Ответ по структуре skill: дерево файлов в modules/, переиспользование ButtonLink/FormField, форма с zod-валидацией, loading/error состояния, две итерации улучшений, самооценка на русском",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Добавь на главную страницу блок «Ближайшая тренировка» с карточкой, датой, названием и кнопкой «Начать». Без макета — ориентируйся на стиль существующих Card и ContainerSection в frontend.",
+      "expected_output": "Feature-модуль или расширение существующего, тонкий page.tsx, Card/ButtonLink из shared, адаптив, итерации улучшения, оценка архитектуры",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Перепиши форму регистрации: добавь поле «Подтверждение пароля» с валидацией совпадения и покажи ошибки API под формой. Не ломай feature-based структуру auth-модуля.",
+      "expected_output": "Изменения в modules/auth (schemas, types, RegisterForm), zod refine для паролей, submitError, фокус на первую ошибку, две итерации, самооценка",
+      "files": []
+    }
+  ]
+}

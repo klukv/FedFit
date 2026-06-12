@@ -1,0 +1,11 @@
+{
+  "name": "FedFit Survey Form Generator",
+  "id": "fedfit-survey-form-generator",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
+}

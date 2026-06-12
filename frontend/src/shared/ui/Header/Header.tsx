@@ -8,6 +8,7 @@ import "./header.css";
 import clsx from "clsx";
 import Link from "next/link";
 import { ROUTES } from "@/shared/constants";
+import { TrainingPlanSurveyTrigger } from "@/modules/trainingPlanSurvey";
 
 interface IProps {
   logo: StaticImageProps;
@@ -32,6 +33,9 @@ const Header = ({ avatar, logo, username }: IProps) => {
             alt="Логотип"
           />
         </Link>
+        <div className="header__center">
+          <TrainingPlanSurveyTrigger />
+        </div>
         <Link href={ROUTES.profile}>
           <div className="header__profile">
             <div
