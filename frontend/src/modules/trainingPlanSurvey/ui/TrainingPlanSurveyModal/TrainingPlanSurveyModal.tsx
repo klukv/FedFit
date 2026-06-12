@@ -9,6 +9,9 @@ import { useTrainingPlanSurvey } from "../../hooks";
 import type { SurveyStepNumber } from "../../types";
 import {
   SurveyActions,
+  SurveyPlanGenerating,
+  SurveyPlanPreview,
+  SurveyPlanPreviewActions,
   SurveyProgress,
   SurveyStepEquipment,
   SurveyStepGoal,
@@ -53,9 +56,18 @@ const TrainingPlanSurveyModal = ({
     }
   }, [isOpen, survey.reset]);
 
-  const actions = STEP_ACTIONS[survey.step];
+  const isSurveyPhase = survey.phase === "survey";
+  const isPreviewFlow =
+    survey.phase === "generating" ||
+    survey.phase === "preview" ||
+    survey.phase === "saving";
 
-  const renderStep = () => {
+  const actions = STEP_ACTIONS[survey.step];
+  const activeError = survey.stepError ?? survey.submitError ?? survey.saveError;
+
+  const modalTitle = isPreviewFlow ? "Ваш план готов" : "Составим ваш план";
+
+  const renderSurveyStep = () => {
     switch (survey.step) {
       case 1:
         return (
@@ -93,52 +105,86 @@ const TrainingPlanSurveyModal = ({
     }
   };
 
+  const renderContent = () => {
+    if (survey.phase === "generating" || survey.phase === "saving") {
+      return <SurveyPlanGenerating />;
+    }
+
+    if (survey.phase === "preview" && survey.previewPlan) {
+      return (
+        <SurveyPlanPreview plan={survey.previewPlan} summary={survey.summary} />
+      );
+    }
+
+    return (
+      <SurveyStepTransition step={survey.step} direction={survey.direction}>
+        {renderSurveyStep()}
+      </SurveyStepTransition>
+    );
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={survey.handleClose}
-      className="survey-modal"
-      ariaLabel="Составление плана тренировок"
+      className={clsx("survey-modal", isPreviewFlow && "survey-modal--preview")}
+      ariaLabel={
+        isPreviewFlow
+          ? "Предпросмотр плана тренировок"
+          : "Составление плана тренировок"
+      }
     >
       <div className={`survey-modal__inner ${montserrat.className}`}>
         <header className="survey-modal__header">
-          <h2 className="survey-modal__title">Составим ваш план</h2>
+          <h2 className="survey-modal__title">{modalTitle}</h2>
           <button
             type="button"
             className="survey-modal__close"
             onClick={survey.handleClose}
-            aria-label="Закрыть опросник"
+            aria-label="Закрыть"
+            disabled={survey.isGenerating || survey.isSaving}
           >
             ×
           </button>
         </header>
 
-        <SurveyProgress activeStep={survey.step} />
+        {isSurveyPhase && <SurveyProgress activeStep={survey.step} />}
 
         <div
           className={clsx(
             "survey-modal__glass",
-            survey.step === 4 && "survey-modal__glass--tall"
+            survey.step === 4 && isSurveyPhase && "survey-modal__glass--tall",
+            isPreviewFlow && "survey-modal__glass--preview"
           )}
         >
-          {(survey.stepError || survey.submitError) && (
+          {activeError && (
             <p className="survey-modal__error" role="alert">
-              {survey.stepError ?? survey.submitError}
+              {activeError}
             </p>
           )}
 
-          <SurveyStepTransition step={survey.step} direction={survey.direction}>
-            {renderStep()}
-          </SurveyStepTransition>
+          {renderContent()}
         </div>
 
-        <SurveyActions
-          showBack={actions.showBack}
-          primaryLabel={actions.primaryLabel}
-          onBack={survey.goBack}
-          onPrimary={survey.handlePrimaryAction}
-          isSubmitting={survey.isSubmitting}
-        />
+        {isSurveyPhase && (
+          <SurveyActions
+            showBack={actions.showBack}
+            primaryLabel={actions.primaryLabel}
+            onBack={survey.goBack}
+            onPrimary={survey.handlePrimaryAction}
+            isSubmitting={survey.isSubmitting}
+          />
+        )}
+
+        {survey.phase === "preview" && survey.previewPlan && (
+          <SurveyPlanPreviewActions
+            onCancel={survey.cancelPreview}
+            onRegenerate={survey.regeneratePlan}
+            onSave={survey.savePlan}
+            isRegenerating={survey.isGenerating}
+            isSaving={survey.isSaving}
+          />
+        )}
       </div>
     </Modal>
   );

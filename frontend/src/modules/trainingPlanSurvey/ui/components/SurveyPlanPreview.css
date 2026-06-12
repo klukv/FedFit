@@ -1,0 +1,168 @@
+.plan-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.plan-preview__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.plan-preview__badge {
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 50px;
+  background: linear-gradient(90deg, #c6964d 0%, #604925 100%);
+  color: #000000;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.plan-preview__title {
+  margin: 0;
+  font-size: clamp(20px, 3.5vw, 26px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+.plan-preview__description {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.plan-preview__meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.plan-preview__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background-color: rgba(30, 30, 30, 0.72);
+  border: 1px solid #3a3a3a;
+}
+
+.plan-preview__meta-item dt {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.plan-preview__meta-item dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #ffffff;
+}
+
+.plan-preview__workouts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.plan-preview__workouts-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plan-preview__workouts-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.plan-preview__workouts-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.plan-preview__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plan-preview__card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid #3a3a3a;
+  background-color: #1e1e1e;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.plan-preview__card:hover {
+  border-color: #c6964d;
+  background-color: #252525;
+}
+
+.plan-preview__card-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c6964d 0%, #604925 100%);
+  color: #000000;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.plan-preview__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.plan-preview__card-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+.plan-preview__card-value {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 640px) {
+  .plan-preview__meta {
+    grid-template-columns: 1fr;
+  }
+}

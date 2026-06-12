@@ -31,6 +31,9 @@ export type SurveySubmitPayload = z.infer<typeof surveyFormSchema>;
 
 export type SurveyStepDirection = "forward" | "back";
 
+/** Фаза модального окна опросника. */
+export type SurveyPhase = "survey" | "generating" | "preview" | "saving";
+
 export interface SurveySummary {
   goalLevel: string;
   rhythm: string;

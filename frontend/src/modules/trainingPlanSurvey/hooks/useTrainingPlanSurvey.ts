@@ -19,8 +19,10 @@ import type {
   SurveyEquipment,
   SurveyRestriction,
   SurveyDuration,
+  SurveySubmitPayload,
 } from "../types";
 import { buildSurveySummary, toSurveySubmitPayload } from "../utils";
+import { SurveyPhase } from "../types/entities";
 
 interface UseTrainingPlanSurveyOptions {
   onClose: () => void;
@@ -73,22 +75,32 @@ export function useTrainingPlanSurvey({
 }: UseTrainingPlanSurveyOptions) {
   const service = useMemo(() => new TrainingPlanSurveyService(), []);
 
+  const [phase, setPhase] = useState<SurveyPhase>("survey");
   const [step, setStep] = useState<SurveyStepNumber>(1);
   const [direction, setDirection] = useState<SurveyStepDirection>("forward");
   const [values, setValues] = useState<SurveyFormValues>(DEFAULT_SURVEY_VALUES);
   const [stepError, setStepError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [previewPlan, setPreviewPlan] = useState<TrainingPlan | null>(null);
+  const [lastPayload, setLastPayload] = useState<SurveySubmitPayload | null>(null);
 
   const summary = useMemo(() => buildSurveySummary(values), [values]);
 
   const reset = useCallback(() => {
+    setPhase("survey");
     setStep(1);
     setDirection("forward");
     setValues(DEFAULT_SURVEY_VALUES);
     setStepError(null);
     setSubmitError(null);
-    setIsSubmitting(false);
+    setSaveError(null);
+    setIsGenerating(false);
+    setIsSaving(false);
+    setPreviewPlan(null);
+    setLastPayload(null);
   }, []);
 
   const handleClose = useCallback(() => {
@@ -127,11 +139,13 @@ export function useTrainingPlanSurvey({
   }, []);
 
   const goBack = useCallback(() => {
+    if (phase !== "survey") return;
+
     setDirection("back");
     setStepError(null);
     setSubmitError(null);
     setStep((current) => Math.max(1, current - 1) as SurveyStepNumber);
-  }, []);
+  }, [phase]);
 
   const goNext = useCallback(() => {
     const error = getStepValidationError(step, values);
@@ -144,6 +158,30 @@ export function useTrainingPlanSurvey({
     setStepError(null);
     setStep((current) => Math.min(4, current + 1) as SurveyStepNumber);
   }, [step, values]);
+
+  const generatePlan = useCallback(
+    async (payload: SurveySubmitPayload) => {
+      setSubmitError(null);
+      setSaveError(null);
+      setIsGenerating(true);
+      setPhase("generating");
+
+      try {
+        const plan = await service.createFromSurvey(payload);
+        setPreviewPlan(plan);
+        setPhase("preview");
+      } catch {
+        setSubmitError(
+          "Не удалось сформировать план. Попробуйте ещё раз чуть позже."
+        );
+        setPhase("survey");
+        setStep(4);
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    [service]
+  );
 
   const submit = useCallback(async () => {
     const stepFourError = getStepValidationError(3, values);
@@ -169,21 +207,37 @@ export function useTrainingPlanSurvey({
       return;
     }
 
-    setSubmitError(null);
-    setIsSubmitting(true);
+    setLastPayload(validation.data);
+    await generatePlan(validation.data);
+  }, [values, generatePlan]);
+
+  const regeneratePlan = useCallback(async () => {
+    if (!lastPayload) return;
+    await generatePlan(lastPayload);
+  }, [lastPayload, generatePlan]);
+
+  const savePlan = useCallback(async () => {
+    if (!previewPlan) return;
+
+    setSaveError(null);
+    setIsSaving(true);
+    setPhase("saving");
 
     try {
-      const plan = await service.createFromSurvey(validation.data);
-      onSuccess?.(plan);
+      const savedPlan = await service.savePlan(previewPlan);
+      onSuccess?.(savedPlan);
       handleClose();
     } catch {
-      setSubmitError(
-        "Не удалось сформировать план. Попробуйте ещё раз чуть позже."
-      );
+      setSaveError("Не удалось сохранить план. Попробуйте ещё раз.");
+      setPhase("preview");
     } finally {
-      setIsSubmitting(false);
+      setIsSaving(false);
     }
-  }, [values, service, onSuccess, handleClose]);
+  }, [previewPlan, service, onSuccess, handleClose]);
+
+  const cancelPreview = useCallback(() => {
+    handleClose();
+  }, [handleClose]);
 
   const handlePrimaryAction = useCallback(() => {
     if (step === 4) {
@@ -194,13 +248,18 @@ export function useTrainingPlanSurvey({
   }, [step, submit, goNext]);
 
   return {
+    phase,
     step,
     direction,
     values,
     summary,
+    previewPlan,
     stepError,
     submitError,
-    isSubmitting,
+    saveError,
+    isGenerating,
+    isSaving,
+    isSubmitting: isGenerating && phase === "survey",
     setGoal,
     setLevel,
     setEquipment,
@@ -210,6 +269,9 @@ export function useTrainingPlanSurvey({
     goBack,
     handlePrimaryAction,
     handleClose,
+    regeneratePlan,
+    savePlan,
+    cancelPreview,
     reset,
   };
 }

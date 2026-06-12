@@ -7,3 +7,6 @@ export { default as SurveyStepGoal } from "./SurveyStepGoal";
 export { default as SurveyStepEquipment } from "./SurveyStepEquipment";
 export { default as SurveyStepRhythm } from "./SurveyStepRhythm";
 export { default as SurveyStepHealth } from "./SurveyStepHealth";
+export { default as SurveyPlanPreview } from "./SurveyPlanPreview";
+export { default as SurveyPlanPreviewActions } from "./SurveyPlanPreviewActions";
+export { default as SurveyPlanGenerating } from "./SurveyPlanGenerating";

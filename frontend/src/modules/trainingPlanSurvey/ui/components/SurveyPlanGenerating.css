@@ -1,0 +1,46 @@
+.plan-generating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 280px;
+  padding: 24px;
+  text-align: center;
+}
+
+.plan-generating__spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid rgba(198, 150, 77, 0.2);
+  border-top-color: #c6964d;
+  animation: plan-generating-spin 900ms linear infinite;
+}
+
+.plan-generating__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.plan-generating__text {
+  margin: 0;
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+@keyframes plan-generating-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan-generating__spinner {
+    animation-duration: 1.8s;
+  }
+}
