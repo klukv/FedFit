@@ -14,11 +14,39 @@ import (
 )
 
 func (handler *Handler) GetTrainingPlansHandler(w http.ResponseWriter, r *http.Request) {
-	trainingPlans, err := handler.Repositories.TrainingPlan.GetAllTrainingPlans(r.Context())
+	trainingPlans, err := handler.Repositories.TrainingPlan.GetCommonTrainingPlans(r.Context())
 
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Ошибка получения общих планов тренировок: %s", err.Error())
 		http.Error(w, "Ошибка получения планов тренировок", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(trainingPlans); err != nil {
+		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (handler *Handler) GetPersonalTrainingPlansHandler(w http.ResponseWriter, r *http.Request) {
+	userIDParam := r.PathValue("user_id")
+
+	if userIDParam == "" {
+		http.Error(w, "user_id не указан в запросе", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := strconv.Atoi(userIDParam)
+	if err != nil {
+		http.Error(w, "user_id не корректен", http.StatusBadRequest)
+		return
+	}
+
+	trainingPlans, err := handler.Repositories.TrainingPlan.GetPersonalTrainingPlansByUserID(r.Context(), userID)
+	if err != nil {
+		log.Printf("Ошибка получения личных планов тренировок: %s", err.Error())
+		http.Error(w, "Ошибка получения личных планов тренировок", http.StatusInternalServerError)
 		return
 	}
 

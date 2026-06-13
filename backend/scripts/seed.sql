@@ -69,13 +69,13 @@ INSERT INTO workout_exercise (workout_id, exercise_id, sets, reps, duration) VAL
 (5, 3, 3, NULL, 45),   -- Планка
 (5, 10, 2, NULL, 90);  -- Бег на месте
 
--- Планы тренировок (5 штук)
-INSERT INTO training_plan (name, description) VALUES
-('Для начинающих', 'План для тех, кто только начинает. Лёгкие тренировки на всё тело и основы силы.'),
-('Неделя силы', 'Фокус на силовых упражнениях и проработке основных мышечных групп.'),
-('Кардио и кор', 'Сочетание кардио и упражнений на пресс. Подходит для сжигания калорий и укрепления кора.'),
-('Полный цикл', 'Недельный план: от утренней зарядки до HIIT. Разнообразие нагрузок.'),
-('Короткие тренировки', 'Планы на 15–25 минут для занятых. Зарядка и интервальные тренировки.');
+-- Планы тренировок (5 штук, user_id = NULL — общие планы для всех пользователей)
+INSERT INTO training_plan (name, description, user_id) VALUES
+('Для начинающих', 'План для тех, кто только начинает. Лёгкие тренировки на всё тело и основы силы.', NULL),
+('Неделя силы', 'Фокус на силовых упражнениях и проработке основных мышечных групп.', NULL),
+('Кардио и кор', 'Сочетание кардио и упражнений на пресс. Подходит для сжигания калорий и укрепления кора.', NULL),
+('Полный цикл', 'Недельный план: от утренней зарядки до HIIT. Разнообразие нагрузок.', NULL),
+('Короткие тренировки', 'Планы на 15–25 минут для занятых. Зарядка и интервальные тренировки.', NULL);
 
 -- Связь планов с тренировками (training_plan_workout)
 -- План 1 (Для начинающих): тренировки 1, 4
@@ -106,3 +106,32 @@ INSERT INTO training_plan_workout (training_plan_id, workout_id) VALUES
 INSERT INTO training_plan_workout (training_plan_id, workout_id) VALUES
 (5, 1),
 (5, 5);
+
+-- Тестовый пользователь (id = 1) для личных планов
+INSERT INTO users (id, username, password) VALUES
+(1, 'testuser', 'password')
+ON CONFLICT (id) DO NOTHING;
+
+SELECT setval('users_id_seq', GREATEST((SELECT MAX(id) FROM users), 1));
+
+-- Личные планы тренировок для пользователя id = 1
+INSERT INTO training_plan (name, description, user_id) VALUES
+('Мой план: сила и выносливость', 'Персональный план с акцентом на силовые упражнения и работу ног.', 1),
+('Мой план: кардио-интенсив', 'Индивидуальный план для улучшения выносливости и сжигания калорий.', 1);
+
+-- Связь личных планов с тренировками
+INSERT INTO training_plan_workout (training_plan_id, workout_id)
+SELECT tp.id, 2 FROM training_plan tp
+WHERE tp.name = 'Мой план: сила и выносливость' AND tp.user_id = 1;
+
+INSERT INTO training_plan_workout (training_plan_id, workout_id)
+SELECT tp.id, 4 FROM training_plan tp
+WHERE tp.name = 'Мой план: сила и выносливость' AND tp.user_id = 1;
+
+INSERT INTO training_plan_workout (training_plan_id, workout_id)
+SELECT tp.id, 3 FROM training_plan tp
+WHERE tp.name = 'Мой план: кардио-интенсив' AND tp.user_id = 1;
+
+INSERT INTO training_plan_workout (training_plan_id, workout_id)
+SELECT tp.id, 5 FROM training_plan tp
+WHERE tp.name = 'Мой план: кардио-интенсив' AND tp.user_id = 1;

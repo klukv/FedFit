@@ -39,3 +39,9 @@
 .workout-item__title {
   text-align: center;
 }
+
+.workout-carousel-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}

@@ -13,6 +13,7 @@ func Routes(repos *repositories.Repositories, services *services.Services) *http
 	handler := handlers.NewHandler(repos, services)
 
 	mux.HandleFunc("GET /v1/training-plans", handler.GetTrainingPlansHandler)
+	mux.HandleFunc("GET /v1/training-plans/personal/{user_id}", handler.GetPersonalTrainingPlansHandler)
 	mux.HandleFunc("GET /v1/training-plans/{id}", handler.GetTrainingPlanHandler)
 	mux.HandleFunc("POST /v1/training-plans", handler.CreateTrainingPlanHandler)
 	mux.HandleFunc("POST /v1/training-plans/recommendation", handler.GetRecommendationTrainingPlan)

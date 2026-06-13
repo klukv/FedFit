@@ -2,6 +2,7 @@ export { WorkoutItem, WorkoutCompleteModal, WorkoutPageContent } from "./ui";
 export {
   WorkoutItemVariants,
   type WorkoutModel as Workout,
+  type WorkoutListItem,
   type WorkoutDetail,
   type Exercise,
   type WorkoutCalorieUser,

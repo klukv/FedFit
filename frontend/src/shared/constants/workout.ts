@@ -1,6 +1,13 @@
+import arms from "@/assets/workout/arms.png";
+import bike from "@/assets/workout/bike.png";
+import foots from "@/assets/workout/foots.png";
+import press from "@/assets/workout/press.png";
+import run from "@/assets/workout/run.png";
 import STRETCHING_TRAINING from "@/assets/workout/stretching_training.png";
 import CARDIO_TRAINING from "@/assets/workout/cardio_training.png";
 import STRENGTH_TRAINING from "@/assets/workout/strength_training.png";
+
+export const WORKOUT_CAROUSEL_IMAGES = [arms, bike, foots, press, run];
 
 export const TRAINING_PLANS = [
   {

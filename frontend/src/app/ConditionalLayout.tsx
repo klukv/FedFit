@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Header, Footer } from "@/shared/ui";
+import { TrainingPlanSurveyProvider } from "@/modules/trainingPlanSurvey";
 import { ROUTES } from "@/shared/constants";
 import logo from "@/assets/logo.png";
 import avatar from "@/assets/mock_avatar.png";
@@ -19,7 +20,7 @@ export default function ConditionalLayout({
   }
 
   return (
-    <>
+    <TrainingPlanSurveyProvider>
       <Header
         username="Юлия"
         logo={{ image: logo }}
@@ -27,6 +28,6 @@ export default function ConditionalLayout({
       />
       <main className="content">{children}</main>
       <Footer />
-    </>
+    </TrainingPlanSurveyProvider>
   );
 }

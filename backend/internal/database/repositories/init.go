@@ -27,15 +27,7 @@ func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, e
 	workoutHistoryExersiceRepository := NewWorkoutHistoryExercisesRepository(pool)
 	usersRepository := NewUsersRepositry(pool)
 
-	if err := trainingPlanRepository.CreateTrainingPlanTable(ctx); err != nil {
-		return nil, err
-	}
-
-	if err := workoutRepository.CreateWorkoutTable(ctx); err != nil {
-		return nil, err
-	}
-
-	if err := tpWorkoutRepository.CreateTrainingPlanWorkoutTable(ctx); err != nil {
+	if err := usersRepository.CreateUsersTable(ctx); err != nil {
 		return nil, err
 	}
 
@@ -43,11 +35,19 @@ func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, e
 		return nil, err
 	}
 
+	if err := workoutRepository.CreateWorkoutTable(ctx); err != nil {
+		return nil, err
+	}
+
 	if err := workoutExersiceRepository.CreateWorkoutExerciseTable(ctx); err != nil {
 		return nil, err
 	}
 
-	if err := usersRepository.CreateUsersTable(ctx); err != nil {
+	if err := trainingPlanRepository.CreateTrainingPlanTable(ctx); err != nil {
+		return nil, err
+	}
+
+	if err := tpWorkoutRepository.CreateTrainingPlanWorkoutTable(ctx); err != nil {
 		return nil, err
 	}
 

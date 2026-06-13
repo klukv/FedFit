@@ -24,11 +24,23 @@ func (r *TrainingPlanRepository) CreateTrainingPlanTable(ctx context.Context) er
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(255) NOT NULL,
 		description TEXT NOT NULL,
+		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	)`); err != nil {
 		return fmt.Errorf("Создание таблицы планок тренировок провалено")
 	}
+
+	if _, err := r.pool.Exec(ctx, `ALTER TABLE training_plan
+		ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE`); err != nil {
+		return fmt.Errorf("добавление колонки user_id в training_plan провалено: %w", err)
+	}
+
+	if _, err := r.pool.Exec(ctx, `CREATE INDEX IF NOT EXISTS idx_training_plan_user_id
+		ON training_plan(user_id)`); err != nil {
+		return fmt.Errorf("создание индекса idx_training_plan_user_id провалено: %w", err)
+	}
+
 	return nil
 }
 
@@ -52,17 +64,26 @@ func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.
 	return plan.ID, nil
 }
 
-func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]models.TrainingPlans, error) {
-	query := `SELECT
+func (r *TrainingPlanRepository) GetCommonTrainingPlans(ctx context.Context) ([]models.TrainingPlans, error) {
+	return r.getTrainingPlansByScope(ctx, "tp.user_id IS NULL")
+}
+
+func (r *TrainingPlanRepository) GetPersonalTrainingPlansByUserID(ctx context.Context, userID int) ([]models.TrainingPlans, error) {
+	return r.getTrainingPlansByScope(ctx, "tp.user_id = $1", userID)
+}
+
+func (r *TrainingPlanRepository) getTrainingPlansByScope(ctx context.Context, whereClause string, args ...any) ([]models.TrainingPlans, error) {
+	query := fmt.Sprintf(`SELECT
 		tp.id,
 		tp.name,
 		tp.description,
 		tp.created_at,
 		tp.updated_at
 	FROM training_plan tp
-	ORDER BY tp.created_at DESC`
+	WHERE %s
+	ORDER BY tp.created_at DESC`, whereClause)
 
-	rows, err := r.pool.Query(ctx, query)
+	rows, err := r.pool.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,6 +107,10 @@ func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]mod
 	}
 
 	return []models.TrainingPlans{}, nil
+}
+
+func (r *TrainingPlanRepository) GetAllTrainingPlans(ctx context.Context) ([]models.TrainingPlans, error) {
+	return r.GetCommonTrainingPlans(ctx)
 }
 
 func (r *TrainingPlanRepository) GetTrainingPlan(ctx context.Context, tpId int) (models.TrainingPlan, error) {

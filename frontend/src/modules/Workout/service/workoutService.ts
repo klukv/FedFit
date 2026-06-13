@@ -1,5 +1,5 @@
 import { $authReq } from "@/shared/api";
-import { WorkoutDetail, TrainingPlan } from "../types";
+import { WorkoutDetail, TrainingPlan, WorkoutListItem } from "../types";
 import { TRAINING_PLANS_URL, WORKOUTS_URL } from "@/shared/constants";
 
 export class WorkoutService {
@@ -9,6 +9,18 @@ export class WorkoutService {
     const { data } = await $authReq().get<Omit<TrainingPlan, "workouts">[]>(
       `${TRAINING_PLANS_URL}`,
     );
+    return data;
+  }
+
+  async getPersonalTrainingPlans(userId: number) {
+    const { data } = await $authReq().get<Omit<TrainingPlan, "workouts">[]>(
+      `${TRAINING_PLANS_URL}/personal/${userId}`,
+    );
+    return data;
+  }
+
+  async getWorkouts() {
+    const { data } = await $authReq().get<WorkoutListItem[]>(`${WORKOUTS_URL}`);
     return data;
   }
 

@@ -11,6 +11,19 @@ export interface WorkoutModel {
   value: string;
 }
 
+export interface WorkoutListItem {
+  id: number;
+  name: string;
+  value: string;
+  description?: string;
+  image?: string;
+  level: string;
+  caloriesMin: number;
+  caloriesMax: number;
+  duration: number;
+  exercisesCount: number;
+}
+
 export interface Exercise {
   id: number;
   name: string;

@@ -64,7 +64,21 @@ func (r *WorkoutRepository) CreateWorkout(ctx context.Context, tx pgx.Tx, workou
 }
 
 func (r *WorkoutRepository) GetAllWorkouts(ctx context.Context) ([]models.Workout, error) {
-	query := `SELECT * FROM workout ORDER BY created_at DESC`
+	query := `SELECT
+		w.id,
+		w.name,
+		w.value,
+		w.description,
+		w.image,
+		w.level,
+		w.calories_min,
+		w.calories_max,
+		w.duration,
+		(SELECT COUNT(*)::int FROM workout_exercise we WHERE we.workout_id = w.id) AS exercises_count,
+		w.created_at,
+		w.updated_at
+	FROM workout w
+	ORDER BY w.created_at DESC`
 
 	rows, err := r.pool.Query(ctx, query)
 	if err != nil {
@@ -75,7 +89,20 @@ func (r *WorkoutRepository) GetAllWorkouts(ctx context.Context) ([]models.Workou
 	var workouts []models.Workout
 	for rows.Next() {
 		var plan models.Workout
-		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Value, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
+		if err := rows.Scan(
+			&plan.ID,
+			&plan.Name,
+			&plan.Value,
+			&plan.Description,
+			&plan.Image,
+			&plan.Level,
+			&plan.Calories_min,
+			&plan.Calories_max,
+			&plan.Duration,
+			&plan.ExercisesCount,
+			&plan.CreatedAt,
+			&plan.UpdatedAt,
+		); err != nil {
 			return nil, err
 		}
 		workouts = append(workouts, plan)
