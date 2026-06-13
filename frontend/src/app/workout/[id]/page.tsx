@@ -1,4 +1,4 @@
-import { WorkoutService, WorkoutPageContent, workoutCaloriesService } from "@/modules/workout";
+import { WorkoutService, WorkoutPageContent, workoutCaloriesService, formatWorkoutLevelLabel } from "@/modules/workout";
 import InfoCard from "@/modules/workout/ui/InfoCard";
 import ExerciseList from "@/modules/workout/ui/ExerciseList";
 import { ProfileService } from "@/modules/profile";
@@ -105,7 +105,7 @@ const WorkoutDetailPage = async ({ params, searchParams }: IProps) => {
                 gradient="tertiary"
               />
               <InfoCard
-                title={`${workoutDetail.level}\nуровень`}
+                title={`${formatWorkoutLevelLabel(workoutDetail.level)}\nуровень`}
                 gradient="primary"
               />
               <InfoCard

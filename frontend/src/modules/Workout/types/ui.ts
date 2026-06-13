@@ -1,5 +1,5 @@
 import { StaticImageProps } from "@/shared/types";
-import type { Exercise, WorkoutDetail } from "./entities";
+import type { Exercise, WorkoutLevel } from "./entities";
 import type {
   WorkoutCalorieUser,
   WorkoutCaloriesSessionResult,
@@ -36,7 +36,7 @@ export interface UseWorkoutExecutionControllerParams {
   exercisesCount: number;
   exercises: Exercise[];
   calorieUser?: WorkoutCalorieUser | null;
-  workoutLevel?: WorkoutDetail["level"];
+  workoutLevel?: WorkoutLevel | string;
   plannedSetsFallback?: number;
   estimatedCaloriesPerMinute?: number;
   onWorkoutCaloriesComputed?: (payload: WorkoutCaloriesSessionResult) => void;

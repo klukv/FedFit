@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { Carousel } from "@/shared/ui";
-import { WorkoutItem, WorkoutItemVariants, type WorkoutListItem } from "@/modules/workout";
+import { WorkoutItem, WorkoutItemVariants, type Workout } from "@/modules/workout";
 import { WORKOUT_CAROUSEL_IMAGES } from "@/shared/constants";
 
 interface IProps {
-  items: Pick<WorkoutListItem, "id" | "name">[];
+  items: Pick<Workout, "id" | "name">[];
 }
 
 const CarouselWorkoutsClientWrapper = (props: IProps) => {

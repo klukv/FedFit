@@ -3,7 +3,7 @@ import bike from "@/assets/workout/bike.png";
 import foots from "@/assets/workout/foots.png";
 import press from "@/assets/workout/press.png";
 import run from "@/assets/workout/run.png";
-import { WorkoutDetail } from "@/modules/workout";
+import { WorkoutWithExercises } from "@/modules/workout";
 
 export const mockItemsForCarousel = [
   {
@@ -48,13 +48,14 @@ export const mockActivityData = {
 };
 
 // Mock данные для детальной страницы тренировки
-export const mockWorkoutDetail: WorkoutDetail = {
+export const mockWorkoutDetail: WorkoutWithExercises = {
   id: 1,
   name: "Силовой микс для развития выносливости",
+  value: "40 мин · Средний",
   description: "Комплексная тренировка для развития силы и выносливости",
   exercisesCount: 7,
   duration: 40,
-  level: "Средний",
+  level: "intermediate",
   caloriesMin: 530,
   caloriesMax: 720,
   exercises: [

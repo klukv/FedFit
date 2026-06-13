@@ -1,9 +1,11 @@
 export { WorkoutItem, WorkoutCompleteModal, WorkoutPageContent } from "./ui";
 export {
   WorkoutItemVariants,
-  type WorkoutModel as Workout,
-  type WorkoutListItem,
-  type WorkoutDetail,
+  type Workout,
+  type WorkoutLevel,
+  type WorkoutWithExercises,
+  type TrainingPlan,
+  type TrainingPlanSummary,
   type Exercise,
   type WorkoutCalorieUser,
   type WorkoutCaloriesSessionResult,
@@ -19,4 +21,11 @@ export {
   workoutSessionFinishService,
   WorkoutSessionFinishService,
 } from "./service";
-export { formatDuration, formatCalories } from "./utils";
+export {
+  formatDuration,
+  formatCalories,
+  formatWorkoutLevelLabel,
+  formatWorkoutCardValue,
+  normalizeTrainingPlan,
+  toSaveTrainingPlanPayload,
+} from "./utils";

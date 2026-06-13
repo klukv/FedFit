@@ -46,8 +46,8 @@ func (r *TrainingPlanRepository) CreateTrainingPlanTable(ctx context.Context) er
 
 func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.Tx, plan *models.TrainingPlan) (int, error) {
 	query := `
-		INSERT INTO training_plan (name, description)
-		VALUES ($1, $2)
+		INSERT INTO training_plan (name, description, user_id)
+		VALUES ($1, $2, $3)
 		RETURNING id, created_at, updated_at
 	`
 
@@ -56,6 +56,7 @@ func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.
 		query,
 		plan.Name,
 		plan.Description,
+		plan.UserID,
 	).Scan(&plan.ID, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
 		log.Fatal(err)
 		return 0, err

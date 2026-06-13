@@ -106,9 +106,12 @@ func (handler *Handler) CreateTrainingPlanHandler(w http.ResponseWriter, r *http
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	message := map[string]string{"message": "План тренировки успешно добавлен"}
+	response := models.CreateTrainingPlanResponse{
+		ID:      trainingPlan.ID,
+		Message: "План тренировки успешно добавлен",
+	}
 
-	if err := json.NewEncoder(w).Encode(message); err != nil {
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
 		return
 	}

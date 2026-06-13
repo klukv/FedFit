@@ -1,14 +1,18 @@
 """
 Сборщик итогового плана тренировок.
 
-Каждая тренировка в ответе: метаданные + массив exercises (JSON-объекты).
+ID тренировки в ответе:
+  - id > 0 — тренировка взята из кэша БД (workouts.json) без изменений;
+  - id = 0 — тренировка собрана рекомендательной системой из подобранных упражнений.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import math
-from typing import Any, Dict, List, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from app.models.plan_structures import (
     TrainingPlanResponse,
@@ -18,6 +22,10 @@ from app.models.plan_structures import (
 from app.services.rule_engine import RuleEngineOutput, WorkoutSlot
 
 logger = logging.getLogger(__name__)
+
+DATA_DIR = Path(__file__).parent.parent / "data"
+
+LEVEL_RANK = {"beginner": 0, "intermediate": 1, "advanced": 2}
 
 
 def _calorie_bounds(total: float) -> Tuple[int, int]:
@@ -29,8 +37,38 @@ def _calorie_bounds(total: float) -> Tuple[int, int]:
     return low, high
 
 
+def _exercise_signature(
+    exercises: Sequence[Dict[str, Any]],
+) -> Tuple[Tuple[int, Optional[int], Optional[int], Optional[int]], ...]:
+    """Сигнатура состава тренировки для сравнения с каталогом."""
+    return tuple(
+        (
+            int(item["exercise_id"]),
+            item.get("sets"),
+            item.get("reps"),
+            item.get("duration"),
+        )
+        for item in exercises
+    )
+
+
 class PlanBuilder:
     """Собирает TrainingPlanResponse из выхода rule engine и выбранных упражнений."""
+
+    def __init__(self) -> None:
+        self.exercises_by_id: Dict[int, Dict[str, Any]] = self._load_exercises_index()
+        self.catalog_workouts: List[Dict[str, Any]] = self._load_catalog_workouts()
+
+    def _load_exercises_index(self) -> Dict[int, Dict[str, Any]]:
+        exercises_path = DATA_DIR / "exercises.json"
+        with open(exercises_path, "r", encoding="utf-8") as file:
+            exercises = json.load(file)
+        return {int(exercise["id"]): exercise for exercise in exercises}
+
+    def _load_catalog_workouts(self) -> List[Dict[str, Any]]:
+        workouts_path = DATA_DIR / "workouts.json"
+        with open(workouts_path, "r", encoding="utf-8") as file:
+            return json.load(file)
 
     def build(
         self,
@@ -38,8 +76,27 @@ class PlanBuilder:
         slot_exercises: List[Tuple[WorkoutSlot, List[Dict[str, Any]]]],
     ) -> TrainingPlanResponse:
         workouts_out: List[WorkoutInPlan] = []
+        used_catalog_ids: set[int] = set()
+        available_ids = {int(exercise["id"]) for exercise in rule_output.available_exercises}
 
         for slot, exercises in slot_exercises:
+            catalog_workout = self._pick_catalog_workout(
+                slot=slot,
+                user_level=rule_output.level,
+                available_exercise_ids=available_ids,
+                used_catalog_ids=used_catalog_ids,
+            )
+
+            if catalog_workout is not None:
+                used_catalog_ids.add(int(catalog_workout["id"]))
+                workouts_out.append(self._build_catalog_workout(catalog_workout))
+                logger.debug(
+                    "Слот '%s': использована тренировка из каталога id=%s",
+                    slot.name,
+                    catalog_workout["id"],
+                )
+                continue
+
             if not exercises:
                 logger.warning(
                     "Слот '%s' (день %s) не получил упражнений",
@@ -48,28 +105,11 @@ class PlanBuilder:
                 )
                 continue
 
-            links: List[WorkoutExerciseLink] = []
-            workout_calories = 0.0
-
-            for ex in exercises:
-                link, cal = self._build_exercise_link(exercise=ex, slot=slot)
-                links.append(link)
-                workout_calories += cal
-
-            cmin, cmax = _calorie_bounds(workout_calories)
-
             workouts_out.append(
-                WorkoutInPlan(
-                    id=0,
-                    name=slot.name,
-                    description=self._generate_workout_description(slot),
-                    image=None,
+                self._build_generated_workout(
+                    slot=slot,
+                    exercises=exercises,
                     level=rule_output.level,
-                    calories_min=cmin,
-                    calories_max=cmax,
-                    duration=slot.estimated_time,
-                    exercises_count=len(links),
-                    exercises=links,
                 )
             )
 
@@ -84,12 +124,151 @@ class PlanBuilder:
 
         return plan
 
+    def _pick_catalog_workout(
+        self,
+        slot: WorkoutSlot,
+        user_level: str,
+        available_exercise_ids: set[int],
+        used_catalog_ids: set[int],
+    ) -> Optional[Dict[str, Any]]:
+        """Подбирает готовую тренировку из кэша БД без изменений."""
+        user_rank = LEVEL_RANK.get(user_level, 0)
+        target_groups = set(slot.target_muscle_groups)
+        best: Optional[Dict[str, Any]] = None
+        best_score = -1.0
+
+        for workout in self.catalog_workouts:
+            workout_id = int(workout["id"])
+            if workout_id in used_catalog_ids:
+                continue
+
+            workout_rank = LEVEL_RANK.get(str(workout["level"]), 0)
+            if user_rank < workout_rank:
+                continue
+
+            catalog_exercise_ids = {
+                int(item["exercise_id"]) for item in workout["exercises"]
+            }
+            if not catalog_exercise_ids.issubset(available_exercise_ids):
+                continue
+
+            duration_diff = abs(int(workout["duration"]) - slot.estimated_time)
+            if duration_diff > 20:
+                continue
+
+            catalog_groups = set(workout.get("muscle_groups", []))
+            overlap = len(catalog_groups & target_groups)
+            if overlap == 0 and "full_body" not in catalog_groups:
+                continue
+
+            score = overlap * 10 - duration_diff
+            if score > best_score:
+                best_score = score
+                best = workout
+
+        return best
+
+    def _build_catalog_workout(self, catalog: Dict[str, Any]) -> WorkoutInPlan:
+        """Тренировка из каталога БД — id сохраняется."""
+        links = self._build_links_from_catalog(catalog["exercises"])
+
+        return WorkoutInPlan(
+            id=int(catalog["id"]),
+            name=str(catalog["name"]),
+            description=catalog.get("description"),
+            image=catalog.get("image"),
+            level=str(catalog["level"]),
+            calories_min=int(catalog["calories_min"]),
+            calories_max=int(catalog["calories_max"]),
+            duration=int(catalog["duration"]),
+            exercises_count=len(links),
+            exercises=links,
+        )
+
+    def _build_generated_workout(
+        self,
+        slot: WorkoutSlot,
+        exercises: List[Dict[str, Any]],
+        level: str,
+    ) -> WorkoutInPlan:
+        """Тренировка, собранная из подобранных упражнений — id=0."""
+        links: List[WorkoutExerciseLink] = []
+        workout_calories = 0.0
+        generated_items: List[Dict[str, Any]] = []
+
+        for exercise in exercises:
+            link, calories, item = self._build_exercise_link(exercise=exercise, slot=slot)
+            links.append(link)
+            workout_calories += calories
+            generated_items.append(item)
+
+        matched_catalog = self._find_catalog_by_signature(generated_items)
+        if matched_catalog is not None:
+            logger.debug(
+                "Сгенерированный состав совпал с каталогом id=%s",
+                matched_catalog["id"],
+            )
+            return self._build_catalog_workout(matched_catalog)
+
+        cmin, cmax = _calorie_bounds(workout_calories)
+
+        return WorkoutInPlan(
+            id=0,
+            name=slot.name,
+            description=self._generate_workout_description(slot),
+            image=None,
+            level=level,
+            calories_min=cmin,
+            calories_max=cmax,
+            duration=slot.estimated_time,
+            exercises_count=len(links),
+            exercises=links,
+        )
+
+    def _find_catalog_by_signature(
+        self,
+        generated_items: List[Dict[str, Any]],
+    ) -> Optional[Dict[str, Any]]:
+        signature = _exercise_signature(generated_items)
+        for workout in self.catalog_workouts:
+            if _exercise_signature(workout["exercises"]) == signature:
+                return workout
+        return None
+
+    def _build_links_from_catalog(
+        self,
+        catalog_exercises: List[Dict[str, Any]],
+    ) -> List[WorkoutExerciseLink]:
+        links: List[WorkoutExerciseLink] = []
+
+        for item in catalog_exercises:
+            exercise_id = int(item["exercise_id"])
+            meta = self.exercises_by_id.get(exercise_id)
+            if meta is None:
+                logger.warning("Упражнение id=%s не найдено в exercises.json", exercise_id)
+                continue
+
+            raw_icon = meta.get("icon")
+            links.append(
+                WorkoutExerciseLink(
+                    id=exercise_id,
+                    name=str(meta["name"]),
+                    description=str(meta.get("description") or ""),
+                    icon=str(raw_icon) if raw_icon is not None else None,
+                    sets=item.get("sets"),
+                    reps=item.get("reps"),
+                    duration=item.get("duration"),
+                )
+            )
+
+        return links
+
     def _build_exercise_link(
         self,
         exercise: Dict[str, Any],
         slot: WorkoutSlot,
-    ) -> Tuple[WorkoutExerciseLink, float]:
-        """Только FK + параметры серии; калории — для диапазона тренировки."""
+    ) -> Tuple[WorkoutExerciseLink, float, Dict[str, Any]]:
+        """Собирает серию упражнения и данные для сравнения с каталогом."""
         sets = slot.sets
 
         if exercise.get("duration") is not None:
@@ -125,10 +304,17 @@ class PlanBuilder:
             duration=duration,
         )
 
-        return link, estimated_calories
+        catalog_item = {
+            "exercise_id": int(exercise["id"]),
+            "sets": sets,
+            "reps": reps,
+            "duration": duration,
+        }
+
+        return link, estimated_calories, catalog_item
 
     def _generate_workout_description(self, slot: WorkoutSlot) -> str:
-        """Краткое описание тренировки."""
+        """Краткое описание сгенерированной тренировки."""
         muscle_names = {
             "cardio": "кардио",
             "core": "пресс и кор",
@@ -141,7 +327,7 @@ class PlanBuilder:
             "full_body": "всё тело",
         }
 
-        group_names = [muscle_names.get(g, g) for g in slot.target_muscle_groups]
+        group_names = [muscle_names.get(group, group) for group in slot.target_muscle_groups]
 
         if not group_names:
             return f"Тренировка длительностью {slot.estimated_time} минут."

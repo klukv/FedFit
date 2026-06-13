@@ -5,7 +5,7 @@ import type {
   WorkoutExerciseCalorieEntry,
 } from "../types/calories";
 import type { EstimateWorkoutCaloriesOptions } from "../types/workoutCaloriesEstimate";
-import type { WorkoutDetail } from "../types/entities";
+import type { WorkoutLevel } from "../types/entities";
 
 const DEFAULT_AGE_YEARS = 30;
 
@@ -15,12 +15,15 @@ const DEFAULT_AGE_YEARS = 30;
  */
 export class WorkoutCaloriesService {
   /** MET для силовой работы средней интенсивности по уровню сложности тренировки. */
-  resolveStrengthMetByLevel(level: WorkoutDetail["level"] | undefined): number {
+  resolveStrengthMetByLevel(level: WorkoutLevel | string | undefined): number {
     switch (level) {
+      case "beginner":
       case "Начинающий":
         return 4;
+      case "intermediate":
       case "Средний":
         return 5;
+      case "advanced":
       case "Продвинутый":
         return 6;
       default:

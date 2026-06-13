@@ -1,26 +1,31 @@
 import { $authReq } from "@/shared/api";
-import { WorkoutDetail, TrainingPlan, WorkoutListItem } from "../types";
+import {
+  TrainingPlan,
+  TrainingPlanSummary,
+  Workout,
+  WorkoutWithExercises,
+} from "../types";
 import { TRAINING_PLANS_URL, WORKOUTS_URL } from "@/shared/constants";
 
 export class WorkoutService {
-  constructor() { }
+  constructor() {}
 
   async getTrainingPlans() {
-    const { data } = await $authReq().get<Omit<TrainingPlan, "workouts">[]>(
+    const { data } = await $authReq().get<TrainingPlanSummary[]>(
       `${TRAINING_PLANS_URL}`,
     );
     return data;
   }
 
   async getPersonalTrainingPlans(userId: number) {
-    const { data } = await $authReq().get<Omit<TrainingPlan, "workouts">[]>(
+    const { data } = await $authReq().get<TrainingPlanSummary[]>(
       `${TRAINING_PLANS_URL}/personal/${userId}`,
     );
     return data;
   }
 
   async getWorkouts() {
-    const { data } = await $authReq().get<WorkoutListItem[]>(`${WORKOUTS_URL}`);
+    const { data } = await $authReq().get<Workout[]>(`${WORKOUTS_URL}`);
     return data;
   }
 
@@ -31,8 +36,8 @@ export class WorkoutService {
     return data;
   }
 
-  async getWorkoutDetailById(id: number): Promise<WorkoutDetail> {
-    const { data } = await $authReq().get<WorkoutDetail>(
+  async getWorkoutDetailById(id: number): Promise<WorkoutWithExercises> {
+    const { data } = await $authReq().get<WorkoutWithExercises>(
       `${WORKOUTS_URL}/${id}`,
     );
     return data;

@@ -3,7 +3,7 @@
 import { Montserrat } from "next/font/google";
 import clsx from "clsx";
 import { useTrainingPlanSurveyModal } from "@/modules/trainingPlanSurvey";
-import type { TrainingPlan } from "@/modules/workout/types";
+import type { TrainingPlanSummary } from "@/modules/workout/types";
 import CarouselTrainingPlansWrapper from "./CarouselTrainingPlansWrapper";
 import "./personalTrainingPlansSection.css";
 
@@ -13,7 +13,7 @@ const montserrat = Montserrat({
 });
 
 interface PersonalTrainingPlansSectionProps {
-  items: Omit<TrainingPlan, "workouts">[];
+  items: TrainingPlanSummary[];
 }
 
 /** Секция личных планов: карусель или empty state с переходом к опроснику. */

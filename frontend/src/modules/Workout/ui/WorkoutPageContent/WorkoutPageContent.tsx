@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import type { Exercise, WorkoutDetail } from "../../types";
+import type { Exercise, WorkoutLevel } from "../../types";
 import type {
   WorkoutCalorieUser,
   WorkoutCaloriesSessionResult,
@@ -18,7 +18,7 @@ interface WorkoutPageContentProps {
   infoBlock: ReactNode;
   exercises: Exercise[];
   calorieUser?: WorkoutCalorieUser | null;
-  workoutLevel?: WorkoutDetail["level"];
+  workoutLevel?: WorkoutLevel | string;
   plannedSetsFallback?: number;
   estimatedCaloriesPerMinute?: number;
   onWorkoutCaloriesComputed?: (payload: WorkoutCaloriesSessionResult) => void;

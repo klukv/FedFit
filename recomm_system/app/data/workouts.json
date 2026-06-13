@@ -1,0 +1,96 @@
+[
+  {
+    "id": 1,
+    "name": "Утренняя зарядка",
+    "value": "morning-warmup",
+    "description": "Короткая тренировка для пробуждения и разогрева мышц.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 80,
+    "calories_max": 120,
+    "duration": 15,
+    "muscle_groups": ["chest", "core", "cardio"],
+    "exercises": [
+      { "exercise_id": 2, "sets": 2, "reps": 10, "duration": null },
+      { "exercise_id": 3, "sets": 2, "reps": null, "duration": 30 },
+      { "exercise_id": 6, "sets": 2, "reps": 15, "duration": null },
+      { "exercise_id": 10, "sets": 1, "reps": null, "duration": 60 }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Силовая на всё тело",
+    "value": "full-body-strength",
+    "description": "Базовые упражнения на основные группы мышц.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 200,
+    "calories_max": 350,
+    "duration": 40,
+    "muscle_groups": ["legs", "chest", "back", "shoulders"],
+    "exercises": [
+      { "exercise_id": 1, "sets": 3, "reps": 12, "duration": null },
+      { "exercise_id": 2, "sets": 3, "reps": 10, "duration": null },
+      { "exercise_id": 12, "sets": 2, "reps": 8, "duration": null },
+      { "exercise_id": 17, "sets": 3, "reps": 12, "duration": null },
+      { "exercise_id": 19, "sets": 3, "reps": 10, "duration": null }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Кардио и пресс",
+    "value": "cardio-core",
+    "description": "Интенсивное кардио в сочетании с упражнениями на пресс.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 250,
+    "calories_max": 400,
+    "duration": 35,
+    "muscle_groups": ["cardio", "core"],
+    "exercises": [
+      { "exercise_id": 9, "sets": 2, "reps": null, "duration": 120 },
+      { "exercise_id": 5, "sets": 3, "reps": 8, "duration": null },
+      { "exercise_id": 7, "sets": 3, "reps": 15, "duration": null },
+      { "exercise_id": 15, "sets": 3, "reps": null, "duration": 45 },
+      { "exercise_id": 8, "sets": 3, "reps": 20, "duration": null }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Ноги и ягодицы",
+    "value": "legs-glutes",
+    "description": "Фокус на нижнюю часть тела: приседы, выпады, мостик.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 180,
+    "calories_max": 300,
+    "duration": 30,
+    "muscle_groups": ["legs", "glutes", "core"],
+    "exercises": [
+      { "exercise_id": 1, "sets": 4, "reps": 12, "duration": null },
+      { "exercise_id": 4, "sets": 3, "reps": 12, "duration": null },
+      { "exercise_id": 11, "sets": 3, "reps": 15, "duration": null },
+      { "exercise_id": 13, "sets": 3, "reps": 15, "duration": null },
+      { "exercise_id": 14, "sets": 2, "reps": null, "duration": 30 }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Интервальная тренировка",
+    "value": "hiit",
+    "description": "Высокоинтенсивные интервалы: бурпи, альпинист, прыжки.",
+    "image": null,
+    "level": "advanced",
+    "calories_min": 300,
+    "calories_max": 500,
+    "duration": 25,
+    "muscle_groups": ["cardio", "core", "full_body"],
+    "exercises": [
+      { "exercise_id": 5, "sets": 4, "reps": 10, "duration": null },
+      { "exercise_id": 15, "sets": 4, "reps": null, "duration": 40 },
+      { "exercise_id": 9, "sets": 3, "reps": null, "duration": 60 },
+      { "exercise_id": 3, "sets": 3, "reps": null, "duration": 45 },
+      { "exercise_id": 10, "sets": 2, "reps": null, "duration": 90 }
+    ]
+  }
+]

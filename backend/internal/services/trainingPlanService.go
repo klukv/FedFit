@@ -48,11 +48,16 @@ func (s *TrainingPlanService) CreateTrainingPlan(ctx context.Context, tp *models
 	}
 
 	for _, workout := range tp.Workouts {
-		workoutId, err := s.services.WorkoutService.CreateWorkout(ctx, &workout, WithTx(tx))
+		var workoutId int
 
-		if err != nil {
-			log.Printf("Ошибка создания тренировки при создании плана: %s", err.Error())
-			return fmt.Errorf("Ошибка создания тренировки при создании плана")
+		if workout.ID == 0 {
+			workoutId, err = s.services.WorkoutService.CreateWorkout(ctx, &workout, WithTx(tx))
+			if err != nil {
+				log.Printf("Ошибка создания тренировки при создании плана: %s", err.Error())
+				return fmt.Errorf("Ошибка создания тренировки при создании плана")
+			}
+		} else {
+			workoutId = workout.ID
 		}
 
 		planIdStr := strconv.Itoa(planId)

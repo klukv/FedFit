@@ -48,7 +48,10 @@ class WorkoutInPlan(BaseModel):
         populate_by_name=True,
     )
 
-    id: int = Field(0, description="0 до сохранения в БД")
+    id: int = Field(
+        0,
+        description="0 — тренировка сгенерирована recomm_system; >0 — id из БД без изменений",
+    )
     name: str
     description: Optional[str] = Field(None, description="Как WorkoutDetail.description")
     image: Optional[str] = Field(None, description="Как WorkoutDetail.image")

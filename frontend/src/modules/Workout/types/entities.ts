@@ -1,48 +1,44 @@
-export interface TrainingPlan {
-  id: number;
-  name: string;
-  description: string;
-  workouts: WorkoutModel[];
-}
-
-export interface WorkoutModel {
-  id: number;
-  name: string;
-  value: string;
-}
-
-export interface WorkoutListItem {
-  id: number;
-  name: string;
-  value: string;
-  description?: string;
-  image?: string;
-  level: string;
-  caloriesMin: number;
-  caloriesMax: number;
-  duration: number;
-  exercisesCount: number;
-}
+/** Уровень подготовки — значения API и БД */
+export type WorkoutLevel = "beginner" | "intermediate" | "advanced";
 
 export interface Exercise {
   id: number;
   name: string;
   description: string;
   icon?: string;
-  sets: number;
-  reps: number;
-  duration?: number; // в секундах
+  sets?: number;
+  reps?: number;
+  /* В секундах */
+  duration?: number;
 }
 
-export interface WorkoutDetail {
+export interface Workout {
   id: number;
   name: string;
+  /** Краткая характеристика для карточек (slug из БД или «45 мин · Средний») */
+  value: string;
   description?: string;
   image?: string;
-  level: "Начинающий" | "Средний" | "Продвинутый";
+  level: WorkoutLevel | string;
   caloriesMin: number;
   caloriesMax: number;
-  duration?: number; // в секундах
+  /* В минутах */
+  duration: number;
   exercisesCount: number;
-  exercises: Exercise[];
+  exercises?: Exercise[];
 }
+
+export interface TrainingPlan {
+  id: number;
+  name: string;
+  description: string;
+  workouts: Workout[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+/** План без вложенных тренировок (списки на главной) */
+export type TrainingPlanSummary = Omit<TrainingPlan, "workouts">;
+
+/** Тренировка с загруженным списком упражнений */
+export type WorkoutWithExercises = Workout & Required<Pick<Workout, "exercises">>;
