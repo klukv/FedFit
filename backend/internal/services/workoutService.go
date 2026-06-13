@@ -89,9 +89,9 @@ func (s *WorkoutService) CreateWorkout(ctx context.Context, workout *models.Work
 			opt.tx,
 			workoutId,
 			exercise.ID,
-			*exercise.Sets,
-			*exercise.Reps,
-			*exercise.Duration,
+			exercise.Sets,
+			exercise.Reps,
+			exercise.Duration,
 		); err != nil {
 			log.Printf("Ошибка связывания тренировки и упражнения с id: %d. Подробнее: %s", exercise.ID, err.Error())
 			return 0, fmt.Errorf("Ошибка связывания тренировки и упражнения с id: %d", exercise.ID)

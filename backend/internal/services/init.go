@@ -12,6 +12,8 @@ type Services struct {
 	RecommendationService *RecommendationService
 	WorkoutService        *WorkoutService
 	TrainingService       *TrainingPlanService
+	CatalogService        *CatalogService
+	ExerciseService       *ExerciseService
 }
 
 func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories, clients *clients.Clients) *Services {
@@ -21,11 +23,6 @@ func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories, clients 
 			WorkoutHistoryRepository:          repos.WorkoutHistory,
 			WorkoutHistoryExercisesRepository: repos.WorkoutHistoryExercises,
 		})
-
-	recommendationService := NewRecommendationService(pool, clients.RecommendationClient, &RecommendationServiceRepositories{
-		workoutRepos:   repos.Workout,
-		exercisesRepos: repos.Exercise,
-	})
 
 	workoutService := NewWorkoutService(
 		pool,
@@ -47,10 +44,22 @@ func InitServices(pool *pgxpool.Pool, repos *repositories.Repositories, clients 
 		},
 	)
 
+	recommendationService := NewRecommendationService(clients.RecommendationClient, trainingPlan)
+
+	catalogService := NewCatalogService(&CatalogServiceRepos{
+		Exercise:     repos.Exercise,
+		Workout:      repos.Workout,
+		TrainingPlan: repos.TrainingPlan,
+	})
+
+	exerciseService := NewExerciseService(repos.Exercise)
+
 	return &Services{
 		WorkoutHistoryService: workoutHistoryService,
 		RecommendationService: recommendationService,
 		WorkoutService:        workoutService,
 		TrainingService:       trainingPlan,
+		CatalogService:        catalogService,
+		ExerciseService:       exerciseService,
 	}
 }

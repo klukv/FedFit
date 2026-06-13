@@ -28,5 +28,12 @@ func Routes(repos *repositories.Repositories, services *services.Services) *http
 	mux.HandleFunc("POST /v1/workouts/history/{id}/{user_id}", handler.AddWorkoutToHistory)
 	mux.HandleFunc("PUT /v1/workouts/history/{workout_history_id}", handler.UpdateWorkoutHistory)
 
+	mux.HandleFunc("GET /v1/internal/catalog/export", handler.ExportCatalogHandler)
+
+	mux.HandleFunc("GET /v1/exercises", handler.GetExercisesHandler)
+	mux.HandleFunc("GET /v1/exercises/{id}", handler.GetExerciseHandler)
+	mux.HandleFunc("PUT /v1/exercises/{id}/metadata", handler.UpsertExerciseMetadataHandler)
+	mux.HandleFunc("DELETE /v1/exercises/{id}/metadata", handler.DeleteExerciseMetadataHandler)
+
 	return mux
 }

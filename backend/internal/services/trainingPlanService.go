@@ -47,15 +47,18 @@ func (s *TrainingPlanService) CreateTrainingPlan(ctx context.Context, tp *models
 		return fmt.Errorf("Ошибка создания плана тренировки")
 	}
 
-	for _, workout := range tp.Workouts {
+	tp.ID = planId
+
+	for i, workout := range tp.Workouts {
 		var workoutId int
 
 		if workout.ID == 0 {
-			workoutId, err = s.services.WorkoutService.CreateWorkout(ctx, &workout, WithTx(tx))
+			workoutId, err = s.services.WorkoutService.CreateWorkout(ctx, &tp.Workouts[i], WithTx(tx))
 			if err != nil {
 				log.Printf("Ошибка создания тренировки при создании плана: %s", err.Error())
 				return fmt.Errorf("Ошибка создания тренировки при создании плана")
 			}
+			tp.Workouts[i].ID = workoutId
 		} else {
 			workoutId = workout.ID
 		}

@@ -34,13 +34,11 @@ func InitApp() *Application {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	// Подключение к БД
 	pool, err := database.ConnectToDB(ctx)
 	if err != nil {
 		log.Fatal("Ошибка подключения к БД: ", err)
 	}
 
-	// Инициализация репозиториев
 	repositories, err := repositories.InitRepositories(pool, ctx)
 	if err != nil {
 		log.Fatal("Ошибка инициализации БД: ", err)
@@ -50,7 +48,6 @@ func InitApp() *Application {
 
 	services := services.InitServices(pool, repositories, clients)
 
-	// Инициализация приложения
 	app := &Application{
 		Cfg:          cfg,
 		Logger:       logger,

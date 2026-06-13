@@ -1,11 +1,18 @@
 package clients
 
+import "os"
+
 type Clients struct {
 	RecommendationClient *RecommendationClient
 }
 
 func InitClients() *Clients {
-	recommClient := NewRecommendationClient("http://localhost:8001")
+	baseURL := os.Getenv("RECOMM_SYSTEM_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8001"
+	}
+
+	recommClient := NewRecommendationClient(baseURL)
 
 	return &Clients{
 		RecommendationClient: recommClient,

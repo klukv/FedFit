@@ -21,13 +21,36 @@ INSERT INTO exercise (name, description, icon) VALUES
 ('Тяга к поясу', 'Наклон, тяга рук к поясу (гантель или штанга). Спина.', NULL),
 ('Молотки', 'Сгибание рук с гантелями нейтральным хватом. Бицепс и предплечья.', NULL);
 
+-- Метаданные упражнений для ML/rule engine (согласовано с recomm_system/app/data/exercises.json)
+INSERT INTO exercise_metadata (exercise_id, muscle_group, equipment, restrictions_excluded, level, calories_per_set) VALUES
+(1,  'legs',      '["none"]',                    '["knee"]',              '["beginner","intermediate","advanced"]', 12.0),
+(2,  'chest',     '["none"]',                    '["shoulder"]',          '["beginner","intermediate","advanced"]', 8.0),
+(3,  'core',      '["none"]',                    '["shoulder"]',          '["beginner","intermediate","advanced"]', 5.0),
+(4,  'legs',      '["none"]',                    '["knee"]',              '["beginner","intermediate","advanced"]', 10.0),
+(5,  'cardio',    '["none"]',                    '["knee","back","shoulder"]', '["intermediate","advanced"]',         20.0),
+(6,  'legs',      '["none"]',                    '[]',                    '["beginner","intermediate","advanced"]', 4.0),
+(7,  'core',      '["none"]',                    '["back"]',              '["beginner","intermediate","advanced"]', 6.0),
+(8,  'core',      '["none"]',                    '[]',                    '["beginner","intermediate","advanced"]', 7.0),
+(9,  'cardio',    '["none"]',                    '["knee"]',              '["beginner","intermediate","advanced"]', 14.0),
+(10, 'cardio',    '["none"]',                    '["knee"]',              '["beginner","intermediate","advanced"]', 12.0),
+(11, 'glutes',    '["none"]',                    '[]',                    '["beginner","intermediate","advanced"]', 8.0),
+(12, 'back',      '["pullup_bar"]',              '["shoulder"]',          '["intermediate","advanced"]',            15.0),
+(13, 'glutes',    '["none"]',                    '[]',                    '["beginner","intermediate","advanced"]', 7.0),
+(14, 'core',      '["none"]',                    '["shoulder"]',          '["beginner","intermediate","advanced"]', 5.0),
+(15, 'cardio',    '["none"]',                    '["knee"]',              '["beginner","intermediate","advanced"]', 13.0),
+(16, 'core',      '["none"]',                    '["back"]',              '["beginner","intermediate","advanced"]', 6.0),
+(17, 'chest',     '["dumbbells"]',               '["shoulder"]',          '["beginner","intermediate","advanced"]', 9.0),
+(18, 'shoulders', '["dumbbells"]',               '["shoulder"]',          '["beginner","intermediate","advanced"]', 10.0),
+(19, 'back',      '["dumbbells","barbell"]',     '["back"]',              '["intermediate","advanced"]',            11.0),
+(20, 'arms',      '["dumbbells"]',               '[]',                    '["beginner","intermediate","advanced"]', 7.0);
+
 -- Заполнение таблицы тренировок (5 строк)
-INSERT INTO workout (name, value, description, image, level, calories_min, calories_max, duration) VALUES
-('Утренняя зарядка', 'morning-warmup', 'Короткая тренировка для пробуждения и разогрева мышц.', NULL, 'beginner', 80, 120, 15),
-('Силовая на всё тело', 'full-body-strength', 'Базовые упражнения на основные группы мышц.', NULL, 'intermediate', 200, 350, 40),
-('Кардио и пресс', 'cardio-core', 'Интенсивное кардио в сочетании с упражнениями на пресс.', NULL, 'intermediate', 250, 400, 35),
-('Ноги и ягодицы', 'legs-glutes', 'Фокус на нижнюю часть тела: приседы, выпады, мостик.', NULL, 'beginner', 180, 300, 30),
-('Интервальная тренировка', 'hiit', 'Высокоинтенсивные интервалы: бурпи, альпинист, прыжки.', NULL, 'advanced', 300, 500, 25);
+INSERT INTO workout (name, value, description, image, level, calories_min, calories_max, duration, muscle_groups) VALUES
+('Утренняя зарядка', 'morning-warmup', 'Короткая тренировка для пробуждения и разогрева мышц.', NULL, 'beginner', 80, 120, 15, '["chest","core","cardio"]'),
+('Силовая на всё тело', 'full-body-strength', 'Базовые упражнения на основные группы мышц.', NULL, 'intermediate', 200, 350, 40, '["legs","chest","back","shoulders"]'),
+('Кардио и пресс', 'cardio-core', 'Интенсивное кардио в сочетании с упражнениями на пресс.', NULL, 'intermediate', 250, 400, 35, '["cardio","core"]'),
+('Ноги и ягодицы', 'legs-glutes', 'Фокус на нижнюю часть тела: приседы, выпады, мостик.', NULL, 'beginner', 180, 300, 30, '["legs","glutes","core"]'),
+('Интервальная тренировка', 'hiit', 'Высокоинтенсивные интервалы: бурпи, альпинист, прыжки.', NULL, 'advanced', 300, 500, 25, '["cardio","core","full_body"]');
 
 -- Таблица связей workout_exercise (тренировка ↔ упражнение)
 -- Тренировка 1 (Утренняя зарядка): 4 упражнения
@@ -70,12 +93,12 @@ INSERT INTO workout_exercise (workout_id, exercise_id, sets, reps, duration) VAL
 (5, 10, 2, NULL, 90);  -- Бег на месте
 
 -- Планы тренировок (5 штук, user_id = NULL — общие планы для всех пользователей)
-INSERT INTO training_plan (name, description, user_id) VALUES
-('Для начинающих', 'План для тех, кто только начинает. Лёгкие тренировки на всё тело и основы силы.', NULL),
-('Неделя силы', 'Фокус на силовых упражнениях и проработке основных мышечных групп.', NULL),
-('Кардио и кор', 'Сочетание кардио и упражнений на пресс. Подходит для сжигания калорий и укрепления кора.', NULL),
-('Полный цикл', 'Недельный план: от утренней зарядки до HIIT. Разнообразие нагрузок.', NULL),
-('Короткие тренировки', 'Планы на 15–25 минут для занятых. Зарядка и интервальные тренировки.', NULL);
+INSERT INTO training_plan (name, description, user_id, goal, target_level) VALUES
+('Для начинающих', 'План для тех, кто только начинает. Лёгкие тренировки на всё тело и основы силы.', NULL, 'general_fitness', 'beginner'),
+('Неделя силы', 'Фокус на силовых упражнениях и проработке основных мышечных групп.', NULL, 'muscle_gain', 'intermediate'),
+('Кардио и кор', 'Сочетание кардио и упражнений на пресс. Подходит для сжигания калорий и укрепления кора.', NULL, 'weight_loss', 'intermediate'),
+('Полный цикл', 'Недельный план: от утренней зарядки до HIIT. Разнообразие нагрузок.', NULL, 'endurance', 'intermediate'),
+('Короткие тренировки', 'Планы на 15–25 минут для занятых. Зарядка и интервальные тренировки.', NULL, 'general_fitness', 'advanced');
 
 -- Связь планов с тренировками (training_plan_workout)
 -- План 1 (Для начинающих): тренировки 1, 4

@@ -30,11 +30,18 @@ func (r *WorkoutRepository) CreateWorkoutTable(ctx context.Context) error {
 		calories_min INT NOT NULL,
 		calories_max INT NOT NULL,
 		duration INT,
+		muscle_groups JSONB NOT NULL DEFAULT '[]',
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	)`); err != nil {
-		return fmt.Errorf("Создание таблицы планок тренировок провалено")
+		return fmt.Errorf("создание таблицы планок тренировок провалено")
 	}
+
+	if _, err := r.pool.Exec(ctx, `ALTER TABLE workout
+		ADD COLUMN IF NOT EXISTS muscle_groups JSONB NOT NULL DEFAULT '[]'`); err != nil {
+		return fmt.Errorf("добавление колонки muscle_groups в workout провалено: %w", err)
+	}
+
 	return nil
 }
 
@@ -175,4 +182,73 @@ func (r *WorkoutRepository) GetWorkout(ctx context.Context, workoutId string) (*
 	}
 
 	return &workout, nil
+}
+
+func (r *WorkoutRepository) GetAllWithExercises(ctx context.Context) ([]models.CatalogWorkout, error) {
+	query := `SELECT
+		w.id,
+		w.name,
+		w.value,
+		w.description,
+		w.image,
+		w.level,
+		w.calories_min,
+		w.calories_max,
+		w.duration,
+		w.muscle_groups,
+		COALESCE(
+			(
+				SELECT json_agg(
+					json_build_object(
+						'exercise_id', we.exercise_id,
+						'sets', we.sets,
+						'reps', we.reps,
+						'duration', we.duration
+					) ORDER BY we.exercise_id
+				)
+				FROM workout_exercise we
+				WHERE we.workout_id = w.id
+			),
+			'[]'::json
+		) AS exercises
+	FROM workout w
+	ORDER BY w.id`
+
+	rows, err := r.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var workouts []models.CatalogWorkout
+	for rows.Next() {
+		var w models.CatalogWorkout
+		var exercisesJSON []byte
+
+		if err := rows.Scan(
+			&w.ID,
+			&w.Name,
+			&w.Value,
+			&w.Description,
+			&w.Image,
+			&w.Level,
+			&w.CaloriesMin,
+			&w.CaloriesMax,
+			&w.Duration,
+			&w.MuscleGroups,
+			&exercisesJSON,
+		); err != nil {
+			return nil, err
+		}
+
+		if len(exercisesJSON) > 0 {
+			if err := json.Unmarshal(exercisesJSON, &w.Exercises); err != nil {
+				return nil, fmt.Errorf("разбор exercises JSON для workout %d: %w", w.ID, err)
+			}
+		}
+
+		workouts = append(workouts, w)
+	}
+
+	return workouts, rows.Err()
 }

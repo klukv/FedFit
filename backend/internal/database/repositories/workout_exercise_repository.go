@@ -32,7 +32,7 @@ func (r *WorkoutExerciseRepository) CreateWorkoutExerciseTable(ctx context.Conte
 	return nil
 }
 
-func (r *WorkoutExerciseRepository) AddLinkWorkoutWithExercise(ctx context.Context, tx pgx.Tx, workoutId int, exerciseId int, sets int, reps int, duration int) error {
+func (r *WorkoutExerciseRepository) AddLinkWorkoutWithExercise(ctx context.Context, tx pgx.Tx, workoutId int, exerciseId int, sets, reps, duration *int) error {
 	query := `
 		INSERT INTO workout_exercise (
 			exercise_id,

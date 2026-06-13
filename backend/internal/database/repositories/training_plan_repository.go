@@ -36,6 +36,16 @@ func (r *TrainingPlanRepository) CreateTrainingPlanTable(ctx context.Context) er
 		return fmt.Errorf("добавление колонки user_id в training_plan провалено: %w", err)
 	}
 
+	if _, err := r.pool.Exec(ctx, `ALTER TABLE training_plan
+		ADD COLUMN IF NOT EXISTS goal VARCHAR(32)`); err != nil {
+		return fmt.Errorf("добавление колонки goal в training_plan провалено: %w", err)
+	}
+
+	if _, err := r.pool.Exec(ctx, `ALTER TABLE training_plan
+		ADD COLUMN IF NOT EXISTS target_level VARCHAR(32)`); err != nil {
+		return fmt.Errorf("добавление колонки target_level в training_plan провалено: %w", err)
+	}
+
 	if _, err := r.pool.Exec(ctx, `CREATE INDEX IF NOT EXISTS idx_training_plan_user_id
 		ON training_plan(user_id)`); err != nil {
 		return fmt.Errorf("создание индекса idx_training_plan_user_id провалено: %w", err)
@@ -46,8 +56,8 @@ func (r *TrainingPlanRepository) CreateTrainingPlanTable(ctx context.Context) er
 
 func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.Tx, plan *models.TrainingPlan) (int, error) {
 	query := `
-		INSERT INTO training_plan (name, description, user_id)
-		VALUES ($1, $2, $3)
+		INSERT INTO training_plan (name, description, user_id, goal, target_level)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, created_at, updated_at
 	`
 
@@ -57,6 +67,8 @@ func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.
 		plan.Name,
 		plan.Description,
 		plan.UserID,
+		plan.Goal,
+		plan.TargetLevel,
 	).Scan(&plan.ID, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
 		log.Fatal(err)
 		return 0, err
@@ -78,6 +90,8 @@ func (r *TrainingPlanRepository) getTrainingPlansByScope(ctx context.Context, wh
 		tp.id,
 		tp.name,
 		tp.description,
+		tp.goal,
+		tp.target_level,
 		tp.created_at,
 		tp.updated_at
 	FROM training_plan tp
@@ -93,7 +107,7 @@ func (r *TrainingPlanRepository) getTrainingPlansByScope(ctx context.Context, wh
 	var plans []models.TrainingPlans
 	for rows.Next() {
 		var plan models.TrainingPlans
-		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
+		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.Goal, &plan.TargetLevel, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
 			return nil, err
 		}
 		plans = append(plans, plan)
@@ -179,4 +193,49 @@ func (r *TrainingPlanRepository) GetTrainingPlan(ctx context.Context, tpId int) 
 	}
 
 	return plan, nil
+}
+
+func (r *TrainingPlanRepository) GetPlanWorkoutLinks(ctx context.Context) ([]models.TrainingPlanWorkoutLink, error) {
+	query := `SELECT training_plan_id, workout_id FROM training_plan_workout ORDER BY training_plan_id, workout_id`
+
+	rows, err := r.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var links []models.TrainingPlanWorkoutLink
+	for rows.Next() {
+		var link models.TrainingPlanWorkoutLink
+		if err := rows.Scan(&link.TrainingPlanID, &link.WorkoutID); err != nil {
+			return nil, err
+		}
+		links = append(links, link)
+	}
+
+	return links, rows.Err()
+}
+
+func (r *TrainingPlanRepository) GetCatalogTrainingPlans(ctx context.Context) ([]models.CatalogTrainingPlan, error) {
+	query := `SELECT id, name, description, goal, target_level
+	FROM training_plan
+	WHERE user_id IS NULL
+	ORDER BY id`
+
+	rows, err := r.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var plans []models.CatalogTrainingPlan
+	for rows.Next() {
+		var plan models.CatalogTrainingPlan
+		if err := rows.Scan(&plan.ID, &plan.Name, &plan.Description, &plan.Goal, &plan.TargetLevel); err != nil {
+			return nil, err
+		}
+		plans = append(plans, plan)
+	}
+
+	return plans, rows.Err()
 }

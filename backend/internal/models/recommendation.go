@@ -66,6 +66,8 @@ type SurveyResult struct {
 	MuscleGroup        MuscleGroup  `json:"muscleGroup"`
 	Frequency          int          `json:"frequency"`
 	DurationPreference int          `json:"duration_preference"`
+	Persist            bool         `json:"persist,omitempty"`
+	UserID             *int         `json:"userId,omitempty"`
 }
 
 type RecommendationPlan struct {
