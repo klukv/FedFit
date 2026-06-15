@@ -1,17 +1,13 @@
 """
 FastAPI-приложение рекомендательного сервиса.
 
-Единственный бизнес-эндпоинт: POST /recommend
-Дополнительно: GET /health для мониторинга
+Pipeline inference:
+  Rule Engine → (Workout Matcher | Exercise Composer) → Plan Assembler
 
 Жизненный цикл при запуске:
-  1. Инициализируется RuleEngine (загружает exercises.json и templates.json)
-  2. Инициализируется MLSelector (загружает или обучает модель)
-  3. Инициализируется PlanBuilder
-  4. Сервис готов принимать запросы
-
-Все компоненты stateless — состояние не хранится между запросами.
-Исключение: загруженная ML-модель кэшируется в памяти процесса.
+  1. CatalogLoader — exercises, workouts, training_plans
+  2. RuleEngine, WorkoutMatcher, MLSelector, ExerciseComposer, PlanAssembler
+  3. RecommendationService — оркестратор POST /recommend
 """
 
 import logging
@@ -21,73 +17,75 @@ from typing import Any, Dict
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
 from app.models.plan_structures import TrainingPlanResponse
 from app.models.schemas import UserQuestionnaire
+from app.services.catalog_loader import CatalogLoader
+from app.services.exercise_composer import ExerciseComposer
 from app.services.ml_selector import MLSelector
-from app.services.plan_builder import PlanBuilder
+from app.services.plan_assembler import PlanAssembler
+from app.services.recommendation_service import RecommendationService
 from app.services.rule_engine import RuleEngine
+from app.services.workout_matcher import WorkoutMatcher
 
-# Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 logger = logging.getLogger(__name__)
 
-# ──────────────────────────────────────────────
-# Глобальные компоненты сервиса
-# (инициализируются один раз при старте)
-# ──────────────────────────────────────────────
+catalog_loader: CatalogLoader = None
 rule_engine: RuleEngine = None
 ml_selector: MLSelector = None
-plan_builder: PlanBuilder = None
+workout_matcher: WorkoutMatcher = None
+exercise_composer: ExerciseComposer = None
+plan_assembler: PlanAssembler = None
+recommendation_service: RecommendationService = None
+
+
+def _build_components(force_retrain: bool = False) -> None:
+    """Инициализирует или пересоздаёт компоненты сервиса."""
+    global catalog_loader, rule_engine, ml_selector, workout_matcher
+    global exercise_composer, plan_assembler, recommendation_service
+
+    catalog_loader = CatalogLoader()
+    rule_engine = RuleEngine(exercises=catalog_loader.catalog.exercises)
+    ml_selector = MLSelector(force_retrain=force_retrain)
+    workout_matcher = WorkoutMatcher(catalog_loader.catalog)
+    plan_assembler = PlanAssembler(catalog_loader.catalog)
+    exercise_composer = ExerciseComposer(ml_selector, plan_assembler)
+    recommendation_service = RecommendationService(
+        rule_engine=rule_engine,
+        catalog_loader=catalog_loader,
+        workout_matcher=workout_matcher,
+        exercise_composer=exercise_composer,
+        plan_assembler=plan_assembler,
+    )
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Lifespan-менеджер FastAPI: выполняется при старте и остановке сервиса.
-    Заменяет устаревшие on_event("startup") / on_event("shutdown").
-    """
-    global rule_engine, ml_selector, plan_builder
+    global catalog_loader
 
     logger.info("=== Запуск рекомендательного сервиса ===")
-
-    # Инициализация компонентов
-    logger.info("Загрузка rule engine...")
-    rule_engine = RuleEngine()
-
-    logger.info("Загрузка ML selector (может занять несколько секунд при первом запуске)...")
-    ml_selector = MLSelector()
-
-    logger.info("Инициализация plan builder...")
-    plan_builder = PlanBuilder()
-
+    _build_components(force_retrain=False)
     logger.info("=== Сервис готов к работе ===")
 
-    yield  # Сервис работает
+    yield
 
-    # Код после yield выполняется при остановке
     logger.info("=== Остановка сервиса ===")
 
 
-# ──────────────────────────────────────────────
-# Создание FastAPI-приложения
-# ──────────────────────────────────────────────
 app = FastAPI(
     title="Fitness Recommendation Service",
     description=(
-        "Микросервис для генерации персонализированных планов тренировок. "
-        "Использует гибридную архитектуру: rule-based фильтрация + ML-ранжирование."
+        "Гибрид rule-based + ML: экспертный подбор каталожных тренировок, "
+        "ML-сборка из упражнений при несоответствии."
     ),
-    version="1.0.0",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
-# CORS — разрешаем запросы от фронтенда фитнес-приложения
-# В продакшн замените "*" на конкретный домен
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -97,41 +95,35 @@ app.add_middleware(
 )
 
 
-# ──────────────────────────────────────────────
-# MIDDLEWARE: логирование времени запроса
-# ──────────────────────────────────────────────
 @app.middleware("http")
 async def log_request_time(request: Request, call_next):
-    """Логирует время выполнения каждого запроса."""
     start = time.perf_counter()
     response = await call_next(request)
     elapsed_ms = (time.perf_counter() - start) * 1000
-    logger.info(f"{request.method} {request.url.path} — {elapsed_ms:.1f}ms")
+    logger.info("%s %s — %.1fms", request.method, request.url.path, elapsed_ms)
     return response
 
 
-# ──────────────────────────────────────────────
-# ЭНДПОИНТЫ
-# ──────────────────────────────────────────────
-
 @app.get("/health", tags=["Monitoring"])
 async def health_check() -> Dict[str, Any]:
-    """
-    Health-check эндпоинт для систем мониторинга и оркестрации (k8s, docker-compose).
-
-    Возвращает статус компонентов и используемый источник рекомендаций.
-    """
     return {
         "status": "ok",
         "components": {
+            "catalog_loader": catalog_loader is not None,
             "rule_engine": rule_engine is not None,
+            "workout_matcher": workout_matcher is not None,
             "ml_selector": ml_selector is not None,
             "ml_model_loaded": ml_selector.model is not None if ml_selector else False,
-            "plan_builder": plan_builder is not None,
+            "exercise_composer": exercise_composer is not None,
+            "plan_assembler": plan_assembler is not None,
+        },
+        "catalog": {
+            "exercises": len(catalog_loader.catalog.exercises) if catalog_loader else 0,
+            "workouts": len(catalog_loader.catalog.workouts) if catalog_loader else 0,
+            "training_plans": len(catalog_loader.catalog.training_plans) if catalog_loader else 0,
         },
         "recommendation_mode": (
-            ml_selector.recommendation_source
-            if ml_selector else "unavailable"
+            ml_selector.recommendation_source if ml_selector else "unavailable"
         ),
     }
 
@@ -143,90 +135,67 @@ async def health_check() -> Dict[str, Any]:
     response_model_by_alias=True,
     tags=["Recommendations"],
     summary="Сгенерировать персональный план тренировок",
-    responses={
-        200: {"description": "Успешно сгенерированный план тренировок"},
-        422: {"description": "Ошибка валидации входных данных"},
-        500: {"description": "Внутренняя ошибка сервиса"},
-    },
 )
 async def recommend(questionnaire: UserQuestionnaire) -> TrainingPlanResponse:
     """
-    Генерирует персонализированный план тренировок на основе анкеты пользователя.
-
     ### Логика работы:
-    1. **Rule Engine** фильтрует упражнения по инвентарю, ограничениям и уровню,
-       затем строит структуру плана (N тренировок по X упражнений каждая)
-    2. **ML Selector** ранжирует доступные упражнения и выбирает лучшие для каждой тренировки
-    3. **Plan Builder** формирует итоговый JSON-ответ
-
-    ### Гарантии:
-    - Все упражнения соответствуют доступному инвентарю
-    - Все упражнения безопасны при указанных ограничениях здоровья
-    - Уровень сложности соответствует подготовке пользователя
+    1. **Rule Engine** — слоты плана, фильтрация упражнений
+    2. Для каждого слота:
+       - **Workout Matcher** — подходит ли готовая тренировка из каталога?
+       - иначе **Exercise Composer** (ML-ранжирование + сборка)
+    3. **Plan Assembler** — TrainingPlanResponse
     """
-    if rule_engine is None or ml_selector is None or plan_builder is None:
-        raise HTTPException(
-            status_code=503,
-            detail="Сервис не инициализирован. Попробуйте позже."
-        )
+    if recommendation_service is None:
+        raise HTTPException(status_code=503, detail="Сервис не инициализирован.")
 
     try:
-        # ── Шаг 1: Rule-based фильтрация и структурирование ──
-        rule_output = rule_engine.apply(questionnaire)
+        plan, slot_sources = recommendation_service.recommend(questionnaire)
 
-        if not rule_output.available_exercises:
+        for slot_info in slot_sources:
+            logger.info(
+                "Слот день %s: source=%s (%s)",
+                slot_info["day"],
+                slot_info["source"],
+                slot_info["name"],
+            )
+
+        return plan
+
+    except ValueError as exc:
+        if str(exc) == "empty_exercise_pool":
             raise HTTPException(
                 status_code=422,
                 detail=(
                     "Не найдено подходящих упражнений для указанных параметров. "
                     "Попробуйте изменить ограничения или добавить инвентарь."
-                )
-            )
-
-        # ── Шаг 2: ML-ранжирование и выбор упражнений ──
-        slot_exercises = ml_selector.select(rule_output, questionnaire)
-
-        # ── Шаг 3: Сборка плана (JSON как models.TrainingPlan на бэкенде) ──
-        plan = plan_builder.build(
-            rule_output=rule_output,
-            slot_exercises=slot_exercises,
-        )
-        logger.info(
-            "Рекомендация отдана, источник ранжирования: %s",
-            ml_selector.recommendation_source,
-        )
-
-        return plan
-
+                ),
+            ) from exc
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     except HTTPException:
-        raise  # Прокидываем HTTP-ошибки как есть
-    except Exception as e:
-        logger.exception(f"Неожиданная ошибка при генерации плана: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Ошибка генерации плана: {str(e)}"
-        )
+        raise
+    except Exception as exc:
+        logger.exception("Ошибка генерации плана: %s", exc)
+        raise HTTPException(status_code=500, detail=f"Ошибка генерации плана: {exc}") from exc
 
 
 @app.post(
     "/retrain",
     tags=["Admin"],
-    summary="Переобучить ML-модель (только для администраторов)",
+    summary="Переобучить ML-модель на каталоге",
 )
-async def retrain_model() -> Dict[str, str]:
+async def retrain_model() -> Dict[str, Any]:
     """
-    Принудительно переобучает ML-модель на синтетических данных.
-
-    В продакшн этот эндпоинт должен быть защищён аутентификацией
-    и вызываться только при наличии новых обучающих данных.
+    Переобучает модель на данных каталога (workout_exercise).
+    При малом каталоге дополняет expert rules.
+    После изменения БД: scripts/export_catalog.py → POST /retrain
     """
-    global ml_selector
-
     logger.info("Запрошено переобучение модели...")
-    ml_selector = MLSelector(force_retrain=True)
+    _build_components(force_retrain=True)
 
+    metrics = ml_selector.train_metrics if ml_selector else {}
     return {
         "status": "ok",
-        "message": "Модель успешно переобучена",
-        "model_source": ml_selector.recommendation_source,
+        "message": "Модель переобучена",
+        "model_source": ml_selector.recommendation_source if ml_selector else "unavailable",
+        "metrics": metrics,
     }

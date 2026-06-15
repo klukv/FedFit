@@ -185,30 +185,72 @@ def _generate_synthetic_data(
     return np.array(X_list), np.array(y_list)
 
 
-def train_and_save_model(exercises: Optional[List[Dict[str, Any]]] = None) -> Pipeline:
+def train_and_save_model(
+    exercises: Optional[List[Dict[str, Any]]] = None,
+) -> Tuple[Pipeline, Dict[str, Any]]:
     """
     Обучает sklearn Pipeline и сохраняет его в файл.
 
-    Pipeline состоит из:
-      1. StandardScaler — нормализация признаков (важно для gradient boosting)
-      2. GradientBoostingRegressor — предсказание рейтинга упражнения
-
-    Args:
-        exercises: список упражнений (загружается из файла если не передан)
+    Приоритет данных:
+      1. Каталог БД (workout_exercise) — generate_catalog_data
+      2. Дополнение expert rules при n_samples < 500
+      3. Полный fallback на синтетику, если каталог пуст
 
     Returns:
-        обученный Pipeline
+        (обученный Pipeline, метрики обучения)
     """
-    if exercises is None:
+    from app.ml.catalog_training import (
+        MIN_CATALOG_SAMPLES,
+        augment_with_expert_data,
+        generate_catalog_data,
+    )
+    from app.services.catalog_loader import CatalogLoader
+
+    catalog_loader = CatalogLoader()
+    catalog = catalog_loader.catalog
+    exercises = exercises or catalog.exercises
+
+    if not exercises:
         exercises_path = DATA_DIR / "exercises.json"
-        with open(exercises_path, "r", encoding="utf-8") as f:
-            exercises = json.load(f)
+        with open(exercises_path, "r", encoding="utf-8") as file:
+            exercises = json.load(file)
 
-    logger.info("Генерация синтетических обучающих данных...")
-    X, y = _generate_synthetic_data(exercises, n_samples=3000)
-    logger.info(f"Сгенерировано {len(X)} примеров. X.shape={X.shape}")
+    catalog_n_before_aug = 0
+    logger.info("Генерация обучающих данных из каталога...")
+    X, y, stats = generate_catalog_data(catalog)
+    catalog_n_before_aug = int(stats["n_samples"])
 
-    # Создаём и обучаем Pipeline
+    if catalog_n_before_aug > 0 and catalog_n_before_aug < MIN_CATALOG_SAMPLES:
+        logger.info(
+            "Каталог мал (%s примеров) — дополняем expert rules до %s",
+            catalog_n_before_aug,
+            MIN_CATALOG_SAMPLES,
+        )
+        X, y, augmented = augment_with_expert_data(
+            X, y, exercises, target_samples=MIN_CATALOG_SAMPLES
+        )
+        stats["augmented"] = augmented
+        stats["catalog_ratio"] = round(catalog_n_before_aug / len(X), 3) if len(X) else 0.0
+        stats["n_samples"] = len(X)
+    elif catalog_n_before_aug == 0:
+        logger.warning(
+            "Каталог пуст — обучение на синтетических expert rules (временный fallback)"
+        )
+        X, y = _generate_synthetic_data(exercises, n_samples=3000)
+        stats = {
+            "n_samples": len(X),
+            "n_positive": 0,
+            "n_negative": 0,
+            "n_workouts": 0,
+            "catalog_ratio": 0.0,
+            "augmented": False,
+            "data_source": "synthetic_fallback",
+        }
+    else:
+        stats["data_source"] = "catalog"
+
+    logger.info("Обучающая выборка: %s примеров, catalog_ratio=%s", len(X), stats.get("catalog_ratio"))
+
     pipeline = Pipeline([
         ("scaler", StandardScaler()),
         ("regressor", GradientBoostingRegressor(
@@ -216,23 +258,20 @@ def train_and_save_model(exercises: Optional[List[Dict[str, Any]]] = None) -> Pi
             max_depth=4,
             learning_rate=0.1,
             random_state=42,
-            # Небольшое количество деревьев — достаточно для прототипа
-            # и обеспечивает быстрый inference (< 50 мс)
         )),
     ])
 
     pipeline.fit(X, y)
 
-    # Оцениваем модель на тренировочных данных (для информации)
-    train_score = pipeline.score(X, y)
-    logger.info(f"R² на обучающих данных: {train_score:.3f}")
+    train_score = float(pipeline.score(X, y))
+    stats["train_r2"] = round(train_score, 4)
+    logger.info("R² на обучающих данных: %.3f", train_score)
 
-    # Сохраняем модель
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     joblib.dump(pipeline, MODEL_PATH)
-    logger.info(f"Модель сохранена: {MODEL_PATH}")
+    logger.info("Модель сохранена: %s", MODEL_PATH)
 
-    return pipeline
+    return pipeline, stats
 
 
 def load_model() -> Optional[Pipeline]:

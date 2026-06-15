@@ -19,7 +19,7 @@ const CarouselTrainingPlansWrapper = (props: IProps) => {
                     type={WorkoutItemVariants.LARGE_WITH_BUTTON}
                     title={item.name}
                     backgroundImage={{
-                        image: TRAINING_PLANS[idx].image.src,
+                        image: TRAINING_PLANS[idx % TRAINING_PLANS.length].image.src,
                     }}
                     buttonLink={{
                         href: `${TRAINING_PLANS_URL}/${item.id}`,

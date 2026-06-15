@@ -1,0 +1,66 @@
+{
+  "_comment": "Формат GET /v1/internal/catalog/export → normalize_catalog_export() → catalog.json. Поля обязательны для обучения ML (catalog_training.py).",
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Приседания",
+      "description": "Классические приседания для проработки квадрицепсов и ягодиц.",
+      "icon": null,
+      "muscle_group": "legs",
+      "equipment": ["none"],
+      "restrictions_excluded": ["knee"],
+      "level": ["beginner", "intermediate", "advanced"],
+      "sets": 3,
+      "reps": 12,
+      "duration": null,
+      "calories_per_set": 12.0
+    },
+    {
+      "id": 24,
+      "name": "Махи гирей",
+      "description": "Свинг гирей между ног и до уровня груди.",
+      "icon": null,
+      "muscle_group": "full_body",
+      "equipment": ["kettlebell"],
+      "restrictions_excluded": ["knee", "back"],
+      "level": ["beginner", "intermediate", "advanced"],
+      "sets": 4,
+      "reps": 15,
+      "duration": null,
+      "calories_per_set": 16.0
+    }
+  ],
+  "workouts": [
+    {
+      "id": 13,
+      "name": "Full body с гирей",
+      "value": "full-body-kettlebell",
+      "description": "Свинги, гоблет, тяги гирей.",
+      "image": null,
+      "level": "intermediate",
+      "calories_min": 200,
+      "calories_max": 340,
+      "duration": 35,
+      "muscle_groups": ["full_body", "legs", "back"],
+      "exercises": [
+        { "exercise_id": 24, "sets": 4, "reps": 15, "duration": null },
+        { "exercise_id": 34, "sets": 3, "reps": 12, "duration": null },
+        { "exercise_id": 25, "sets": 3, "reps": 10, "duration": null },
+        { "exercise_id": 3, "sets": 2, "reps": null, "duration": 30 },
+        { "exercise_id": 11, "sets": 3, "reps": 15, "duration": null }
+      ]
+    }
+  ],
+  "training_plans": [
+    {
+      "id": 9,
+      "name": "Гипертрофия",
+      "description": "Набор массы: штанга, гантели, турник.",
+      "goal": "muscle_gain",
+      "target_level": "advanced"
+    }
+  ],
+  "training_plan_workout_links": [
+    { "training_plan_id": 9, "workout_id": 13 }
+  ]
+}

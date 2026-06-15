@@ -20,7 +20,7 @@ import numpy as np
 from app.ml.features import questionnaire_to_features
 from app.ml.pipeline import Pipeline, load_model, score_exercises, train_and_save_model
 from app.models.schemas import UserQuestionnaire
-from app.services.rule_engine import RuleEngineOutput, WorkoutSlot
+from app.services.rule_engine import WorkoutSlot
 
 logger = logging.getLogger(__name__)
 
@@ -39,68 +39,66 @@ class MLSelector:
             force_retrain: принудительно переобучить модель даже если она существует
         """
         self.model: Optional[Pipeline] = None
+        self._train_metrics: Dict[str, Any] = {}
         self._load_or_train(force_retrain)
+
+    @property
+    def train_metrics(self) -> Dict[str, Any]:
+        """Метрики последнего обучения (для /retrain)."""
+        return self._train_metrics
 
     def _load_or_train(self, force_retrain: bool) -> None:
         """Загружает модель или обучает новую."""
-        if not force_retrain:
+        if force_retrain:
+            self.model = None
+        elif self.model is None:
             self.model = load_model()
 
         if self.model is None:
-            logger.info("Обучение новой модели на синтетических данных...")
+            logger.info("Обучение новой модели (каталог + expert rules)...")
             try:
-                self.model = train_and_save_model()
-                logger.info("Модель успешно обучена и сохранена")
+                self.model, self._train_metrics = train_and_save_model()
+                logger.info("Модель успешно обучена и сохранена: %s", self._train_metrics)
             except Exception as e:
                 logger.error(f"Ошибка при обучении модели: {e}. Переключаемся на rule-based fallback.")
                 self.model = None
 
-    def select(
+    def rank_exercises(
         self,
-        rule_output: RuleEngineOutput,
+        available: List[Dict[str, Any]],
         questionnaire: UserQuestionnaire,
-    ) -> List[Tuple[WorkoutSlot, List[Dict[str, Any]]]]:
+    ) -> List[Tuple[Dict[str, Any], float]]:
         """
-        Для каждого слота тренировки выбирает список упражнений.
+        Ранжирует упражнения из отфильтрованного пула.
 
-        Args:
-            rule_output: результат работы rule engine (доступные упражнения + слоты)
-            questionnaire: оригинальная анкета (для генерации ML-признаков)
-
-        Returns:
-            Список пар (слот, список_выбранных_упражнений)
+        Используется ExerciseComposer при сборке тренировки из упражнений.
         """
-        available = rule_output.available_exercises
-
         if self.model is not None:
-            # ── ML-путь: используем обученную модель ──
-            logger.info("Используется ML-модель для ранжирования упражнений")
+            logger.debug("ML-модель: ранжирование %s упражнений", len(available))
             user_features = questionnaire_to_features(questionnaire)
             scores = score_exercises(self.model, user_features, available)
-            source = "hybrid"
+            self._recommendation_source = "hybrid"
         else:
-            # ── Fallback: детерминированное ранжирование ──
-            logger.warning("ML-модель недоступна, используется rule-based ранжирование")
+            logger.warning("ML-модель недоступна — rule-based ранжирование")
             scores = self._fallback_scores(available, questionnaire)
-            source = "rule_only"
+            self._recommendation_source = "rule_only"
 
-        self._recommendation_source = source
+        scored = list(zip(available, scores))
+        scored.sort(key=lambda item: item[1], reverse=True)
+        return scored
 
-        # Создаём список (упражнение, score) и сортируем по убыванию рейтинга
-        scored_exercises = list(zip(available, scores))
-        scored_exercises.sort(key=lambda x: x[1], reverse=True)
-
-        # Для каждого слота выбираем подходящие упражнения
-        result = []
-        for slot in rule_output.workout_slots:
-            selected = self._select_for_slot(
-                slot=slot,
-                scored_exercises=scored_exercises,
-                exercise_count=slot.exercise_count,
-            )
-            result.append((slot, selected))
-
-        return result
+    def select_for_slot(
+        self,
+        slot: WorkoutSlot,
+        scored_exercises: List[Tuple[Dict[str, Any], float]],
+        exercise_count: int,
+    ) -> List[Dict[str, Any]]:
+        """Выбирает top-N упражнений для слота с учётом целевых групп мышц."""
+        return self._select_for_slot(
+            slot=slot,
+            scored_exercises=scored_exercises,
+            exercise_count=exercise_count,
+        )
 
     @property
     def recommendation_source(self) -> str:

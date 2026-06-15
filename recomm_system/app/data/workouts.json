@@ -9,12 +9,36 @@
     "calories_min": 80,
     "calories_max": 120,
     "duration": 15,
-    "muscle_groups": ["chest", "core", "cardio"],
+    "muscle_groups": [
+      "chest",
+      "core",
+      "cardio"
+    ],
     "exercises": [
-      { "exercise_id": 2, "sets": 2, "reps": 10, "duration": null },
-      { "exercise_id": 3, "sets": 2, "reps": null, "duration": 30 },
-      { "exercise_id": 6, "sets": 2, "reps": 15, "duration": null },
-      { "exercise_id": 10, "sets": 1, "reps": null, "duration": 60 }
+      {
+        "exercise_id": 2,
+        "sets": 2,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 6,
+        "sets": 2,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 10,
+        "sets": 1,
+        "reps": null,
+        "duration": 60
+      }
     ]
   },
   {
@@ -27,13 +51,43 @@
     "calories_min": 200,
     "calories_max": 350,
     "duration": 40,
-    "muscle_groups": ["legs", "chest", "back", "shoulders"],
+    "muscle_groups": [
+      "legs",
+      "chest",
+      "back",
+      "shoulders"
+    ],
     "exercises": [
-      { "exercise_id": 1, "sets": 3, "reps": 12, "duration": null },
-      { "exercise_id": 2, "sets": 3, "reps": 10, "duration": null },
-      { "exercise_id": 12, "sets": 2, "reps": 8, "duration": null },
-      { "exercise_id": 17, "sets": 3, "reps": 12, "duration": null },
-      { "exercise_id": 19, "sets": 3, "reps": 10, "duration": null }
+      {
+        "exercise_id": 1,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 2,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 12,
+        "sets": 2,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 17,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 19,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      }
     ]
   },
   {
@@ -46,13 +100,41 @@
     "calories_min": 250,
     "calories_max": 400,
     "duration": 35,
-    "muscle_groups": ["cardio", "core"],
+    "muscle_groups": [
+      "cardio",
+      "core"
+    ],
     "exercises": [
-      { "exercise_id": 9, "sets": 2, "reps": null, "duration": 120 },
-      { "exercise_id": 5, "sets": 3, "reps": 8, "duration": null },
-      { "exercise_id": 7, "sets": 3, "reps": 15, "duration": null },
-      { "exercise_id": 15, "sets": 3, "reps": null, "duration": 45 },
-      { "exercise_id": 8, "sets": 3, "reps": 20, "duration": null }
+      {
+        "exercise_id": 5,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 7,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 8,
+        "sets": 3,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 9,
+        "sets": 2,
+        "reps": null,
+        "duration": 120
+      },
+      {
+        "exercise_id": 15,
+        "sets": 3,
+        "reps": null,
+        "duration": 45
+      }
     ]
   },
   {
@@ -65,13 +147,42 @@
     "calories_min": 180,
     "calories_max": 300,
     "duration": 30,
-    "muscle_groups": ["legs", "glutes", "core"],
+    "muscle_groups": [
+      "legs",
+      "glutes",
+      "core"
+    ],
     "exercises": [
-      { "exercise_id": 1, "sets": 4, "reps": 12, "duration": null },
-      { "exercise_id": 4, "sets": 3, "reps": 12, "duration": null },
-      { "exercise_id": 11, "sets": 3, "reps": 15, "duration": null },
-      { "exercise_id": 13, "sets": 3, "reps": 15, "duration": null },
-      { "exercise_id": 14, "sets": 2, "reps": null, "duration": 30 }
+      {
+        "exercise_id": 1,
+        "sets": 4,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 4,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 11,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 13,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 14,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      }
     ]
   },
   {
@@ -84,13 +195,1221 @@
     "calories_min": 300,
     "calories_max": 500,
     "duration": 25,
-    "muscle_groups": ["cardio", "core", "full_body"],
+    "muscle_groups": [
+      "cardio",
+      "core",
+      "full_body"
+    ],
     "exercises": [
-      { "exercise_id": 5, "sets": 4, "reps": 10, "duration": null },
-      { "exercise_id": 15, "sets": 4, "reps": null, "duration": 40 },
-      { "exercise_id": 9, "sets": 3, "reps": null, "duration": 60 },
-      { "exercise_id": 3, "sets": 3, "reps": null, "duration": 45 },
-      { "exercise_id": 10, "sets": 2, "reps": null, "duration": 90 }
+      {
+        "exercise_id": 3,
+        "sets": 3,
+        "reps": null,
+        "duration": 45
+      },
+      {
+        "exercise_id": 5,
+        "sets": 4,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 9,
+        "sets": 3,
+        "reps": null,
+        "duration": 60
+      },
+      {
+        "exercise_id": 10,
+        "sets": 2,
+        "reps": null,
+        "duration": 90
+      },
+      {
+        "exercise_id": 15,
+        "sets": 4,
+        "reps": null,
+        "duration": 40
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Верх тела: гантели",
+    "value": "upper-dumbbells",
+    "description": "Грудь, плечи, руки с гантелями.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 120,
+    "calories_max": 200,
+    "duration": 30,
+    "muscle_groups": [
+      "chest",
+      "shoulders",
+      "arms"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 17,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 18,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 20,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 31,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 32,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Верх тела: штанга",
+    "value": "upper-barbell",
+    "description": "Базовые жимы и тяги со штангой.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 220,
+    "calories_max": 380,
+    "duration": 45,
+    "muscle_groups": [
+      "chest",
+      "back",
+      "arms"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 2,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 12,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 19,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 21,
+        "sets": 4,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 30,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Ноги: штанга",
+    "value": "legs-barbell",
+    "description": "Присед и вспомогательные для ног.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 250,
+    "calories_max": 400,
+    "duration": 40,
+    "muscle_groups": [
+      "legs",
+      "glutes"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 1,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 4,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 6,
+        "sets": 4,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 13,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 22,
+        "sets": 4,
+        "reps": 8,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Кардио 15 мин",
+    "value": "cardio-15",
+    "description": "Короткое кардио без инвентаря.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 100,
+    "calories_max": 160,
+    "duration": 15,
+    "muscle_groups": [
+      "cardio"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 9,
+        "sets": 1,
+        "reps": null,
+        "duration": 180
+      },
+      {
+        "exercise_id": 10,
+        "sets": 2,
+        "reps": null,
+        "duration": 120
+      },
+      {
+        "exercise_id": 15,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 28,
+        "sets": 3,
+        "reps": null,
+        "duration": 45
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Кардио 45 мин",
+    "value": "cardio-45",
+    "description": "Длительное кардио и выносливость.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 300,
+    "calories_max": 480,
+    "duration": 45,
+    "muscle_groups": [
+      "cardio",
+      "legs"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 5,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 9,
+        "sets": 3,
+        "reps": null,
+        "duration": 300
+      },
+      {
+        "exercise_id": 10,
+        "sets": 3,
+        "reps": null,
+        "duration": 180
+      },
+      {
+        "exercise_id": 15,
+        "sets": 3,
+        "reps": null,
+        "duration": 45
+      },
+      {
+        "exercise_id": 28,
+        "sets": 4,
+        "reps": null,
+        "duration": 60
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Кор и стабильность",
+    "value": "core-stability",
+    "description": "Планки, скручивания, русский твист.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 90,
+    "calories_max": 150,
+    "duration": 25,
+    "muscle_groups": [
+      "core"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 3,
+        "reps": null,
+        "duration": 45
+      },
+      {
+        "exercise_id": 7,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 14,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 27,
+        "sets": 3,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 35,
+        "sets": 3,
+        "reps": null,
+        "duration": 40
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Full body без инвентаря",
+    "value": "full-body-none",
+    "description": "Всё тело с весом собственного тела.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 150,
+    "calories_max": 250,
+    "duration": 35,
+    "muscle_groups": [
+      "full_body",
+      "core",
+      "legs"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 1,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 2,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 40
+      },
+      {
+        "exercise_id": 4,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 13,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Full body с гирей",
+    "value": "full-body-kettlebell",
+    "description": "Свинги, гоблет, тяги гирей.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 200,
+    "calories_max": 340,
+    "duration": 35,
+    "muscle_groups": [
+      "full_body",
+      "legs",
+      "back"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 11,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 24,
+        "sets": 4,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 25,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 34,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Спина и бицепс",
+    "value": "back-biceps",
+    "description": "Подтягивания, тяги, бицепс.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 180,
+    "calories_max": 300,
+    "duration": 40,
+    "muscle_groups": [
+      "back",
+      "arms"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 12,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 19,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 20,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 30,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 33,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Грудь и трицепс",
+    "value": "chest-triceps",
+    "description": "Жимы и разгибания на верх тела.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 190,
+    "calories_max": 320,
+    "duration": 40,
+    "muscle_groups": [
+      "chest",
+      "arms"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 2,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 17,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 29,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 31,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 32,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Плечи и пресс",
+    "value": "shoulders-core",
+    "description": "Жимы над головой и кор.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 130,
+    "calories_max": 220,
+    "duration": 30,
+    "muscle_groups": [
+      "shoulders",
+      "core"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 7,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 8,
+        "sets": 3,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 14,
+        "sets": 2,
+        "reps": null,
+        "duration": 25
+      },
+      {
+        "exercise_id": 18,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Ягодицы и ноги",
+    "value": "glutes-legs-focus",
+    "description": "Мостик, выпады, приседы.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 170,
+    "calories_max": 280,
+    "duration": 35,
+    "muscle_groups": [
+      "glutes",
+      "legs"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 1,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 4,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 11,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 13,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 26,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "HIIT начинающий",
+    "value": "hiit-beginner",
+    "description": "Интервалы без сложных прыжков.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 140,
+    "calories_max": 220,
+    "duration": 20,
+    "muscle_groups": [
+      "cardio",
+      "core"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 25
+      },
+      {
+        "exercise_id": 6,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 7,
+        "sets": 2,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 10,
+        "sets": 2,
+        "reps": null,
+        "duration": 60
+      },
+      {
+        "exercise_id": 28,
+        "sets": 3,
+        "reps": null,
+        "duration": 30
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "HIIT продвинутый",
+    "value": "hiit-advanced",
+    "description": "Бурпи, альпинист, интенсив.",
+    "image": null,
+    "level": "advanced",
+    "calories_min": 320,
+    "calories_max": 520,
+    "duration": 30,
+    "muscle_groups": [
+      "cardio",
+      "full_body"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 5,
+        "sets": 4,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 9,
+        "sets": 3,
+        "reps": null,
+        "duration": 90
+      },
+      {
+        "exercise_id": 15,
+        "sets": 4,
+        "reps": null,
+        "duration": 45
+      },
+      {
+        "exercise_id": 24,
+        "sets": 3,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 35,
+        "sets": 3,
+        "reps": null,
+        "duration": 40
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Силовая: только турник",
+    "value": "pullup-only",
+    "description": "Подтягивания и вспомогательные.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 160,
+    "calories_max": 260,
+    "duration": 30,
+    "muscle_groups": [
+      "back",
+      "arms"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 2,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 40
+      },
+      {
+        "exercise_id": 12,
+        "sets": 4,
+        "reps": 6,
+        "duration": null
+      },
+      {
+        "exercise_id": 16,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 33,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Разминка 10 мин",
+    "value": "warmup-10",
+    "description": "Лёгкая разминка перед тренировкой.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 50,
+    "calories_max": 80,
+    "duration": 10,
+    "muscle_groups": [
+      "cardio",
+      "core"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 1,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 6,
+        "sets": 2,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 8,
+        "sets": 2,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 10,
+        "sets": 1,
+        "reps": null,
+        "duration": 120
+      },
+      {
+        "exercise_id": 11,
+        "sets": 2,
+        "reps": 10,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Восстановительная",
+    "value": "recovery-light",
+    "description": "Низкая интенсивность, мобильность.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 60,
+    "calories_max": 100,
+    "duration": 20,
+    "muscle_groups": [
+      "core",
+      "legs"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 6,
+        "sets": 2,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 8,
+        "sets": 2,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 13,
+        "sets": 2,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 14,
+        "sets": 2,
+        "reps": null,
+        "duration": 20
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Силовая продвинутая",
+    "value": "strength-advanced",
+    "description": "Становая, присед, жим — тяжёлая база.",
+    "image": null,
+    "level": "advanced",
+    "calories_min": 350,
+    "calories_max": 550,
+    "duration": 50,
+    "muscle_groups": [
+      "legs",
+      "back",
+      "chest"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 5,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 12,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 21,
+        "sets": 4,
+        "reps": 6,
+        "duration": null
+      },
+      {
+        "exercise_id": 22,
+        "sets": 4,
+        "reps": 6,
+        "duration": null
+      },
+      {
+        "exercise_id": 23,
+        "sets": 4,
+        "reps": 5,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Похудение: табата",
+    "value": "weight-loss-tabata",
+    "description": "Короткие интервалы высокой интенсивности.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 280,
+    "calories_max": 420,
+    "duration": 25,
+    "muscle_groups": [
+      "cardio",
+      "full_body"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 5,
+        "sets": 4,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 7,
+        "sets": 3,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 9,
+        "sets": 2,
+        "reps": null,
+        "duration": 120
+      },
+      {
+        "exercise_id": 15,
+        "sets": 4,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 28,
+        "sets": 4,
+        "reps": null,
+        "duration": 30
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Выносливость: длинное кардио",
+    "value": "endurance-long",
+    "description": "Бег, скакалка, прыжки — 50 мин.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 350,
+    "calories_max": 500,
+    "duration": 50,
+    "muscle_groups": [
+      "cardio",
+      "legs"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 1,
+        "sets": 3,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 5,
+        "sets": 2,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 9,
+        "sets": 2,
+        "reps": null,
+        "duration": 600
+      },
+      {
+        "exercise_id": 10,
+        "sets": 2,
+        "reps": null,
+        "duration": 300
+      },
+      {
+        "exercise_id": 28,
+        "sets": 4,
+        "reps": null,
+        "duration": 60
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Набор массы: ноги",
+    "value": "mass-legs",
+    "description": "Тяжёлые ноги со штангой и гирей.",
+    "image": null,
+    "level": "advanced",
+    "calories_min": 300,
+    "calories_max": 480,
+    "duration": 45,
+    "muscle_groups": [
+      "legs",
+      "glutes"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 4,
+        "sets": 4,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 6,
+        "sets": 4,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 13,
+        "sets": 4,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 22,
+        "sets": 5,
+        "reps": 5,
+        "duration": null
+      },
+      {
+        "exercise_id": 34,
+        "sets": 4,
+        "reps": 10,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Набор массы: верх",
+    "value": "mass-upper",
+    "description": "Жимы и тяги для гипертрофии.",
+    "image": null,
+    "level": "advanced",
+    "calories_min": 280,
+    "calories_max": 450,
+    "duration": 45,
+    "muscle_groups": [
+      "chest",
+      "back",
+      "shoulders"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 12,
+        "sets": 4,
+        "reps": 6,
+        "duration": null
+      },
+      {
+        "exercise_id": 18,
+        "sets": 4,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 19,
+        "sets": 4,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 21,
+        "sets": 4,
+        "reps": 6,
+        "duration": null
+      },
+      {
+        "exercise_id": 30,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Офисная зарядка",
+    "value": "office-quick",
+    "description": "15 минут без инвентаря за столом.",
+    "image": null,
+    "level": "beginner",
+    "calories_min": 70,
+    "calories_max": 110,
+    "duration": 15,
+    "muscle_groups": [
+      "core",
+      "cardio"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 2,
+        "sets": 2,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 3,
+        "sets": 2,
+        "reps": null,
+        "duration": 30
+      },
+      {
+        "exercise_id": 6,
+        "sets": 2,
+        "reps": 15,
+        "duration": null
+      },
+      {
+        "exercise_id": 7,
+        "sets": 2,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 10,
+        "sets": 1,
+        "reps": null,
+        "duration": 60
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Короткий кор",
+    "value": "core-short",
+    "description": "Пресс за 20 минут.",
+    "image": null,
+    "level": "intermediate",
+    "calories_min": 100,
+    "calories_max": 170,
+    "duration": 20,
+    "muscle_groups": [
+      "core"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 7,
+        "sets": 3,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 8,
+        "sets": 3,
+        "reps": 25,
+        "duration": null
+      },
+      {
+        "exercise_id": 16,
+        "sets": 3,
+        "reps": 12,
+        "duration": null
+      },
+      {
+        "exercise_id": 27,
+        "sets": 3,
+        "reps": 20,
+        "duration": null
+      },
+      {
+        "exercise_id": 35,
+        "sets": 3,
+        "reps": null,
+        "duration": 35
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Смешанная 60 мин",
+    "value": "mixed-60",
+    "description": "Силовая + кардио полный час.",
+    "image": null,
+    "level": "advanced",
+    "calories_min": 400,
+    "calories_max": 600,
+    "duration": 60,
+    "muscle_groups": [
+      "full_body",
+      "cardio",
+      "legs"
+    ],
+    "exercises": [
+      {
+        "exercise_id": 3,
+        "sets": 3,
+        "reps": null,
+        "duration": 45
+      },
+      {
+        "exercise_id": 5,
+        "sets": 3,
+        "reps": 10,
+        "duration": null
+      },
+      {
+        "exercise_id": 9,
+        "sets": 2,
+        "reps": null,
+        "duration": 300
+      },
+      {
+        "exercise_id": 21,
+        "sets": 3,
+        "reps": 8,
+        "duration": null
+      },
+      {
+        "exercise_id": 22,
+        "sets": 4,
+        "reps": 8,
+        "duration": null
+      }
     ]
   }
 ]

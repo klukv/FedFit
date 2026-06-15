@@ -65,8 +65,10 @@ class RuleEngine:
     правила к анкете пользователя.
     """
 
-    def __init__(self):
-        self.exercises: List[Dict[str, Any]] = self._load_exercises()
+    def __init__(self, exercises: Optional[List[Dict[str, Any]]] = None):
+        self.exercises: List[Dict[str, Any]] = (
+            exercises if exercises is not None else self._load_exercises()
+        )
         self.templates: Dict[str, Any] = self._load_templates()
         logger.info(f"RuleEngine: загружено {len(self.exercises)} упражнений")
 

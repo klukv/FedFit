@@ -5,9 +5,17 @@
     "description": "Классические приседания для проработки квадрицепсов и ягодиц. Спина прямая, колени не выходят за носки.",
     "icon": null,
     "muscle_group": "legs",
-    "equipment": ["none"],
-    "restrictions_excluded": ["knee"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 12,
     "duration": null,
@@ -19,9 +27,17 @@
     "description": "Упражнение на грудь и трицепс. Корпус в одну линию, опускание до касания грудью пола.",
     "icon": null,
     "muscle_group": "chest",
-    "equipment": ["none"],
-    "restrictions_excluded": ["shoulder"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 10,
     "duration": null,
@@ -33,9 +49,17 @@
     "description": "Удержание тела в статичном положении на предплечьях и носках. Укрепляет кор.",
     "icon": null,
     "muscle_group": "core",
-    "equipment": ["none"],
-    "restrictions_excluded": ["shoulder"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 2,
     "reps": null,
     "duration": 30,
@@ -47,9 +71,17 @@
     "description": "Поочерёдные выпады вперёд. Работают бёдра и ягодицы.",
     "icon": null,
     "muscle_group": "legs",
-    "equipment": ["none"],
-    "restrictions_excluded": ["knee"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 12,
     "duration": null,
@@ -61,9 +93,18 @@
     "description": "Комплексное упражнение: присед, упор лёжа, отжимание, прыжок. Кардио и сила.",
     "icon": null,
     "muscle_group": "cardio",
-    "equipment": ["none"],
-    "restrictions_excluded": ["knee", "back", "shoulder"],
-    "level": ["intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "knee",
+      "back",
+      "shoulder"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 10,
     "duration": null,
@@ -75,9 +116,15 @@
     "description": "Стоя или в тренажёре. Проработка икроножных мышц.",
     "icon": null,
     "muscle_group": "legs",
-    "equipment": ["none"],
+    "equipment": [
+      "none"
+    ],
     "restrictions_excluded": [],
-    "level": ["beginner", "intermediate", "advanced"],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 2,
     "reps": 15,
     "duration": null,
@@ -89,9 +136,17 @@
     "description": "Лёжа на спине, подъём корпуса к коленям. Мышцы пресса.",
     "icon": null,
     "muscle_group": "core",
-    "equipment": ["none"],
-    "restrictions_excluded": ["back"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "back"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 15,
     "duration": null,
@@ -103,9 +158,15 @@
     "description": "Лёжа, имитация езды на велосипеде ногами. Пресс и косые мышцы.",
     "icon": null,
     "muscle_group": "core",
-    "equipment": ["none"],
+    "equipment": [
+      "none"
+    ],
     "restrictions_excluded": [],
-    "level": ["beginner", "intermediate", "advanced"],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 20,
     "duration": null,
@@ -117,9 +178,17 @@
     "description": "Кардио-упражнение. Развивает выносливость и координацию.",
     "icon": null,
     "muscle_group": "cardio",
-    "equipment": ["none"],
-    "restrictions_excluded": ["knee"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 2,
     "reps": null,
     "duration": 60,
@@ -131,9 +200,17 @@
     "description": "Высокие подъёмы коленей на месте. Кардио и разогрев.",
     "icon": null,
     "muscle_group": "cardio",
-    "equipment": ["none"],
-    "restrictions_excluded": ["knee"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 2,
     "reps": null,
     "duration": 60,
@@ -145,9 +222,15 @@
     "description": "Стоя или лёжа на боку. Проработка ягодиц и бёдер.",
     "icon": null,
     "muscle_group": "glutes",
-    "equipment": ["none"],
+    "equipment": [
+      "none"
+    ],
     "restrictions_excluded": [],
-    "level": ["beginner", "intermediate", "advanced"],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 15,
     "duration": null,
@@ -159,9 +242,16 @@
     "description": "Вис на перекладине, подъём подбородка выше грифа. Спина и бицепс.",
     "icon": null,
     "muscle_group": "back",
-    "equipment": ["pullup_bar"],
-    "restrictions_excluded": ["shoulder"],
-    "level": ["intermediate", "advanced"],
+    "equipment": [
+      "pullup_bar"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
     "sets": 2,
     "reps": 8,
     "duration": null,
@@ -173,9 +263,15 @@
     "description": "Лёжа на спине, подъём таза вверх. Ягодицы и задняя поверхность бедра.",
     "icon": null,
     "muscle_group": "glutes",
-    "equipment": ["none"],
+    "equipment": [
+      "none"
+    ],
     "restrictions_excluded": [],
-    "level": ["beginner", "intermediate", "advanced"],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 15,
     "duration": null,
@@ -187,9 +283,17 @@
     "description": "Удержание на одной руке и ребре стопы. Косые мышцы и кор.",
     "icon": null,
     "muscle_group": "core",
-    "equipment": ["none"],
-    "restrictions_excluded": ["shoulder"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 2,
     "reps": null,
     "duration": 30,
@@ -201,9 +305,17 @@
     "description": "Упор лёжа, поочерёдное подтягивание коленей к груди. Пресс и кардио.",
     "icon": null,
     "muscle_group": "cardio",
-    "equipment": ["none"],
-    "restrictions_excluded": ["knee"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": null,
     "duration": 45,
@@ -215,9 +327,17 @@
     "description": "Лёжа на спине, подъём прямых ног вверх. Нижний пресс.",
     "icon": null,
     "muscle_group": "core",
-    "equipment": ["none"],
-    "restrictions_excluded": ["back"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "back"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 15,
     "duration": null,
@@ -229,9 +349,17 @@
     "description": "Стоя или лёжа. Гантели в стороны. Средняя часть груди и плечи.",
     "icon": null,
     "muscle_group": "chest",
-    "equipment": ["dumbbells"],
-    "restrictions_excluded": ["shoulder"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "dumbbells"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 12,
     "duration": null,
@@ -243,9 +371,17 @@
     "description": "Гантели от плеч вверх. Плечи и трицепс.",
     "icon": null,
     "muscle_group": "shoulders",
-    "equipment": ["dumbbells"],
-    "restrictions_excluded": ["shoulder"],
-    "level": ["beginner", "intermediate", "advanced"],
+    "equipment": [
+      "dumbbells"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 10,
     "duration": null,
@@ -257,9 +393,17 @@
     "description": "Наклон, тяга рук к поясу (гантель или штанга). Спина.",
     "icon": null,
     "muscle_group": "back",
-    "equipment": ["dumbbells", "barbell"],
-    "restrictions_excluded": ["back"],
-    "level": ["intermediate", "advanced"],
+    "equipment": [
+      "dumbbells",
+      "barbell"
+    ],
+    "restrictions_excluded": [
+      "back"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 10,
     "duration": null,
@@ -271,12 +415,341 @@
     "description": "Сгибание рук с гантелями нейтральным хватом. Бицепс и предплечья.",
     "icon": null,
     "muscle_group": "arms",
-    "equipment": ["dumbbells"],
+    "equipment": [
+      "dumbbells"
+    ],
     "restrictions_excluded": [],
-    "level": ["beginner", "intermediate", "advanced"],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
     "sets": 3,
     "reps": 12,
     "duration": null,
     "calories_per_set": 7.0
+  },
+  {
+    "id": 21,
+    "name": "Жим штанги лёжа",
+    "description": "Базовое упражнение на грудь. Штанга опускается к груди и выжимается вверх.",
+    "icon": null,
+    "muscle_group": "chest",
+    "equipment": [
+      "barbell"
+    ],
+    "restrictions_excluded": [
+      "shoulder",
+      "back"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 14.0
+  },
+  {
+    "id": 22,
+    "name": "Присед со штангой",
+    "description": "Приседания со штангой на плечах. База для ног и ягодиц.",
+    "icon": null,
+    "muscle_group": "legs",
+    "equipment": [
+      "barbell"
+    ],
+    "restrictions_excluded": [
+      "knee",
+      "back"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 16.0
+  },
+  {
+    "id": 23,
+    "name": "Становая тяга",
+    "description": "Подъём штанги с пола. Спина, задняя поверхность бедра, кор.",
+    "icon": null,
+    "muscle_group": "back",
+    "equipment": [
+      "barbell"
+    ],
+    "restrictions_excluded": [
+      "back"
+    ],
+    "level": [
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 18.0
+  },
+  {
+    "id": 24,
+    "name": "Махи гирей",
+    "description": "Свинг гирей между ног и до уровня груди. Кардио и всё тело.",
+    "icon": null,
+    "muscle_group": "full_body",
+    "equipment": [
+      "kettlebell"
+    ],
+    "restrictions_excluded": [
+      "knee",
+      "back"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 16.0
+  },
+  {
+    "id": 25,
+    "name": "Тяга гири к поясу",
+    "description": "Наклон, тяга гири одной рукой. Средняя часть спины.",
+    "icon": null,
+    "muscle_group": "back",
+    "equipment": [
+      "kettlebell"
+    ],
+    "restrictions_excluded": [
+      "back"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 11.0
+  },
+  {
+    "id": 26,
+    "name": "Выпады с гантелями",
+    "description": "Выпады вперёд с гантелями в руках. Ноги и ягодицы.",
+    "icon": null,
+    "muscle_group": "legs",
+    "equipment": [
+      "dumbbells"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 11.0
+  },
+  {
+    "id": 27,
+    "name": "Русский твист",
+    "description": "Сидя, повороты корпуса с отягощением или без. Косые мышцы.",
+    "icon": null,
+    "muscle_group": "core",
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "back"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 6.0
+  },
+  {
+    "id": 28,
+    "name": "Прыжки на месте",
+    "description": "Прыжки с мягкой посадкой. Разогрев и кардио.",
+    "icon": null,
+    "muscle_group": "cardio",
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 10.0
+  },
+  {
+    "id": 29,
+    "name": "Отжимания узким хватом",
+    "description": "Узкая постановка рук. Акцент на трицепс и внутреннюю часть груди.",
+    "icon": null,
+    "muscle_group": "chest",
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 9.0
+  },
+  {
+    "id": 30,
+    "name": "Подъём штанги на бицепс",
+    "description": "Сгибание рук со штангой стоя. Бицепс.",
+    "icon": null,
+    "muscle_group": "arms",
+    "equipment": [
+      "barbell"
+    ],
+    "restrictions_excluded": [],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 8.0
+  },
+  {
+    "id": 31,
+    "name": "Жим гантелей лёжа",
+    "description": "Жим гантелей на скамье. Грудь и стабилизаторы.",
+    "icon": null,
+    "muscle_group": "chest",
+    "equipment": [
+      "dumbbells"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 10.0
+  },
+  {
+    "id": 32,
+    "name": "Разгибания на трицепс",
+    "description": "Разгибание рук с гантелью за головой или в наклоне. Трицепс.",
+    "icon": null,
+    "muscle_group": "arms",
+    "equipment": [
+      "dumbbells"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 7.0
+  },
+  {
+    "id": 33,
+    "name": "Подтягивания обратным хватом",
+    "description": "Хват снизу, акцент на бицепс и нижнюю часть широчайших.",
+    "icon": null,
+    "muscle_group": "back",
+    "equipment": [
+      "pullup_bar"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 14.0
+  },
+  {
+    "id": 34,
+    "name": "Присед гоблет",
+    "description": "Присед с гирей у груди. Ноги, кор, безопасная альтернатива приседу со штангой.",
+    "icon": null,
+    "muscle_group": "legs",
+    "equipment": [
+      "kettlebell"
+    ],
+    "restrictions_excluded": [
+      "knee"
+    ],
+    "level": [
+      "beginner",
+      "intermediate"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 12.0
+  },
+  {
+    "id": 35,
+    "name": "Планка с касанием плеча",
+    "description": "Планка с поочерёдным касанием плеча. Кор и стабилизация.",
+    "icon": null,
+    "muscle_group": "core",
+    "equipment": [
+      "none"
+    ],
+    "restrictions_excluded": [
+      "shoulder"
+    ],
+    "level": [
+      "intermediate",
+      "advanced"
+    ],
+    "sets": null,
+    "reps": null,
+    "duration": null,
+    "calories_per_set": 6.0
   }
 ]
