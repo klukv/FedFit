@@ -1,4 +1,5 @@
 export { formatDuration, formatCalories } from "./format";
+export { formatExercisePrescription } from "./formatExercisePrescription";
 export { formatWorkoutLevelLabel, formatWorkoutCardValue } from "./workoutDisplay";
 export {
   normalizeWorkout,

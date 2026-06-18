@@ -4,6 +4,7 @@ import React from "react";
 import { Roboto } from "next/font/google";
 import clsx from "clsx";
 import { Exercise } from "../../../types";
+import { formatExercisePrescription } from "../../../utils";
 import "./exerciseItem.css";
 
 interface ExerciseItemProps {
@@ -24,7 +25,9 @@ const ExerciseItem = ({ exercise, index }: ExerciseItemProps) => {
         role="listitem"
         aria-label={`Упражнение ${index + 1}: ${exercise.name}`}
       >
-        <span className="exercise-item__sets-reps">{exercise.sets} x {exercise.reps}</span>
+        <span className="exercise-item__sets-reps">
+          {formatExercisePrescription(exercise)}
+        </span>
         <div className="exercise-item__icon">
           <div className="exercise-item__icon-placeholder">
             <svg

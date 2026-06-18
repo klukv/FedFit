@@ -1,2 +1,2 @@
-export { default } from "./ExerciseItem";
+export { default as ExerciseItem } from "./ExerciseItem";
 

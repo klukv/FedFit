@@ -4,7 +4,7 @@ import React from "react";
 import { Montserrat } from "next/font/google";
 import clsx from "clsx";
 import { Exercise } from "../../types";
-import ExerciseItem from "./ExerciseItem";
+import { ExerciseItem } from "./ExerciseItem";
 import "./exerciseList.css";
 
 interface ExerciseListProps {
