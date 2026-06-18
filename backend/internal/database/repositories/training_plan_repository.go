@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -54,6 +53,32 @@ func (r *TrainingPlanRepository) CreateTrainingPlanTable(ctx context.Context) er
 	return nil
 }
 
+func (r *TrainingPlanRepository) PlanNameExists(
+	ctx context.Context,
+	tx pgx.Tx,
+	name string,
+	userID *int,
+) (bool, error) {
+	var exists bool
+
+	if userID == nil {
+		err := tx.QueryRow(
+			ctx,
+			`SELECT EXISTS(SELECT 1 FROM training_plan WHERE name = $1 AND user_id IS NULL)`,
+			name,
+		).Scan(&exists)
+		return exists, err
+	}
+
+	err := tx.QueryRow(
+		ctx,
+		`SELECT EXISTS(SELECT 1 FROM training_plan WHERE name = $1 AND user_id = $2)`,
+		name,
+		*userID,
+	).Scan(&exists)
+	return exists, err
+}
+
 func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.Tx, plan *models.TrainingPlan) (int, error) {
 	query := `
 		INSERT INTO training_plan (name, description, user_id, goal, target_level)
@@ -70,7 +95,6 @@ func (r *TrainingPlanRepository) CreateTrainingPlan(ctx context.Context, tx pgx.
 		plan.Goal,
 		plan.TargetLevel,
 	).Scan(&plan.ID, &plan.CreatedAt, &plan.UpdatedAt); err != nil {
-		log.Fatal(err)
 		return 0, err
 	}
 

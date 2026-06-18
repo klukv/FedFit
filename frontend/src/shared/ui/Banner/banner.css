@@ -1,9 +1,26 @@
 .banner {
+  position: relative;
   display: flex;
   justify-content: flex-end;
+  background-position: center;
+}
+
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(43, 43, 43, 0.1) 0%,
+    rgba(43, 43, 43, 0.45) 55%,
+    rgba(43, 43, 43, 0.62) 100%
+  );
+  pointer-events: none;
 }
 
 .banner__header {
+  position: relative;
+  z-index: 1;
   max-width: 730px;
   display: flex;
   flex-direction: column;

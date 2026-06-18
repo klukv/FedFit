@@ -8,6 +8,11 @@ import clsx from "clsx";
 import "./Workout.css";
 
 const Workout = (props: WorkoutItemProps) => {
+  const imageSrc =
+    typeof props.backgroundImage.image === "string"
+      ? props.backgroundImage.image
+      : props.backgroundImage.image.src;
+
   return (
     <div
       className={clsx("workout-item", {
@@ -15,12 +20,16 @@ const Workout = (props: WorkoutItemProps) => {
           props.type === WorkoutItemVariants.LARGE_WITH_BUTTON,
         "workout-item-small": props.type === WorkoutItemVariants.SMALL,
       })}
-      style={{
-        background: `url('${props.backgroundImage.image}')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
     >
+      {/* Нативный img без next/image — без повторного сжатия, вся фотография в кадре */}
+      <img
+        className="workout-item__image"
+        src={imageSrc}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+      />
       <div className="workout-item__inner">
         <h3 className="workout-item__title">{props.title}</h3>
         {props.type === WorkoutItemVariants.LARGE_WITH_BUTTON && (

@@ -15,6 +15,7 @@ type Repositories struct {
 	WorkoutHistory          *WorkoutHistoryRepository
 	WorkoutHistoryExercises *WorkoutHistoryExercisesRepository
 	Users                   *UsersRepositry
+	Achievement             *AchievementRepository
 }
 
 func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, error) {
@@ -26,6 +27,7 @@ func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, e
 	workoutHistoryRepository := NewWorkoutHistoryRepository(pool)
 	workoutHistoryExersiceRepository := NewWorkoutHistoryExercisesRepository(pool)
 	usersRepository := NewUsersRepositry(pool)
+	achievementRepository := NewAchievementRepository(pool)
 
 	if err := usersRepository.CreateUsersTable(ctx); err != nil {
 		return nil, err
@@ -59,6 +61,18 @@ func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, e
 		return nil, err
 	}
 
+	if err := achievementRepository.CreateAchievementTable(ctx); err != nil {
+		return nil, err
+	}
+
+	if err := achievementRepository.CreateUserAchievementTable(ctx); err != nil {
+		return nil, err
+	}
+
+	if err := achievementRepository.SeedAchievements(ctx); err != nil {
+		return nil, err
+	}
+
 	return &Repositories{
 		TrainingPlan:            trainingPlanRepository,
 		Workout:                 workoutRepository,
@@ -68,5 +82,6 @@ func InitRepositories(pool *pgxpool.Pool, ctx context.Context) (*Repositories, e
 		WorkoutHistory:          workoutHistoryRepository,
 		WorkoutHistoryExercises: workoutHistoryExersiceRepository,
 		Users:                   usersRepository,
+		Achievement:             achievementRepository,
 	}, nil
 }

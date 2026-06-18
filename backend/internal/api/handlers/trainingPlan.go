@@ -101,14 +101,16 @@ func (handler *Handler) CreateTrainingPlanHandler(w http.ResponseWriter, r *http
 		fmt.Println("Ошибка при разборе JSON: ", err)
 	}
 
-	if err := handler.Services.TrainingService.CreateTrainingPlan(r.Context(), &trainingPlan); err != nil {
+	newAchievements, err := handler.Services.TrainingService.CreateTrainingPlan(r.Context(), &trainingPlan)
+	if err != nil {
 		http.Error(w, "Ошибка создания плана тренировки", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	response := models.CreateTrainingPlanResponse{
-		ID:      trainingPlan.ID,
-		Message: "План тренировки успешно добавлен",
+		ID:              trainingPlan.ID,
+		Message:         "План тренировки успешно добавлен",
+		NewAchievements: newAchievements,
 	}
 
 	if err := json.NewEncoder(w).Encode(response); err != nil {

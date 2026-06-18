@@ -23,6 +23,7 @@ import type {
 } from "../types";
 import { buildSurveySummary, toSurveySubmitPayload } from "../utils";
 import { SurveyPhase } from "../types/entities";
+import { showAchievementToasts } from "@/modules/achievement";
 
 interface UseTrainingPlanSurveyOptions {
   onClose: () => void;
@@ -224,7 +225,8 @@ export function useTrainingPlanSurvey({
     setPhase("saving");
 
     try {
-      const savedPlan = await service.savePlan(previewPlan);
+      const { plan: savedPlan, newAchievements } = await service.savePlan(previewPlan);
+      showAchievementToasts(newAchievements);
       onSuccess?.(savedPlan);
       handleClose();
     } catch {

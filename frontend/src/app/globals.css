@@ -60,3 +60,13 @@ button {
   margin: 0 auto;
   width: 100%;
 }
+
+.achievement-toast__title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.achievement-toast__description {
+  font-size: 14px;
+  opacity: 0.85;
+}

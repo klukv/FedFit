@@ -1,111 +1,28 @@
-import arms from "@/assets/workout/arms.png";
-import bike from "@/assets/workout/bike.png";
-import foots from "@/assets/workout/foots.png";
-import press from "@/assets/workout/press.png";
-import run from "@/assets/workout/run.png";
-import { WorkoutWithExercises } from "@/modules/workout";
-
+import { getWorkoutImage } from "@/modules/workout/utils/workoutImages";
 export const mockItemsForCarousel = [
   {
     id: 0,
     name: "Тренировка на руки",
-    image: arms,
+    image: getWorkoutImage({ id: 0, name: "Тренировка на руки", value: "upper-dumbbells" }),
   },
   {
     id: 1,
     name: "Бег",
-    image: run,
+    image: getWorkoutImage({ id: 1, name: "Бег", value: "endurance-long" }),
   },
   {
     id: 2,
     name: "Велотренировка",
-    image: bike,
+    image: getWorkoutImage({ id: 2, name: "Велотренировка", value: "cardio-45" }),
   },
   {
     id: 3,
     name: "Тренировка на пресс",
-    image: press,
+    image: getWorkoutImage({ id: 3, name: "Тренировка на пресс", value: "core-short" }),
   },
   {
     id: 4,
     name: "Тренировка на ноги",
-    image: foots,
+    image: getWorkoutImage({ id: 4, name: "Тренировка на ноги", value: "legs-glutes" }),
   },
 ];
-
-export const mockUserData = {
-  name: "Юлия",
-  gender: "Женский",
-  height: 165,
-  weight: 100,
-  desiredWeight: 70,
-};
-
-export const mockActivityData = {
-  calories: 589,
-  workouts: 2,
-  minutes: 116,
-};
-
-// Mock данные для детальной страницы тренировки
-export const mockWorkoutDetail: WorkoutWithExercises = {
-  id: 1,
-  name: "Силовой микс для развития выносливости",
-  value: "40 мин · Средний",
-  description: "Комплексная тренировка для развития силы и выносливости",
-  exercisesCount: 7,
-  duration: 40,
-  level: "intermediate",
-  caloriesMin: 530,
-  caloriesMax: 720,
-  exercises: [
-    {
-      id: 1,
-      name: "Разминка",
-      description: "Разминка — 7 минут (кардио + суставная гимнастика)",
-      duration: 420, // 7 минут в секундах
-    },
-    {
-      id: 2,
-      name: "Приседания",
-      description: "Приседания — 3 подхода по 15 раз",
-      sets: 3,
-      reps: 15,
-    },
-    {
-      id: 3,
-      name: "Отжимания",
-      description: "Отжимания — 3 подхода по 12 раз",
-      sets: 3,
-      reps: 12,
-    },
-    {
-      id: 4,
-      name: "Планка",
-      description: "Планка - 3 подхода по 40 сек",
-      sets: 3,
-      duration: 40,
-    },
-    {
-      id: 5,
-      name: "Выпады вперед",
-      description: "Выпады вперед - 3 подхода по 12 раз на каждую ногу",
-      sets: 3,
-      reps: 12,
-    },
-    {
-      id: 6,
-      name: "Тяга с утяжелением к поясу",
-      description: "Тяга с утяжелением к поясу - 3 подхода по 12 раз",
-      sets: 3,
-      reps: 12,
-    },
-    {
-      id: 7,
-      name: "Берпи",
-      description: "Берпи - 3 подхода по 10 раз",
-      sets: 3,
-      reps: 10,
-    },
-  ],
-};

@@ -1,13 +1,14 @@
 import { $authReq } from "@/shared/api";
 import { WORKOUTS_URL } from "@/shared/constants";
+import type { NewAchievementsPayload } from "@/modules/achievement";
 import { WorkoutHistory } from "../types";
 
 class HistoryService {
   async getHistoryWorkouts(id: number): Promise<WorkoutHistory[]> {
-    const { data } = await $authReq().get<WorkoutHistory[]>(
+    const { data } = await $authReq().get<WorkoutHistory[] | null>(
       `${WORKOUTS_URL}/history/${id}`,
     );
-    return data;
+    return data ?? [];
   }
 
   async getLatestUnfinishedWorkoutHistoryByWorkoutId(
@@ -27,22 +28,31 @@ class HistoryService {
           new Date(b.workoutForHistory.startedAt).getTime() -
           new Date(a.workoutForHistory.startedAt).getTime(),
       );
-      
+
     return filtered[0] ?? null;
   }
 
-  async addWorkoutToHistory(workoutId: number, userId: number, workoutHistory: WorkoutHistory) {
-    await $authReq().post<void>(
+  async addWorkoutToHistory(
+    workoutId: number,
+    userId: number,
+    workoutHistory: WorkoutHistory,
+  ): Promise<NewAchievementsPayload> {
+    const { data } = await $authReq().post<NewAchievementsPayload>(
       `${WORKOUTS_URL}/history/${workoutId}/${userId}`,
       workoutHistory,
     );
+    return data ?? { newAchievements: [] };
   }
 
-  async updateWorkoutInHistory(workoutHistoryId: number, workoutHistory: WorkoutHistory) {
-    await $authReq().put<void>(
+  async updateWorkoutInHistory(
+    workoutHistoryId: number,
+    workoutHistory: WorkoutHistory,
+  ): Promise<NewAchievementsPayload> {
+    const { data } = await $authReq().put<NewAchievementsPayload>(
       `${WORKOUTS_URL}/history/${workoutHistoryId}`,
-      workoutHistory
-    )
+      workoutHistory,
+    );
+    return data ?? { newAchievements: [] };
   }
 }
 

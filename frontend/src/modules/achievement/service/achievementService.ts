@@ -7,7 +7,7 @@ export class AchievementService {
 
   async getAllAchievementsByUser(id: number) {
     const { data } = await $authReq().get<AchievementModel[]>(
-      `${USERS_URL}/${id}/${ACHIEVEMENTS_URL}`
+      `${USERS_URL}/${id}${ACHIEVEMENTS_URL}`
     )
     return data;
   }

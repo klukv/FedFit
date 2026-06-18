@@ -28,4 +28,9 @@ export {
   formatWorkoutCardValue,
   normalizeTrainingPlan,
   toSaveTrainingPlanPayload,
+  WorkoutImageCategory,
+  getWorkoutImage,
+  getWorkoutImageSrc,
+  getTrainingPlanImage,
+  getTrainingPlanImageSrc,
 } from "./utils";

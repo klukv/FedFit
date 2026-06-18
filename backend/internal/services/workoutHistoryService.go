@@ -16,12 +16,17 @@ type WorkoutHistoryServiceRepos struct {
 }
 
 type WorkoutHistoryService struct {
-	pool  *pgxpool.Pool
-	repos *WorkoutHistoryServiceRepos
+	pool               *pgxpool.Pool
+	repos              *WorkoutHistoryServiceRepos
+	achievementService *AchievementService
 }
 
-func NewWorkoutHistoryService(pool *pgxpool.Pool, repos *WorkoutHistoryServiceRepos) *WorkoutHistoryService {
-	return &WorkoutHistoryService{pool: pool, repos: repos}
+func NewWorkoutHistoryService(
+	pool *pgxpool.Pool,
+	repos *WorkoutHistoryServiceRepos,
+	achievementService *AchievementService,
+) *WorkoutHistoryService {
+	return &WorkoutHistoryService{pool: pool, repos: repos, achievementService: achievementService}
 }
 
 func (s *WorkoutHistoryService) AddWorkoutToHistory(
@@ -29,22 +34,22 @@ func (s *WorkoutHistoryService) AddWorkoutToHistory(
 	userId string,
 	workoutId string,
 	workoutHistory *models.WorkoutHistoryDTO,
-) error {
+) ([]models.AchievementResponse, error) {
 	userIdConvert, errConvertUserId := strconv.Atoi(userId)
 	workoutIdConvert, errConvertWorkoutId := strconv.Atoi(workoutId)
 
 	if errConvertUserId != nil {
-		return fmt.Errorf("id пользователя не корректен")
+		return nil, fmt.Errorf("id пользователя не корректен")
 	}
 
 	if errConvertWorkoutId != nil {
-		return fmt.Errorf("id тренировки не корректен")
+		return nil, fmt.Errorf("id тренировки не корректен")
 	}
 
 	tx, err := s.pool.Begin(ctx)
 
 	if err != nil {
-		return fmt.Errorf("begin tx: %w", err)
+		return nil, fmt.Errorf("begin tx: %w", err)
 	}
 
 	defer tx.Rollback(ctx)
@@ -58,7 +63,7 @@ func (s *WorkoutHistoryService) AddWorkoutToHistory(
 	)
 
 	if addingWorkoutHistoryErr != nil {
-		return fmt.Errorf("%w", addingWorkoutHistoryErr)
+		return nil, fmt.Errorf("%w", addingWorkoutHistoryErr)
 	}
 
 	if err := s.repos.WorkoutHistoryExercisesRepository.AddWorkoutHistoryExercises(
@@ -67,14 +72,18 @@ func (s *WorkoutHistoryService) AddWorkoutToHistory(
 		workoutHistoryId,
 		workoutHistory.Exercises,
 	); err != nil {
-		return fmt.Errorf("%w", err)
+		return nil, fmt.Errorf("%w", err)
 	}
 
 	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("Ошибка коммита. Подробнее: %w", err)
+		return nil, fmt.Errorf("Ошибка коммита. Подробнее: %w", err)
 	}
 
-	return nil
+	if workoutHistory.WorkoutForHistory.Is_completed {
+		return s.achievementService.ProcessAchievements(ctx, userIdConvert)
+	}
+
+	return []models.AchievementResponse{}, nil
 }
 
 func (s *WorkoutHistoryService) GetHistoryByUserId(ctx context.Context, userId string) ([]models.WorkoutHistoryDTO, error) {
@@ -120,30 +129,43 @@ func (s *WorkoutHistoryService) GetHistoryByUserId(ctx context.Context, userId s
 	return workoutHistoryDTO, nil
 }
 
-func (s *WorkoutHistoryService) UpdateWorkoutHistory(ctx context.Context, workoutHistoryId string, workoutHistory *models.WorkoutHistoryDTO) error {
+func (s *WorkoutHistoryService) UpdateWorkoutHistory(
+	ctx context.Context,
+	workoutHistoryId string,
+	workoutHistory *models.WorkoutHistoryDTO,
+) ([]models.AchievementResponse, error) {
 	workoutHistoryIdConvert, err := strconv.Atoi(workoutHistoryId)
 
 	if err != nil {
-		return fmt.Errorf("id тренировки из истории не корректен")
+		return nil, fmt.Errorf("id тренировки из истории не корректен")
+	}
+
+	userID, err := s.repos.WorkoutHistoryRepository.GetUserIDByHistoryID(ctx, workoutHistoryIdConvert)
+	if err != nil {
+		return nil, err
 	}
 
 	tx, err := s.pool.Begin(ctx)
 
 	if err != nil {
-		return fmt.Errorf("begin tx: %w", err)
+		return nil, fmt.Errorf("begin tx: %w", err)
 	}
 
 	if err := s.repos.WorkoutHistoryRepository.UpdateWorkoutHistory(ctx, tx, workoutHistoryIdConvert, workoutHistory.WorkoutForHistory); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := s.repos.WorkoutHistoryExercisesRepository.UpdateWorkoutHistoryExercises(ctx, tx, workoutHistoryIdConvert, workoutHistory.Exercises); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("Ошибка коммита. Подробнее: %w", err)
+		return nil, fmt.Errorf("Ошибка коммита. Подробнее: %w", err)
 	}
 
-	return nil
+	if workoutHistory.WorkoutForHistory.Is_completed {
+		return s.achievementService.ProcessAchievements(ctx, userID)
+	}
+
+	return []models.AchievementResponse{}, nil
 }

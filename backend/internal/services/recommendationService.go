@@ -44,7 +44,7 @@ func (s *RecommendationService) GetRecommendationForUser(ctx context.Context, su
 		trainingPlan.TargetLevel = &level
 		trainingPlan.UserID = surveyResult.UserID
 
-		if err := s.trainingSvc.CreateTrainingPlan(ctx, &trainingPlan); err != nil {
+		if _, err := s.trainingSvc.CreateTrainingPlan(ctx, &trainingPlan); err != nil {
 			return nil, fmt.Errorf("сохранение рекомендованного плана: %w", err)
 		}
 	}

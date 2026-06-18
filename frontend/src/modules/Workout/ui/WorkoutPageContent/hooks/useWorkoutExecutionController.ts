@@ -18,6 +18,7 @@ import type {
 import type { UseWorkoutExecutionControllerParams } from "../../../types";
 import { formatDate } from "@/shared/utils";
 import { historyService } from "@/modules/history";
+import { showAchievementToasts } from "@/modules/achievement";
 import { mapExercisesToSnapshotForDto, mapToWorkoutHistoryDto } from "@/modules/history/utils";
 
 export function useWorkoutExecutionController(
@@ -175,20 +176,19 @@ export function useWorkoutExecutionController(
       payload: Parameters<typeof mapToWorkoutHistoryDto>[0],
     ) => { 
       const historyDto = mapToWorkoutHistoryDto(payload);
+      let response;
 
       if (activeWorkoutHistoryId) {
-        await historyService.updateWorkoutInHistory(activeWorkoutHistoryId, historyDto);
-        return;
+        response = await historyService.updateWorkoutInHistory(activeWorkoutHistoryId, historyDto);
+      } else if (source === "history" && !activeWorkoutHistoryId) {
+        // TODO: Временное ветвление до внедрения Redux-контекста источника перехода.
+        // Для source=history ожидаем workoutHistoryId в query, иначе пока создаём новую запись.
+        response = await historyService.addWorkoutToHistory(workoutId, 1, historyDto);
+      } else {
+        response = await historyService.addWorkoutToHistory(workoutId, 1, historyDto);
       }
 
-      // TODO: Временное ветвление до внедрения Redux-контекста источника перехода.
-      // Для source=history ожидаем workoutHistoryId в query, иначе пока создаём новую запись.
-      if (source === "history" && !activeWorkoutHistoryId) {
-        await historyService.addWorkoutToHistory(workoutId, 1, historyDto);
-        return;
-      }
-
-      await historyService.addWorkoutToHistory(workoutId, 1, historyDto);
+      showAchievementToasts(response.newAchievements);
     },
     [activeWorkoutHistoryId, source, workoutId],
   );

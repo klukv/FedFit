@@ -1,0 +1,47 @@
+import {
+  WorkoutItem,
+  WorkoutItemVariants,
+  WorkoutService,
+  getWorkoutImageSrc,
+} from "@/modules/workout";
+import { ContainerSection } from "@/shared/ui";
+
+type IProps = {
+  params: Promise<{ id: string }>;
+};
+
+const Page = async ({ params }: IProps) => {
+  const { id } = await params;
+  const workoutService = new WorkoutService();
+  const workoutsData = await workoutService.getTrainingPlanById(Number(id));
+
+  return (
+    <ContainerSection
+      title={workoutsData.name}
+      styles={{
+        maxWidth: "1200px",
+        margin: "0 auto",
+      }}
+      contentStyles={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(450px, 1fr))",
+        gap: "20px",
+      }}
+    >
+      {workoutsData.workouts.map((workout) => (
+        <WorkoutItem
+          key={workout.id}
+          type={WorkoutItemVariants.LARGE_WITH_BUTTON}
+          title={workout.name}
+          buttonLink={{
+            href: `/workout/${workout.id}?source=plan`,
+            title: "Перейти",
+          }}
+          backgroundImage={{ image: getWorkoutImageSrc(workout) }}
+        />
+      ))}
+    </ContainerSection>
+  );
+};
+
+export default Page;

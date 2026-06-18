@@ -1,13 +1,39 @@
 .workout-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  display: grid;
+  grid-template: 1fr / 1fr;
+  width: 100%;
   border-radius: 12px;
   cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #1f1f1f;
   transition: filter 150ms linear;
 }
 
+.workout-item__image {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  transition: filter 150ms linear;
+}
+
+.workout-item::after {
+  content: "";
+  grid-area: 1 / 1;
+  background: rgba(43, 43, 43, 0.28);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .workout-item__inner {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,8 +41,8 @@
   gap: 24px;
 }
 
-.workout-item:hover {
-  background: brightness(30%);
+.workout-item:hover .workout-item__image {
+  filter: brightness(0.72);
 }
 
 .workout-item-large {

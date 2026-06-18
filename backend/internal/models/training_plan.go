@@ -25,6 +25,7 @@ type TrainingPlans struct {
 }
 
 type CreateTrainingPlanResponse struct {
-	ID      int    `json:"id"`
-	Message string `json:"message"`
+	ID              int                   `json:"id"`
+	Message         string                `json:"message"`
+	NewAchievements []AchievementResponse `json:"newAchievements"`
 }

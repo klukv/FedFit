@@ -25,12 +25,13 @@ func (handler *Handler) AddWorkoutToHistory(w http.ResponseWriter, r *http.Reque
 		fmt.Println("Ошибка при разборе JSON: ", err)
 	}
 
-	if err := handler.Services.WorkoutHistoryService.AddWorkoutToHistory(
+	newAchievements, err := handler.Services.WorkoutHistoryService.AddWorkoutToHistory(
 		r.Context(),
 		userId,
 		workoutId,
 		&workoutHistory,
-	); err != nil {
+	)
+	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]interface{}{
@@ -40,7 +41,13 @@ func (handler *Handler) AddWorkoutToHistory(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(models.WorkoutHistoryMutationResponse{
+		NewAchievements: newAchievements,
+	}); err != nil {
+		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (handler *Handler) GetHistoryByUserId(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +92,8 @@ func (handler *Handler) UpdateWorkoutHistory(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if err := handler.Services.WorkoutHistoryService.UpdateWorkoutHistory(r.Context(), workoutHistoryId, &workoutHistory); err != nil {
+	newAchievements, err := handler.Services.WorkoutHistoryService.UpdateWorkoutHistory(r.Context(), workoutHistoryId, &workoutHistory)
+	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]interface{}{
@@ -95,5 +103,11 @@ func (handler *Handler) UpdateWorkoutHistory(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(models.WorkoutHistoryMutationResponse{
+		NewAchievements: newAchievements,
+	}); err != nil {
+		http.Error(w, "Ошибка кодирования данных", http.StatusInternalServerError)
+		return
+	}
 }

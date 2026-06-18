@@ -5,3 +5,10 @@ export {
   normalizeTrainingPlan,
   toSaveTrainingPlanPayload,
 } from "./trainingPlanMapper";
+export {
+  WorkoutImageCategory,
+  getWorkoutImage,
+  getWorkoutImageSrc,
+  getTrainingPlanImage,
+  getTrainingPlanImageSrc,
+} from "./workoutImages";

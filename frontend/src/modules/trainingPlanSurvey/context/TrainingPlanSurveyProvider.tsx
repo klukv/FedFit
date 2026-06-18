@@ -43,6 +43,7 @@ export function TrainingPlanSurveyProvider({ children }: PropsWithChildren) {
   const closeModal = useCallback(() => setIsOpen(false), []);
 
   const handleSuccess = (plan: TrainingPlan) => {
+    if (!plan.id) return;
     router.push(`${TRAINING_PLANS_URL}/${plan.id}`);
   };
 

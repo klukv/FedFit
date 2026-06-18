@@ -23,6 +23,9 @@ export function toSaveTrainingPlanPayload(plan: TrainingPlan) {
     name: plan.name,
     description: plan.description,
     userId: SAVE_TRAINING_PLAN_USER_ID,
-    workouts: plan.workouts.map((workout) => ({ ...workout })),
+    workouts: plan.workouts.map(({ value, ...workout }) => ({
+      ...workout,
+      ...(workout.id > 0 && value ? { value } : {}),
+    })),
   };
 }

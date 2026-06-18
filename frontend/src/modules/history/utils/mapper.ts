@@ -86,7 +86,7 @@ export const mapExercisesToSnapshotForDto = (exercises: Exercise[], exercisesSna
             exerciseIndex: exerciseInMap?.exerciseIndex ?? 0,
             durationSeconds: exerciseInMap?.durationSeconds ?? 0,
             setsCompleted: exerciseInMap?.setsCompleted ?? 0,
-            repsDone: exerciseInMap ? exercise.reps : 0,
+            repsDone: exerciseInMap ? (exercise.reps ?? 0) : 0,
             caloriesBurned: exerciseInMap?.caloriesBurned ?? 0,
             isCompleted: exerciseInMap?.setsCompleted === exercise.sets
         }

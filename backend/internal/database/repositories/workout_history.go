@@ -148,3 +148,16 @@ func (r *WorkoutHistoryRepository) UpdateWorkoutHistory(
 
 	return nil
 }
+
+func (r *WorkoutHistoryRepository) GetUserIDByHistoryID(ctx context.Context, workoutHistoryID int) (int, error) {
+	var userID int
+	err := r.pool.QueryRow(ctx, `
+		SELECT user_id
+		FROM workout_history
+		WHERE id = $1
+	`, workoutHistoryID).Scan(&userID)
+	if err != nil {
+		return 0, fmt.Errorf("получение user_id по истории тренировки провалено: %w", err)
+	}
+	return userID, nil
+}

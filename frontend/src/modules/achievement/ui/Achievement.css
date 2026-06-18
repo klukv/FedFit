@@ -1,48 +1,61 @@
 .achievement {
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 254px;
-    height: 254px;
-    background: linear-gradient(180deg, #c6964d 0%, #4a381e 100%);
-    position: relative;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 254px;
+  height: 254px;
+  background: linear-gradient(180deg, #c6964d 0%, #4a381e 100%);
 }
 
 .achievement__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-}
-
-.achievement__info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 16px;
+  width: 100%;
+  height: 100%;
 }
 
 .achievement__icon {
-    position: absolute;
-    top: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+  line-height: 0;
+}
+
+.achievement__icon svg {
+  width: 64px;
+  height: 64px;
+  stroke-width: 1.5;
+}
+
+.achievement__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .achievement__info-number-value {
-    font-size: 32px;
-    font-weight: 600;
-    line-height: 1.219;
-    margin-top: 60px;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .achievement__info-text-value {
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 1.219;
-    text-align: center;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
 }
 
+.achievement--locked {
+  opacity: 0.55;
+  filter: grayscale(1);
+}

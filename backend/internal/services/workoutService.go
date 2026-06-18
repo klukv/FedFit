@@ -76,6 +76,11 @@ func (s *WorkoutService) CreateWorkout(ctx context.Context, workout *models.Work
 		}()
 	}
 
+	if err := s.ensureUniqueWorkoutValue(ctx, opt.tx, workout); err != nil {
+		log.Printf("Ошибка подготовки value тренировки: %s", err)
+		return 0, fmt.Errorf("Ошибка создания тренировки")
+	}
+
 	workoutId, err := s.repos.WorkoutRepository.CreateWorkout(ctx, opt.tx, workout)
 
 	if err != nil {

@@ -45,6 +45,21 @@ func (r *WorkoutRepository) CreateWorkoutTable(ctx context.Context) error {
 	return nil
 }
 
+func (r *WorkoutRepository) WorkoutValueExists(ctx context.Context, tx pgx.Tx, value string) (bool, error) {
+	var exists bool
+	err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM workout WHERE value = $1)`, value).Scan(&exists)
+	return exists, err
+}
+
+func (r *WorkoutRepository) GetWorkoutIDByValue(ctx context.Context, tx pgx.Tx, value string) (int, error) {
+	var id int
+	err := tx.QueryRow(ctx, `SELECT id FROM workout WHERE value = $1`, value).Scan(&id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return 0, nil
+	}
+	return id, err
+}
+
 func (r *WorkoutRepository) CreateWorkout(ctx context.Context, tx pgx.Tx, workout *models.Workout) (int, error) {
 	query := `
 		INSERT INTO workout (name, value, description, image, level, calories_min, calories_max, duration)
